@@ -62,9 +62,15 @@ LOGS = [
     {"time": "2025-07-10 17:12:07", "user_id": 18, "action": "login", "desc": "用户 dataadmin 登录成功", "ip": "127.0.0.1", "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)..."}
 ]
 
+from config import get_config
+
+# 获取配置
+config = get_config()
+
+# 管理员账户配置
 USERS = {
-    'admin': {'password': 'admin123', 'role': '超级管理员'},
-    'dataadmin': {'password': 'dataadmin123', 'role': '数据管理员'},
+    config.ADMIN_USERNAME: {'password': config.ADMIN_PASSWORD, 'role': '超级管理员'},
+    config.DATA_ADMIN_USERNAME: {'password': config.DATA_ADMIN_PASSWORD, 'role': '数据管理员'},
     'auditor': {'password': 'auditor123', 'role': '商户审核员'}
 }
 

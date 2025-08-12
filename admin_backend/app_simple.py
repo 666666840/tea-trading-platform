@@ -33,7 +33,11 @@ logger = logging.getLogger(__name__)
 
 # 创建Flask应用
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('APP_SECRET', 'tea-admin-secret-key-change-this')
+from config import get_config
+
+# 获取配置
+config = get_config()
+app.config['SECRET_KEY'] = config.SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tea_admin.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_PATH', 'uploads')
@@ -461,7 +465,7 @@ def init_database():
                 email='admin@tea-platform.com',
                 role='super_admin'
             )
-            admin.set_password('admin123456')
+            admin.set_password(config.ADMIN_PASSWORD)
             db.session.add(admin)
             db.session.commit()
             logger.info('创建默认超级管理员账号')
@@ -489,7 +493,7 @@ if __name__ == '__main__':
     print(f"🍵 茶叶平台管理后台启动成功！")
     print(f"📱 访问地址: http://localhost:{port}")
     print(f"👤 默认账号: admin")
-    print(f"🔑 默认密码: admin123456")
+    print(f"🔑 默认密码: {config.ADMIN_PASSWORD}")
     print(f"⚠️  请立即修改默认密码！")
     print(f"🔄 按 Ctrl+C 停止服务")
     
