@@ -21,57 +21,8 @@ Page({
     
 
     
-    // 价格列表数据 - 直接设置初始数据
-    priceList: [
-      {
-        id: 1,
-        name: '西湖龙井',
-        minPrice: 800,
-        maxPrice: 1200,
-        avgPrice: 1000,
-        unit: '斤',
-        changeType: 'up',
-        changePercent: 5.2,
-        origin: '浙江杭州',
-        updateTime: '2小时前',
-        sourceCount: 15,
-        isHot: true,
-        isNew: false,
-        isRecommended: true
-      },
-      {
-        id: 2,
-        name: '碧螺春',
-        minPrice: 600,
-        maxPrice: 900,
-        avgPrice: 750,
-        unit: '斤',
-        changeType: 'down',
-        changePercent: 2.1,
-        origin: '江苏苏州',
-        updateTime: '1小时前',
-        sourceCount: 12,
-        isHot: false,
-        isNew: true,
-        isRecommended: false
-      },
-      {
-        id: 3,
-        name: '正山小种',
-        minPrice: 300,
-        maxPrice: 600,
-        avgPrice: 450,
-        unit: '斤',
-        changeType: 'up',
-        changePercent: 3.8,
-        origin: '福建武夷山',
-        updateTime: '30分钟前',
-        sourceCount: 20,
-        isHot: true,
-        isNew: false,
-        isRecommended: true
-      }
-    ],
+    // 价格列表数据 - 清空示例数据，等待真实数据导入
+    priceList: [],
     
     // 分页参数
     page: 1,
@@ -131,93 +82,8 @@ Page({
           isRecommended: false
         }
       ]
-    } else if (category === 'black') {
-      newData = [
-        {
-          id: 4,
-          name: '正山小种',
-          minPrice: 300,
-          maxPrice: 600,
-          avgPrice: 450,
-          unit: '斤',
-          changeType: 'up',
-          changePercent: 3.8,
-          origin: '福建武夷山',
-          updateTime: '30分钟前',
-          sourceCount: 20,
-          isHot: true,
-          isNew: false,
-          isRecommended: true
-        },
-        {
-          id: 5,
-          name: '祁门红茶',
-          minPrice: 400,
-          maxPrice: 700,
-          avgPrice: 550,
-          unit: '斤',
-          changeType: 'up',
-          changePercent: 1.5,
-          origin: '安徽祁门',
-          updateTime: '1小时前',
-          sourceCount: 18,
-          isHot: false,
-          isNew: false,
-          isRecommended: true
-        }
-      ]
-    } else if (category === 'all') {
-      newData = [
-        {
-          id: 1,
-          name: '西湖龙井',
-          minPrice: 800,
-          maxPrice: 1200,
-          avgPrice: 1000,
-          unit: '斤',
-          changeType: 'up',
-          changePercent: 5.2,
-          origin: '浙江杭州',
-          updateTime: '2小时前',
-          sourceCount: 15,
-          isHot: true,
-          isNew: false,
-          isRecommended: true
-        },
-        {
-          id: 2,
-          name: '碧螺春',
-          minPrice: 600,
-          maxPrice: 900,
-          avgPrice: 750,
-          unit: '斤',
-          changeType: 'down',
-          changePercent: 2.1,
-          origin: '江苏苏州',
-          updateTime: '1小时前',
-          sourceCount: 12,
-          isHot: false,
-          isNew: true,
-          isRecommended: false
-        },
-        {
-          id: 3,
-          name: '正山小种',
-          minPrice: 300,
-          maxPrice: 600,
-          avgPrice: 450,
-          unit: '斤',
-          changeType: 'up',
-          changePercent: 3.8,
-          origin: '福建武夷山',
-          updateTime: '30分钟前',
-          sourceCount: 20,
-          isHot: true,
-          isNew: false,
-          isRecommended: true
-        }
-      ]
-    }
+    // 清空示例数据，等待真实数据导入
+    newData = []
     
     this.setData({
       activeCategory: category,
