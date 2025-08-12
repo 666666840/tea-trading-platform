@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>茶叶平台管理后台 - 系统日志</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            margin: 2px 0;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        /* 统计卡片样式 */
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .stats-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .stats-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        /* 高级搜索面板 */
+        .advanced-search {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* 进度条样式 */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(0,0,0,0.1);
+            z-index: 9999;
+            display: none;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* 日志详情弹窗 */
+        .log-detail-modal .modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-detail-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .log-detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 实时刷新指示器 */
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* 表格优化 */
+        .table th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .log-row:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 操作类型徽章 */
+        .action-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            .stats-card {
+                margin-bottom: 0.5rem;
+            }
+        }
+        .alert-sm {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* 统计卡片样式 */
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .stats-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .stats-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        /* 实时监控样式 */
+        .severity-high {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+        }
+        
+        .severity-medium {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+        }
+        
+        .severity-low {
+            background-color: rgba(13, 202, 240, 0.1);
+            border-left: 4px solid #0dcaf0;
+        }
+        
+        .severity-info {
+            background-color: rgba(108, 117, 125, 0.1);
+            border-left: 4px solid #6c757d;
+        }
+        
+        /* 告警样式 */
+        .alert-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .alert-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .alert-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .alert-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .alert-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* 实时状态指示器 */
+        .realtime-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+            }
+        }
+        
+        /* 紧凑视图样式 */
+        .compact-view .table td {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .compact-view .table th {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* 高级搜索面板样式 */
+        .advanced-search-panel {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 进度条样式 */
+        .progress-custom {
+            height: 6px;
+            border-radius: 3px;
+            background-color: #e9ecef;
+        }
+        
+        .progress-custom .progress-bar {
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        
+        /* 通知样式 */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
+            padding: 1rem;
+            border-left: 4px solid #007bff;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            border-left-color: #28a745;
+        }
+        
+        .notification.error {
+            border-left-color: #dc3545;
+        }
+        
+        .notification.warning {
+            border-left-color: #ffc107;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 加载动画样式 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+            
+            .action-buttons .btn {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+            
+            .advanced-search-panel {
+                padding: 1rem;
+            }
+            
+            .notification-container {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 进度条 -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <!-- 实时刷新指示器 -->
+    <div class="refresh-indicator" id="refreshIndicator">
+        <i class="fas fa-sync-alt fa-spin"></i> 正在刷新...
+    </div>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-leaf fa-2x mb-2"></i>
+                        <h5>茶叶平台</h5>
+                        <small>管理后台</small>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>仪表板
+                        </a>
+                        <a class="nav-link" href="{{ url_for('markets') }}">
+                            <i class="fas fa-store me-2"></i>市场管理
+                        </a>
+                        <a class="nav-link" href="{{ url_for('merchants') }}">
+                            <i class="fas fa-users me-2"></i>商户管理
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('logs') }}">
+                            <i class="fas fa-list-alt me-2"></i>系统日志
+                        </a>
+                        {% if current_user.role == 'super_admin' %}
+                        <a class="nav-link" href="{{ url_for('users') }}">
+                            <i class="fas fa-user-cog me-2"></i>用户管理
+                        </a>
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i class="fas fa-cog me-2"></i>系统设置
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- 主内容区 -->
+            <div class="col-md-9 col-lg-10 px-0">
+                <div class="main-content">
+                    <!-- 顶部导航栏 -->
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="container-fluid">
+                            <span class="navbar-brand">
+                                <i class="fas fa-list-alt"></i> 系统日志
+                            </span>
+                            
+                            <div class="navbar-nav ms-auto">
+                                <div class="nav-item dropdown me-3">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="toggleAutoRefresh()" id="autoRefreshBtn">
+                                        <i class="fas fa-sync-alt"></i> 自动刷新
+                                    </button>
+                                </div>
+                                <div class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>个人资料</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>退出登录</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <!-- 内容区域 -->
+                    <div class="p-4">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <!-- 统计卡片 -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stats-card info">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-0" id="totalLogs">{{ logs.total if logs else 0 }}</h3>
+                                            <p class="mb-0">总日志数</p>
+                                        </div>
+                                        <i class="fas fa-list-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card success">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-0" id="todayLogs">0</h3>
+                                            <p class="mb-0">今日日志</p>
+                                        </div>
+                                        <i class="fas fa-calendar-day fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card warning">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-0" id="activeUsers">0</h3>
+                                            <p class="mb-0">活跃用户</p>
+                                        </div>
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-0" id="errorLogs">0</h3>
+                                            <p class="mb-0">错误日志</p>
+                                        </div>
+                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 实时监控面板 -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="fas fa-broadcast-tower me-2"></i>实时监控</h6>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-success" id="realtimeStatus">实时</span>
+                                            <button class="btn btn-sm btn-outline-secondary" onclick="toggleRealtime()" id="realtimeBtn">
+                                                <i class="fas fa-pause"></i> 暂停
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive" style="max-height: 300px;">
+                                            <table class="table table-sm mb-0">
+                                                <thead class="table-light sticky-top">
+                                                    <tr>
+                                                        <th>时间</th>
+                                                        <th>用户</th>
+                                                        <th>操作</th>
+                                                        <th>描述</th>
+                                                        <th>严重程度</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="realtimeTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-3">
+                                                            <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-bell me-2"></i>告警信息</h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div id="alertsContainer" style="max-height: 300px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-3">
+                                                <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 操作按钮 -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4><i class="fas fa-list-alt me-2"></i>系统操作日志</h4>
+                            <div class="action-buttons">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-download me-2"></i>导出
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="exportLogs()">CSV格式</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="showAdvancedExport()">高级导出</a></li>
+                                    </ul>
+                                </div>
+                                <button class="btn btn-outline-info" onclick="showLogStats()" title="查看日志统计">
+                                    <i class="fas fa-chart-bar me-2"></i>统计图表
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="showAnalysis()" title="查看分析报告">
+                                    <i class="fas fa-chart-line me-2"></i>分析报告
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="clearLogs()" title="清空当前筛选结果">
+                                    <i class="fas fa-trash me-2"></i>清空日志
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="showCleanup()" title="智能清理">
+                                    <i class="fas fa-broom me-2"></i>智能清理
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="deleteSelectedLogs()" id="batchDeleteBtn" style="display: none;" title="删除选中的日志">
+                                    <i class="fas fa-trash-alt me-2"></i>批量删除
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 高级搜索面板 -->
+                        <div class="advanced-search">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0"><i class="fas fa-search me-2"></i>高级搜索</h6>
+                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#searchPanel">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="collapse show" id="searchPanel">
+                                <form class="row g-3" method="get" action="">
+                                    <div class="col-md-2">
+                                        <label class="form-label">用户ID</label>
+                                        <input class="form-control" type="text" name="user_id" placeholder="用户ID" value="{{ user_id }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">操作类型</label>
+                                        <select class="form-select" name="action">
+                                            <option value="">全部类型</option>
+                                            <option value="login" {{ 'selected' if action == 'login' else '' }}>登录</option>
+                                            <option value="logout" {{ 'selected' if action == 'logout' else '' }}>登出</option>
+                                            <option value="create" {{ 'selected' if action == 'create' else '' }}>创建</option>
+                                            <option value="update" {{ 'selected' if action == 'update' else '' }}>更新</option>
+                                            <option value="delete" {{ 'selected' if action == 'delete' else '' }}>删除</option>
+                                            <option value="export" {{ 'selected' if action == 'export' else '' }}>导出</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">起始日期</label>
+                                        <input class="form-control" type="date" name="start_date" value="{{ start_date }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">结束日期</label>
+                                        <input class="form-control" type="date" name="end_date" value="{{ end_date }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">IP地址</label>
+                                        <input class="form-control" type="text" name="ip_address" placeholder="IP地址" value="{{ ip_address }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">描述关键词</label>
+                                        <input class="form-control" type="text" name="description" placeholder="描述关键词" value="{{ description }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fas fa-search me-2"></i>搜索
+                                            </button>
+                                            <a href="?" class="btn btn-outline-secondary">
+                                                <i class="fas fa-undo me-2"></i>重置
+                                            </a>
+                                            <button type="button" class="btn btn-outline-info" onclick="saveSearch()">
+                                                <i class="fas fa-save me-2"></i>保存搜索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- 日志列表 -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0"><i class="fas fa-table me-2"></i>日志列表</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-muted small">共 {{ logs.total if logs else 0 }} 条记录</span>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="compactView">
+                                        <label class="form-check-label small" for="compactView">紧凑视图</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th width="40">
+                                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                                </th>
+                                                <th>时间</th>
+                                                <th>用户ID</th>
+                                                <th>操作类型</th>
+                                                <th>描述</th>
+                                                <th>IP地址</th>
+                                                <th>用户代理</th>
+                                                <th width="80">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for log in logs.items %}
+                                            <tr class="log-row">
+                                                <td>
+                                                    <input type="checkbox" class="log-checkbox" value="{{ log.id }}" onchange="updateBatchDeleteBtn()">
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-bold">{{ log.created_at.strftime('%Y-%m-%d') }}</span>
+                                                        <small class="text-muted">{{ log.created_at.strftime('%H:%M:%S') }}</small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-secondary">{{ log.user_id or '系统' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge action-badge bg-{{ 'success' if log.action == 'login' else 'info' if log.action == 'logout' else 'warning' if log.action in ['delete', 'clear'] else 'primary' }}">
+                                                        {{ log.action }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="text-truncate" style="max-width: 200px;" title="{{ log.description or '-' }}">
+                                                        {{ log.description or '-' }}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ log.ip_address or '-' }}</small>
+                                                </td>
+                                                <td>
+                                                    <div class="text-truncate" style="max-width: 150px;" title="{{ log.user_agent or '-' }}">
+                                                        <small class="text-muted">
+                                                            {{ log.user_agent[:30] + '...' if log.user_agent and log.user_agent|length > 30 else log.user_agent or '-' }}
+                                                        </small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-info" onclick="viewLogDetail({{ log.id }})" title="查看详情">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-3"></i>
+                                                    <br>暂无日志记录
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 分页 -->
+                        {% if logs.pages > 1 %}
+                        <nav aria-label="日志分页" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <!-- 分页控件参数同步 -->
+                                {% set page_params = 'user_id=' ~ user_id ~ '&action=' ~ action ~ '&start_date=' ~ start_date ~ '&end_date=' ~ end_date %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{{ page_params }}&page=1">首页</a>
+                                </li>
+                                {% if logs.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ logs.prev_num }}">上一页</a>
+                                </li>
+                                {% endif %}
+                                
+                                {% for p in logs.iter_pages() %}
+                                    {% if p %}
+                                        {% if p != logs.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{{ page_params }}&page={{ p }}">{{ p }}</a>
+                                        </li>
+                                        {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ p }}</span>
+                                        </li>
+                                        {% endif %}
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if logs.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ logs.next_num }}">下一页</a>
+                                </li>
+                                {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ logs.pages }}">末页</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 日志详情弹窗 -->
+    <div class="modal fade" id="logDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>日志详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body log-detail-modal">
+                    <div id="logDetailContent">
+                        <!-- 日志详情内容将通过AJAX加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 统计图表弹窗 -->
+    <div class="modal fade" id="logStatsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-chart-bar me-2"></i>日志统计分析</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="actionChart"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="timeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- 高级导出模态框 -->
+        <div class="modal fade" id="advancedExportModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-download me-2"></i>高级导出</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="advancedExportForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">导出格式</label>
+                                        <select class="form-select" name="export_type" required>
+                                            <option value="csv">CSV格式</option>
+                                            <option value="excel">Excel格式</option>
+                                            <option value="json">JSON格式</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">日期范围</label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" name="start_date">
+                                            <span class="input-group-text">至</span>
+                                            <input type="date" class="form-control" name="end_date">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">用户ID</label>
+                                        <input type="number" class="form-control" name="user_id" placeholder="输入用户ID">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">操作类型</label>
+                                        <select class="form-select" name="action">
+                                            <option value="">全部</option>
+                                            <option value="login">登录</option>
+                                            <option value="logout">登出</option>
+                                            <option value="create">创建</option>
+                                            <option value="update">更新</option>
+                                            <option value="delete">删除</option>
+                                            <option value="export">导出</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">IP地址</label>
+                                        <input type="text" class="form-control" name="ip_address" placeholder="输入IP地址">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">描述关键词</label>
+                                        <input type="text" class="form-control" name="description" placeholder="输入描述关键词">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="executeAdvancedExport()">
+                            <i class="fas fa-download me-2"></i>开始导出
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分析报告模态框 -->
+        <div class="modal fade" id="analysisModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-chart-line me-2"></i>日志分析报告</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">异常操作统计</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h3 class="text-danger" id="errorCount">0</h3>
+                                        <p class="text-muted">最近24小时错误日志数量</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">高频操作</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="highFreqActions">
+                                            <div class="text-center text-muted py-3">
+                                                <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">可疑IP地址</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="suspiciousIPs">
+                                            <div class="text-center text-muted py-3">
+                                                <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">活跃用户</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="activeUsersList">
+                                            <div class="text-center text-muted py-3">
+                                                <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">分析时间: <span id="analysisTime">-</span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 智能清理模态框 -->
+        <div class="modal fade" id="cleanupModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-broom me-2"></i>智能清理</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>注意：</strong>此操作将永久删除符合条件的日志记录，请谨慎操作！
+                        </div>
+                        <form id="cleanupForm">
+                            <div class="mb-3">
+                                <label class="form-label">保留天数</label>
+                                <select class="form-select" name="days" required>
+                                    <option value="30">30天</option>
+                                    <option value="60">60天</option>
+                                    <option value="90" selected>90天</option>
+                                    <option value="180">180天</option>
+                                    <option value="365">365天</option>
+                                </select>
+                                <div class="form-text">将删除指定天数之前的日志记录</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">操作类型筛选（可选）</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="login">
+                                            <label class="form-check-label">登录日志</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="logout">
+                                            <label class="form-check-label">登出日志</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="export">
+                                            <label class="form-check-label">导出日志</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="view">
+                                            <label class="form-check-label">查看日志</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="search">
+                                            <label class="form-check-label">搜索日志</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="action_types" value="clear">
+                                            <label class="form-check-label">清空日志</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-text">不选择则清理所有类型的日志</div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-warning" onclick="executeCleanup()">
+                            <i class="fas fa-broom me-2"></i>开始清理
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        // 全局变量
+        let autoRefreshInterval = null;
+        let isAutoRefreshEnabled = false;
+        
+        // 实时监控相关变量
+        let realtimeInterval = null;
+        let isRealtimeActive = true;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadRealtimeData();
+            loadAlerts();
+            startRealtimeUpdates();
+            initializeEventListeners();
+        });
+        
+        // 初始化事件监听器
+        function initializeEventListeners() {
+            // 紧凑视图切换
+            document.getElementById('compactView').addEventListener('change', function() {
+                toggleCompactView(this.checked);
+            });
+        }
+        
+        // 加载统计数据
+        function loadStats() {
+            fetch('/api/logs/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('totalLogs').textContent = data.data.total_logs;
+                        document.getElementById('todayLogs').textContent = data.data.today_logs;
+                        document.getElementById('activeUsers').textContent = data.data.active_users;
+                        document.getElementById('errorLogs').textContent = data.data.error_logs;
+                    }
+                })
+                .catch(error => console.error('加载统计数据失败:', error));
+        }
+        
+        // 加载实时数据
+        function loadRealtimeData() {
+            fetch('/api/logs/realtime')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateRealtimeTable(data.data.logs);
+                    }
+                })
+                .catch(error => console.error('加载实时数据失败:', error));
+        }
+        
+        // 更新实时表格
+        function updateRealtimeTable(logs) {
+            const tbody = document.getElementById('realtimeTable');
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">暂无实时数据</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = logs.map(log => `
+                <tr class="severity-${log.severity}">
+                    <td><small>${log.created_at}</small></td>
+                    <td><span class="badge bg-secondary">${log.user_id || '系统'}</span></td>
+                    <td><span class="badge bg-primary">${log.action}</span></td>
+                    <td><small>${log.description || ''}</small></td>
+                    <td>
+                        <span class="badge bg-${getSeverityColor(log.severity)}">${getSeverityText(log.severity)}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // 获取严重程度颜色
+        function getSeverityColor(severity) {
+            const colors = {
+                'high': 'danger',
+                'medium': 'warning',
+                'low': 'info',
+                'info': 'secondary'
+            };
+            return colors[severity] || 'secondary';
+        }
+        
+        // 获取严重程度文本
+        function getSeverityText(severity) {
+            const texts = {
+                'high': '高',
+                'medium': '中',
+                'low': '低',
+                'info': '信息'
+            };
+            return texts[severity] || '信息';
+        }
+        
+        // 加载告警信息
+        function loadAlerts() {
+            fetch('/api/logs/alerts')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateAlertsContainer(data.data.alerts);
+                    }
+                })
+                .catch(error => console.error('加载告警信息失败:', error));
+        }
+        
+        // 更新告警容器
+        function updateAlertsContainer(alerts) {
+            const container = document.getElementById('alertsContainer');
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-3">暂无告警信息</div>';
+                return;
+            }
+            
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert alert-${getAlertType(alert.type)} alert-sm mb-2">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${alert.title}</strong>
+                            <br><small>${alert.message}</small>
+                        </div>
+                        <small class="text-muted">${alert.time}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 获取告警类型
+        function getAlertType(type) {
+            const types = {
+                'error': 'danger',
+                'warning': 'warning',
+                'info': 'info'
+            };
+            return types[type] || 'info';
+        }
+        
+        // 开始实时更新
+        function startRealtimeUpdates() {
+            if (realtimeInterval) {
+                clearInterval(realtimeInterval);
+            }
+            
+            realtimeInterval = setInterval(() => {
+                if (isRealtimeActive) {
+                    loadRealtimeData();
+                    loadAlerts();
+                }
+            }, 10000); // 每10秒更新一次
+        }
+        
+        // 切换实时状态
+        function toggleRealtime() {
+            isRealtimeActive = !isRealtimeActive;
+            const btn = document.getElementById('realtimeBtn');
+            const status = document.getElementById('realtimeStatus');
+            
+            if (isRealtimeActive) {
+                btn.innerHTML = '<i class="fas fa-pause"></i> 暂停';
+                status.textContent = '实时';
+                status.className = 'badge bg-success';
+                startRealtimeUpdates();
+            } else {
+                btn.innerHTML = '<i class="fas fa-play"></i> 开始';
+                status.textContent = '暂停';
+                status.className = 'badge bg-secondary';
+                if (realtimeInterval) {
+                    clearInterval(realtimeInterval);
+                }
+            }
+        }
+        
+        // 切换自动刷新
+        function toggleAutoRefresh() {
+            const btn = document.getElementById('autoRefreshBtn');
+            if (isAutoRefreshEnabled) {
+                clearInterval(autoRefreshInterval);
+                isAutoRefreshEnabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> 自动刷新';
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-primary');
+            } else {
+                autoRefreshInterval = setInterval(refreshPage, 30000); // 30秒刷新
+                isAutoRefreshEnabled = true;
+                btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 停止刷新';
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-success');
+            }
+        }
+        
+        // 刷新页面
+        function refreshPage() {
+            showRefreshIndicator();
+            location.reload();
+        }
+        
+        // 显示刷新指示器
+        function showRefreshIndicator() {
+            const indicator = document.getElementById('refreshIndicator');
+            indicator.style.display = 'block';
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 2000);
+        }
+        
+        // 切换紧凑视图
+        function toggleCompactView(enabled) {
+            const table = document.querySelector('.table');
+            if (enabled) {
+                table.classList.add('table-sm');
+            } else {
+                table.classList.remove('table-sm');
+            }
+        }
+        
+        // 显示进度条
+        function showProgress() {
+            const container = document.getElementById('progressContainer');
+            const bar = document.getElementById('progressBar');
+            container.style.display = 'block';
+            bar.style.width = '0%';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                bar.style.width = progress + '%';
+            }, 100);
+            
+            return { container, interval };
+        }
+        
+        // 隐藏进度条
+        function hideProgress(progressData) {
+            const { container, interval } = progressData;
+            clearInterval(interval);
+            const bar = document.getElementById('progressBar');
+            bar.style.width = '100%';
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 500);
+        }
+        
+        // 导出日志
+        function exportLogs() {
+            const progress = showProgress();
+            
+            // 获取当前搜索条件
+            const urlParams = new URLSearchParams(window.location.search);
+            const exportUrl = `/logs/export?${urlParams.toString()}`;
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = exportUrl;
+            link.download = `logs_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => hideProgress(progress), 1000);
+        }
+        
+        // 清空日志
+        function clearLogs() {
+            if (confirm('确定要清空所有日志吗？此操作不可恢复！')) {
+                const progress = showProgress();
+                
+                // 获取当前搜索条件
+                const formData = new FormData();
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                formData.append('user_id', urlParams.get('user_id') || '');
+                formData.append('action', urlParams.get('action') || '');
+                formData.append('start_date', urlParams.get('start_date') || '');
+                formData.append('end_date', urlParams.get('end_date') || '');
+                
+                fetch('/logs/clear', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideProgress(progress);
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showNotification('清空失败: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    hideProgress(progress);
+                    console.error('Error clearing logs:', error);
+                    showNotification('清空失败，请稍后再试！', 'error');
+                });
+            }
+        }
+
+        // 切换全选
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const logCheckboxes = document.querySelectorAll('.log-checkbox');
+            logCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            updateBatchDeleteBtn();
+        }
+
+        // 更新批量删除按钮
+        function updateBatchDeleteBtn() {
+            const selectedCheckboxes = document.querySelectorAll('.log-checkbox:checked');
+            const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+            
+            if (selectedCheckboxes.length > 0) {
+                batchDeleteBtn.style.display = 'inline-block';
+            } else {
+                batchDeleteBtn.style.display = 'none';
+            }
+        }
+
+        // 批量删除日志
+        function deleteSelectedLogs() {
+            const selectedLogIds = Array.from(document.querySelectorAll('.log-checkbox:checked')).map(checkbox => checkbox.value);
+            if (selectedLogIds.length === 0) {
+                showNotification('请至少选择一条日志进行删除！', 'warning');
+                return;
+            }
+
+            if (confirm(`确定要删除选中的 ${selectedLogIds.length} 条日志吗？此操作不可恢复！`)) {
+                const progress = showProgress();
+                const formData = new FormData();
+                selectedLogIds.forEach(id => {
+                    formData.append('log_ids[]', id);
+                });
+                
+                fetch('/logs/delete', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideProgress(progress);
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showNotification('删除失败: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    hideProgress(progress);
+                    console.error('Error deleting logs:', error);
+                    showNotification('删除失败，请稍后再试！', 'error');
+                });
+            }
+        }
+        
+        // 查看日志详情
+        function viewLogDetail(logId) {
+            const modal = new bootstrap.Modal(document.getElementById('logDetailModal'));
+            const content = document.getElementById('logDetailContent');
+            
+            content.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+            modal.show();
+            
+            fetch(`/api/logs/${logId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        content.innerHTML = formatLogDetail(data.data);
+                    } else {
+                        content.innerHTML = '<div class="alert alert-danger">加载失败</div>';
+                    }
+                })
+                .catch(error => {
+                    content.innerHTML = '<div class="alert alert-danger">加载失败</div>';
+                });
+        }
+        
+        // 格式化日志详情
+        function formatLogDetail(log) {
+            return `
+                <div class="log-detail-item">
+                    <strong>时间：</strong>${log.created_at}
+                </div>
+                <div class="log-detail-item">
+                    <strong>用户ID：</strong>${log.user_id || '系统'}
+                </div>
+                <div class="log-detail-item">
+                    <strong>操作类型：</strong><span class="badge bg-primary">${log.action}</span>
+                </div>
+                <div class="log-detail-item">
+                    <strong>描述：</strong>${log.description || '-'}
+                </div>
+                <div class="log-detail-item">
+                    <strong>IP地址：</strong>${log.ip_address || '-'}
+                </div>
+                <div class="log-detail-item">
+                    <strong>用户代理：</strong><br>
+                    <small class="text-muted">${log.user_agent || '-'}</small>
+                </div>
+            `;
+        }
+        
+        // 显示统计图表
+        function showLogStats() {
+            const modal = new bootstrap.Modal(document.getElementById('logStatsModal'));
+            modal.show();
+            
+            // 加载图表数据
+            loadChartData();
+        }
+        
+        // 加载图表数据
+        function loadChartData() {
+            fetch('/api/logs/charts')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderCharts(data.data);
+                    }
+                })
+                .catch(error => console.error('加载图表数据失败:', error));
+        }
+        
+        // 渲染图表
+        function renderCharts(data) {
+            // 操作类型分布图
+            const actionCtx = document.getElementById('actionChart').getContext('2d');
+            new Chart(actionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.action_labels || [],
+                    datasets: [{
+                        data: data.action_data || [],
+                        backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6c757d']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '操作类型分布'
+                        }
+                    }
+                }
+            });
+            
+            // 时间分布图
+            const timeCtx = document.getElementById('timeChart').getContext('2d');
+            new Chart(timeCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.time_labels || [],
+                    datasets: [{
+                        label: '日志数量',
+                        data: data.time_data || [],
+                        backgroundColor: '#007bff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '时间分布'
+                        }
+                    }
+                }
+            });
+            
+            // 趋势图
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: data.trend_labels || [],
+                    datasets: [{
+                        label: '日志趋势',
+                        data: data.trend_data || [],
+                        borderColor: '#28a745',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '日志趋势'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 保存搜索条件
+        function saveSearch() {
+            const searchData = {
+                user_id: document.querySelector('input[name="user_id"]').value,
+                action: document.querySelector('select[name="action"]').value,
+                start_date: document.querySelector('input[name="start_date"]').value,
+                end_date: document.querySelector('input[name="end_date"]').value,
+                ip_address: document.querySelector('input[name="ip_address"]').value,
+                description: document.querySelector('input[name="description"]').value
+            };
+            
+            localStorage.setItem('savedSearch', JSON.stringify(searchData));
+            showNotification('搜索条件已保存', 'success');
+        }
+        
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'error' ? 'alert-danger' : 
+                             type === 'success' ? 'alert-success' : 
+                             type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // 显示高级导出
+        function showAdvancedExport() {
+            const modal = new bootstrap.Modal(document.getElementById('advancedExportModal'));
+            modal.show();
+        }
+        
+        // 执行高级导出
+        function executeAdvancedExport() {
+            const form = document.getElementById('advancedExportForm');
+            const formData = new FormData(form);
+            
+            const data = {
+                type: formData.get('export_type'),
+                filters: {
+                    user_id: formData.get('user_id') || null,
+                    action: formData.get('action') || null,
+                    ip_address: formData.get('ip_address') || null,
+                    description: formData.get('description') || null
+                },
+                date_range: {
+                    start_date: formData.get('start_date') || null,
+                    end_date: formData.get('end_date') || null
+                }
+            };
+            
+            // 移除空值
+            Object.keys(data.filters).forEach(key => {
+                if (!data.filters[key]) delete data.filters[key];
+            });
+            Object.keys(data.date_range).forEach(key => {
+                if (!data.date_range[key]) delete data.date_range[key];
+            });
+            
+            showLoading('正在导出数据...');
+            
+            fetch('/api/logs/export/advanced', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    return response.json().then(err => Promise.reject(err));
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `logs_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.${data.type}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                hideLoading();
+                showNotification('导出成功', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('advancedExportModal')).hide();
+            })
+            .catch(error => {
+                hideLoading();
+                showNotification(error.message || '导出失败', 'error');
+            });
+        }
+        
+        // 显示分析报告
+        function showAnalysis() {
+            const modal = new bootstrap.Modal(document.getElementById('analysisModal'));
+            modal.show();
+            loadAnalysisData();
+        }
+        
+        // 加载分析数据
+        function loadAnalysisData() {
+            fetch('/api/logs/analysis')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateAnalysisData(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载分析数据失败:', error);
+                    showNotification('加载分析数据失败', 'error');
+                });
+        }
+        
+        // 更新分析数据
+        function updateAnalysisData(data) {
+            // 更新错误数量
+            document.getElementById('errorCount').textContent = data.error_count;
+            
+            // 更新高频操作
+            const highFreqContainer = document.getElementById('highFreqActions');
+            if (data.high_freq_actions.length === 0) {
+                highFreqContainer.innerHTML = '<p class="text-muted">暂无数据</p>';
+            } else {
+                highFreqContainer.innerHTML = data.high_freq_actions.map(item => `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary">${item.action}</span>
+                        <span class="text-muted">${item.count} 次</span>
+                    </div>
+                `).join('');
+            }
+            
+            // 更新可疑IP
+            const suspiciousContainer = document.getElementById('suspiciousIPs');
+            if (data.suspicious_ips.length === 0) {
+                suspiciousContainer.innerHTML = '<p class="text-muted">暂无可疑IP</p>';
+            } else {
+                suspiciousContainer.innerHTML = data.suspicious_ips.map(item => `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <code>${item.ip}</code>
+                        <span class="badge bg-warning">${item.count} 次</span>
+                    </div>
+                `).join('');
+            }
+            
+            // 更新活跃用户
+            const activeUsersContainer = document.getElementById('activeUsersList');
+            if (data.active_users.length === 0) {
+                activeUsersContainer.innerHTML = '<p class="text-muted">暂无活跃用户</p>';
+            } else {
+                activeUsersContainer.innerHTML = data.active_users.map(item => `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success">用户 ${item.user_id}</span>
+                        <span class="text-muted">${item.count} 次</span>
+                    </div>
+                `).join('');
+            }
+            
+            // 更新分析时间
+            document.getElementById('analysisTime').textContent = data.analysis_time;
+        }
+        
+        // 显示智能清理
+        function showCleanup() {
+            const modal = new bootstrap.Modal(document.getElementById('cleanupModal'));
+            modal.show();
+        }
+        
+        // 执行智能清理
+        function executeCleanup() {
+            const form = document.getElementById('cleanupForm');
+            const formData = new FormData(form);
+            
+            const data = {
+                days: parseInt(formData.get('days')),
+                action_types: Array.from(form.querySelectorAll('input[name="action_types"]:checked')).map(cb => cb.value)
+            };
+            
+            if (!confirm(`确定要清理 ${data.days} 天前的日志吗？此操作不可恢复！`)) {
+                return;
+            }
+            
+            showLoading('正在清理日志...');
+            
+            fetch('/api/logs/cleanup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showNotification(`成功清理 ${data.data.deleted_count} 条日志`, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('cleanupModal')).hide();
+                    // 刷新页面数据
+                    loadLogs();
+                    loadStats();
+                } else {
+                    showNotification(data.message || '清理失败', 'error');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showNotification('清理失败', 'error');
+            });
+        }
+    </script>
+</body>
+</html> 

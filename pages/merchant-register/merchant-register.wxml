@@ -1,0 +1,388 @@
+<!--商户入驻申请页面-->
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="header">
+    <view class="title">商户入驻申请</view>
+    <view class="subtitle">诚邀优质茶商加入平台</view>
+  </view>
+
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-item {{currentStep >= 1 ? 'active' : ''}}" data-step="1">
+      <view class="step-number">1</view>
+      <view class="step-label">基本信息</view>
+    </view>
+    <view class="step-line {{currentStep >= 2 ? 'active' : ''}}"></view>
+    <view class="step-item {{currentStep >= 2 ? 'active' : ''}}" data-step="2">
+      <view class="step-number">2</view>
+      <view class="step-label">详细信息</view>
+    </view>
+    <view class="step-line {{currentStep >= 3 ? 'active' : ''}}"></view>
+    <view class="step-item {{currentStep >= 3 ? 'active' : ''}}" data-step="3">
+      <view class="step-number">3</view>
+      <view class="step-label">图片上传</view>
+    </view>
+    <view class="step-line {{currentStep >= 4 ? 'active' : ''}}"></view>
+    <view class="step-item {{currentStep >= 4 ? 'active' : ''}}" data-step="4">
+      <view class="step-number">4</view>
+      <view class="step-label">确认提交</view>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-container">
+    <!-- 步骤1：基本信息 -->
+    <view class="step-content" wx:if="{{currentStep === 1}}">
+      <view class="form-section">
+        <view class="section-title">基本信息</view>
+        
+        <view class="form-item {{errors.name ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>商户名称
+          </view>
+          <input class="form-input" 
+                 placeholder="请输入商户名称" 
+                 value="{{formData.name}}"
+                 data-field="name"
+                 bindinput="onInputChange"
+                 maxlength="50"/>
+          <view class="error-msg" wx:if="{{errors.name}}">{{errors.name}}</view>
+        </view>
+
+        <view class="form-item {{errors.category ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>经营类别
+          </view>
+          <view class="form-picker" bindtap="onCategoryPickerShow">
+            <view class="picker-value {{formData.category ? '' : 'placeholder'}}">
+              {{formData.category || '请选择经营类别'}}
+            </view>
+            <view class="picker-arrow">></view>
+          </view>
+          <view class="error-msg" wx:if="{{errors.category}}">{{errors.category}}</view>
+        </view>
+
+        <view class="form-item {{errors.contact ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>联系人
+          </view>
+          <input class="form-input" 
+                 placeholder="请输入联系人姓名" 
+                 value="{{formData.contact}}"
+                 data-field="contact"
+                 bindinput="onInputChange"
+                 maxlength="20"/>
+          <view class="error-msg" wx:if="{{errors.contact}}">{{errors.contact}}</view>
+        </view>
+
+        <view class="form-item {{errors.phone ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>联系电话
+          </view>
+          <input class="form-input" 
+                 placeholder="请输入手机号码" 
+                 value="{{formData.phone}}"
+                 data-field="phone"
+                 bindinput="onInputChange"
+                 type="number"
+                 maxlength="11"/>
+          <view class="error-msg" wx:if="{{errors.phone}}">{{errors.phone}}</view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">邮箱地址</view>
+          <input class="form-input" 
+                 placeholder="请输入邮箱地址（选填）" 
+                 value="{{formData.email}}"
+                 data-field="email"
+                 bindinput="onInputChange"
+                 type="email"/>
+          <view class="error-msg" wx:if="{{errors.email}}">{{errors.email}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 步骤2：详细信息 -->
+    <view class="step-content" wx:if="{{currentStep === 2}}">
+      <view class="form-section">
+        <view class="section-title">详细信息</view>
+        
+        <view class="form-item {{errors.province ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>所在省份
+          </view>
+          <view class="form-picker" bindtap="onProvincePickerShow">
+            <view class="picker-value {{formData.province ? '' : 'placeholder'}}">
+              {{formData.province || '请选择省份'}}
+            </view>
+            <view class="picker-arrow">></view>
+          </view>
+          <view class="error-msg" wx:if="{{errors.province}}">{{errors.province}}</view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">城市</view>
+          <input class="form-input" 
+                 placeholder="请输入城市名称" 
+                 value="{{formData.city}}"
+                 data-field="city"
+                 bindinput="onInputChange"
+                 maxlength="20"/>
+        </view>
+
+        <view class="form-item {{errors.address ? 'error' : ''}}">
+          <view class="form-label">
+            <text class="required">*</text>详细地址
+          </view>
+          <textarea class="form-textarea" 
+                    placeholder="请输入详细地址，包括街道、门牌号等" 
+                    value="{{formData.address}}"
+                    data-field="address"
+                    bindinput="onInputChange"
+                    maxlength="200"
+                    auto-height/>
+          <view class="error-msg" wx:if="{{errors.address}}">{{errors.address}}</view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">商户简介</view>
+          <textarea class="form-textarea" 
+                    placeholder="请简单介绍您的商户特色、主营产品等" 
+                    value="{{formData.description}}"
+                    data-field="description"
+                    bindinput="onInputChange"
+                    maxlength="500"
+                    auto-height/>
+          <view class="text-count">{{formData.description.length}}/500</view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">营业执照号</view>
+          <input class="form-input" 
+                 placeholder="请输入营业执照注册号" 
+                 value="{{formData.businessLicense}}"
+                 data-field="businessLicense"
+                 bindinput="onInputChange"
+                 maxlength="30"/>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">经营范围</view>
+          <textarea class="form-textarea" 
+                    placeholder="请输入主要经营范围" 
+                    value="{{formData.businessScope}}"
+                    data-field="businessScope"
+                    bindinput="onInputChange"
+                    maxlength="200"
+                    auto-height/>
+        </view>
+
+        <view class="form-item">
+          <view class="form-label">成立年份</view>
+          <input class="form-input" 
+                 placeholder="请输入成立年份" 
+                 value="{{formData.establishYear}}"
+                 data-field="establishYear"
+                 bindinput="onInputChange"
+                 type="number"/>
+        </view>
+      </view>
+    </view>
+
+    <!-- 步骤3：图片上传 -->
+    <view class="step-content" wx:if="{{currentStep === 3}}">
+      <view class="form-section">
+        <view class="section-title">图片上传</view>
+        
+        <!-- 商户Logo -->
+        <view class="upload-section">
+          <view class="upload-title">
+            <text class="required">*</text>商户Logo
+          </view>
+          <view class="upload-tip">建议上传正方形图片，用作商户头像</view>
+          <view class="upload-area logo-upload">
+            <view class="upload-item" wx:if="{{images.logo}}">
+              <image class="upload-image" 
+                     src="{{images.logo}}" 
+                     mode="aspectFill"
+                     data-src="{{images.logo}}"
+                     bindtap="previewImage"/>
+              <view class="delete-btn" bindtap="deleteLogo">×</view>
+            </view>
+            <view class="upload-btn" wx:else bindtap="uploadLogo">
+              <view class="upload-icon">+</view>
+              <view class="upload-text">上传Logo</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 店面照片 -->
+        <view class="upload-section">
+          <view class="upload-title">店面照片</view>
+          <view class="upload-tip">展示您的店面环境，最多上传6张</view>
+          <view class="upload-area multi-upload">
+            <view class="upload-item" 
+                  wx:for="{{images.storefront}}" 
+                  wx:key="index">
+              <image class="upload-image" 
+                     src="{{item}}" 
+                     mode="aspectFill"
+                     data-src="{{item}}"
+                     data-list="storefront"
+                     bindtap="previewImage"/>
+              <view class="delete-btn" 
+                    data-index="{{index}}"
+                    bindtap="deleteStorefrontImage">×</view>
+            </view>
+            <view class="upload-btn" 
+                  wx:if="{{images.storefront.length < 6}}"
+                  bindtap="uploadStorefront">
+              <view class="upload-icon">+</view>
+              <view class="upload-text">添加照片</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 营业执照 -->
+        <view class="upload-section">
+          <view class="upload-title">营业执照</view>
+          <view class="upload-tip">上传营业执照照片，用于资质审核</view>
+          <view class="upload-area license-upload">
+            <view class="upload-item" wx:if="{{images.license}}">
+              <image class="upload-image" 
+                     src="{{images.license}}" 
+                     mode="aspectFill"
+                     data-src="{{images.license}}"
+                     bindtap="previewImage"/>
+              <view class="delete-btn" bindtap="deleteLicense">×</view>
+            </view>
+            <view class="upload-btn" wx:else bindtap="uploadLicense">
+              <view class="upload-icon">+</view>
+              <view class="upload-text">上传执照</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 步骤4：确认提交 -->
+    <view class="step-content" wx:if="{{currentStep === 4}}">
+      <view class="form-section">
+        <view class="section-title">确认信息</view>
+        
+        <view class="confirm-section">
+          <view class="confirm-title">基本信息</view>
+          <view class="confirm-item">
+            <view class="confirm-label">商户名称：</view>
+            <view class="confirm-value">{{formData.name}}</view>
+          </view>
+          <view class="confirm-item">
+            <view class="confirm-label">经营类别：</view>
+            <view class="confirm-value">{{formData.category}}</view>
+          </view>
+          <view class="confirm-item">
+            <view class="confirm-label">联系人：</view>
+            <view class="confirm-value">{{formData.contact}}</view>
+          </view>
+          <view class="confirm-item">
+            <view class="confirm-label">联系电话：</view>
+            <view class="confirm-value">{{formData.phone}}</view>
+          </view>
+        </view>
+
+        <view class="confirm-section">
+          <view class="confirm-title">详细信息</view>
+          <view class="confirm-item">
+            <view class="confirm-label">所在地区：</view>
+            <view class="confirm-value">{{formData.province}} {{formData.city}}</view>
+          </view>
+          <view class="confirm-item">
+            <view class="confirm-label">详细地址：</view>
+            <view class="confirm-value">{{formData.address}}</view>
+          </view>
+        </view>
+
+        <view class="confirm-section">
+          <view class="confirm-title">上传图片</view>
+          <view class="confirm-images">
+            <view class="image-group" wx:if="{{images.logo}}">
+              <view class="image-label">商户Logo：</view>
+              <image class="confirm-image" src="{{images.logo}}" mode="aspectFill"/>
+            </view>
+            <view class="image-group" wx:if="{{images.storefront.length > 0}}">
+              <view class="image-label">店面照片：</view>
+              <view class="image-list">
+                <image class="confirm-image small" 
+                       wx:for="{{images.storefront}}" 
+                       wx:key="index"
+                       src="{{item}}" 
+                       mode="aspectFill"/>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="confirm-notice">
+          <view class="notice-title">温馨提示：</view>
+          <view class="notice-content">
+            • 请确保填写信息真实有效<br/>
+            • 我们将在3个工作日内完成审核<br/>
+            • 审核结果将通过短信或站内消息通知<br/>
+            • 如有问题请联系客服：400-888-8888
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-secondary" 
+            wx:if="{{currentStep > 1}}"
+            bindtap="prevStep">上一步</button>
+    
+    <button class="btn btn-primary" 
+            wx:if="{{currentStep < totalSteps}}"
+            bindtap="nextStep">下一步</button>
+    
+    <button class="btn btn-success" 
+            wx:if="{{currentStep === totalSteps}}"
+            bindtap="submitApplication"
+            disabled="{{isSubmitting}}"
+            loading="{{isSubmitting}}">
+      {{isSubmitting ? '提交中...' : '提交申请'}}
+    </button>
+  </view>
+
+  <!-- 草稿保存按钮 -->
+  <view class="draft-actions">
+    <button class="btn-draft" bindtap="saveDraft">保存草稿</button>
+  </view>
+</view>
+
+<!-- 选择器弹窗 -->
+<picker-view class="picker-popup {{showCategoryPicker ? 'show' : ''}}"
+             style="height: 300px;"
+             wx:if="{{showCategoryPicker}}"
+             bindchange="onCategoryPickerChange">
+  <picker-view-column>
+    <view wx:for="{{categories}}" wx:key="index" class="picker-item">{{item}}</view>
+  </picker-view-column>
+</picker-view>
+
+<view class="picker-mask {{showCategoryPicker ? 'show' : ''}}" 
+      bindtap="onCategoryPickerCancel"
+      wx:if="{{showCategoryPicker}}"></view>
+
+<picker-view class="picker-popup {{showProvincePicker ? 'show' : ''}}"
+             style="height: 300px;"
+             wx:if="{{showProvincePicker}}"
+             bindchange="onProvincePickerChange">
+  <picker-view-column>
+    <view wx:for="{{provinces}}" wx:key="index" class="picker-item">{{item}}</view>
+  </picker-view-column>
+</picker-view>
+
+<view class="picker-mask {{showProvincePicker ? 'show' : ''}}" 
+      bindtap="onProvincePickerCancel"
+      wx:if="{{showProvincePicker}}"></view> 

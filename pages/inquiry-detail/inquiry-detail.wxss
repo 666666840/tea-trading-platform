@@ -1,0 +1,345 @@
+/* 求购信息详情页面样式 */
+.container {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.loading-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 求购信息详情 */
+.inquiry-detail {
+  background: #fff;
+}
+
+/* 求购信息头部 */
+.inquiry-header {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.inquiry-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.inquiry-title text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  margin-right: 15rpx;
+}
+
+.inquiry-status {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.inquiry-status.active {
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.inquiry-status.expired {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.inquiry-status.closed {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.publisher-info {
+  display: flex;
+  align-items: center;
+}
+
+.publisher-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.publisher-details {
+  flex: 1;
+}
+
+.publisher-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.publisher-verified {
+  font-size: 22rpx;
+  color: #4CAF50;
+  background: #e8f5e8;
+  padding: 4rpx 8rpx;
+  border-radius: 10rpx;
+  display: inline-block;
+}
+
+.publish-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 求购信息统计 */
+.inquiry-stats {
+  display: flex;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 求购信息内容 */
+.inquiry-content {
+  padding: 0 20rpx;
+}
+
+.content-section {
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.content-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.section-value {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.section-value.description {
+  white-space: pre-wrap;
+}
+
+/* 附件展示 */
+.attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-top: 15rpx;
+}
+
+.attachment-image {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 8rpx;
+}
+
+/* 联系信息区域 */
+.contact-section {
+  margin-top: 20rpx;
+  background: #f8f9fa;
+  padding: 30rpx 20rpx;
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.contact-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.contact-tip {
+  font-size: 22rpx;
+  color: #999;
+  background: #fff;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.contact-info {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-label {
+  font-size: 26rpx;
+  color: #666;
+  min-width: 140rpx;
+}
+
+.contact-value {
+  font-size: 26rpx;
+  color: #4CAF50;
+  flex: 1;
+}
+
+.contact-qrcode {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 8rpx;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 15rpx;
+}
+
+.contact-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 25rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: 1rpx solid #e0e0e0;
+  background: #fff;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.contact-btn.primary {
+  background: #4CAF50;
+  color: #fff;
+  border-color: #4CAF50;
+}
+
+.contact-btn:active {
+  transform: scale(0.98);
+}
+
+/* 买家操作 */
+.buyer-actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx 20rpx;
+  background: #fff;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 25rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  background: #2196F3;
+  color: #fff;
+}
+
+.close-btn {
+  background: #f44336;
+  color: #fff;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+/* 底部操作栏 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  padding: 20rpx;
+  gap: 40rpx;
+  justify-content: center;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.action-item:active {
+  transform: scale(0.95);
+}
+
+.action-icon {
+  font-size: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+.action-text {
+  font-size: 24rpx;
+  color: #666;
+} 

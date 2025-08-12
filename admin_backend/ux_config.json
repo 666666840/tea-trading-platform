@@ -1,0 +1,31 @@
+{
+  "theme": {
+    "primary_color": "#2E7D32",
+    "secondary_color": "#4CAF50",
+    "accent_color": "#FFC107",
+    "text_color": "#212121",
+    "background_color": "#FAFAFA"
+  },
+  "animations": {
+    "enabled": true,
+    "duration": 300,
+    "easing": "ease-in-out"
+  },
+  "notifications": {
+    "position": "top-right",
+    "duration": 5000,
+    "sound_enabled": false
+  },
+  "responsive": {
+    "breakpoints": {
+      "mobile": 768,
+      "tablet": 1024,
+      "desktop": 1200
+    }
+  },
+  "accessibility": {
+    "high_contrast": false,
+    "font_size": "medium",
+    "keyboard_navigation": true
+  }
+}

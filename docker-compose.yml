@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tea_db
+      MYSQL_USER: tea_user
+      MYSQL_PASSWORD: tea_pass
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+  redis:
+    image: redis:6.2
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis_data:/data
+  admin_backend:
+    build: ./admin_backend
+    command: python app.py
+    volumes:
+      - ./admin_backend:/app
+    ports:
+      - '5001:5001'
+    environment:
+      - FLASK_ENV=development
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=tea_user
+      - DB_PASSWORD=tea_pass
+      - DB_NAME=tea_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - mysql
+      - redis 

@@ -1,0 +1,286 @@
+<!-- 出租转让页面 -->
+<view class="rental-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">
+      <text class="title-text">出租转让</text>
+      <text class="title-desc">资产流转 · 商机无限</text>
+    </view>
+    <button class="publish-btn" bindtap="publishRental">
+      <text class="publish-icon">+</text>
+      <text class="publish-text">发布</text>
+    </button>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input"
+        placeholder="搜索档口、仓库、设备、茶园..."
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+    </view>
+  </view>
+
+  <!-- 分类导航 -->
+  <view class="category-section">
+    <view class="category-list">
+      <view 
+        wx:for="{{categories}}" 
+        wx:key="id"
+        class="category-item {{currentFilter === item.id ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onCategoryTap"
+      >
+        <text class="category-icon">{{item.icon}}</text>
+        <text class="category-name">{{item.name}}</text>
+        <text class="category-count">{{item.count}}</text>
+        <view class="hot-badge" wx:if="{{item.isHot}}">热</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 智能推荐 -->
+  <view class="recommend-section" wx:if="{{recommendedList.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">为您推荐</text>
+      <text class="section-desc">根据您的偏好智能推荐</text>
+    </view>
+    <view class="recommend-list">
+      <view 
+        wx:for="{{recommendedList}}" 
+        wx:key="id"
+        class="recommend-item"
+        data-id="{{item.id}}"
+        bindtap="onItemTap"
+      >
+        <image class="recommend-image" src="{{item.images[0]}}" mode="aspectFill"></image>
+        <view class="recommend-info">
+          <text class="recommend-title">{{item.title}}</text>
+          <text class="recommend-location">{{item.location}}</text>
+          <text class="recommend-price">{{item.price}}</text>
+        </view>
+        <view class="recommend-badge">推荐</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选和排序 -->
+  <view class="filter-section">
+    <!-- 类型筛选 -->
+    <view class="filter-row">
+      <text class="filter-label">类型：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{filterOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentFilter === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onFilterChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 价格类型筛选 -->
+    <view class="filter-row">
+      <text class="filter-label">方式：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{priceTypeOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentPriceType === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onPriceTypeChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 排序选项 -->
+    <view class="filter-row">
+      <text class="filter-label">排序：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{sortOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentSort === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onSortChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 出租转让列表 -->
+  <view class="rental-list">
+    <view class="list-title">全部信息</view>
+    
+    <view 
+      wx:for="{{rentalList}}" 
+      wx:key="id"
+      class="rental-item"
+      data-id="{{item.id}}"
+      bindtap="onItemTap"
+    >
+      <!-- 图片区域 -->
+      <view class="item-images">
+        <swiper class="image-swiper" indicator-dots="{{item.images.length > 1}}" autoplay="{{false}}">
+          <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-item="image">
+            <image class="item-image" src="{{image}}" mode="aspectFill"></image>
+          </swiper-item>
+        </swiper>
+        
+        <!-- 推荐标识 -->
+        <view class="recommend-badge" wx:if="{{item.isRecommended}}">
+          <text class="badge-text">推荐</text>
+        </view>
+        
+        <!-- 紧急标识 -->
+        <view class="urgent-badge" wx:if="{{item.isUrgent}}">
+          <text class="badge-text">紧急</text>
+        </view>
+        
+        <!-- 价格类型标识 -->
+        <view class="price-type-badge {{item.priceType}}">
+          <text class="badge-text">{{item.priceType === 'transfer' ? '转让' : '出租'}}</text>
+        </view>
+      </view>
+
+      <!-- 信息区域 -->
+      <view class="item-info">
+        <view class="item-header">
+          <text class="item-title">{{item.title}}</text>
+          <view class="item-tags">
+            <text class="tag-item">{{item.typeName}}</text>
+            <text class="tag-item">{{item.area}}{{item.areaUnit}}</text>
+          </view>
+        </view>
+        
+        <view class="item-location">
+          <text class="location-icon">📍</text>
+          <text class="location-text">{{item.location}}</text>
+        </view>
+        
+        <!-- 分类特定信息 -->
+        <view class="category-specific">
+          <!-- 市场档口 -->
+          <view class="specific-info" wx:if="{{item.type === 'market'}}">
+            <text class="specific-label">档口号：</text>
+            <text class="specific-value">{{item.boothNumber}}</text>
+            <text class="specific-label">管理方：</text>
+            <text class="specific-value">{{item.marketContact}}</text>
+          </view>
+          
+          <!-- 仓库/厂房 -->
+          <view class="specific-info" wx:if="{{item.type === 'warehouse'}}">
+            <text class="specific-label">层高：</text>
+            <text class="specific-value">{{item.height}}米</text>
+            <text class="specific-label">荷载：</text>
+            <text class="specific-value">{{item.loadCapacity}}</text>
+            <text class="specific-label">通道：</text>
+            <text class="specific-value">{{item.truckWidth}}米</text>
+          </view>
+          
+          <!-- 茶园 -->
+          <view class="specific-info" wx:if="{{item.type === 'garden'}}">
+            <text class="specific-label">土地性质：</text>
+            <text class="specific-value">{{item.landType}}</text>
+            <text class="specific-label">剩余年限：</text>
+            <text class="specific-value">{{item.remainingYears}}年</text>
+          </view>
+          
+          <!-- 设备 -->
+          <view class="specific-info" wx:if="{{item.type === 'equipment'}}">
+            <text class="specific-label">设备清单：</text>
+            <text class="specific-value">{{item.equipmentList.join('、')}}</text>
+            <text class="specific-label">使用年限：</text>
+            <text class="specific-value">{{item.useYears}}年</text>
+            <text class="specific-label">现场试机：</text>
+            <text class="specific-value">{{item.canTest ? '支持' : '不支持'}}</text>
+          </view>
+          
+          <!-- 整厂转让 -->
+          <view class="specific-info" wx:if="{{item.type === 'factory'}}">
+            <text class="specific-label">资产包：</text>
+            <text class="specific-value">{{item.assetDetails.join('、')}}</text>
+            <text class="specific-label">债务情况：</text>
+            <text class="specific-value">{{item.debtInfo}}</text>
+          </view>
+        </view>
+        
+        <view class="item-tags">
+          <text 
+            wx:for="{{item.tags}}" 
+            wx:key="*this" 
+            wx:for-item="tag"
+            class="feature-tag"
+          >
+            {{tag}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 发布者信息 -->
+      <view class="publisher-info">
+        <view class="publisher-basic">
+          <image class="publisher-avatar" src="{{item.merchant.avatar}}" mode="aspectFill"></image>
+          <view class="publisher-details">
+            <text class="publisher-name">{{item.merchant.name}}</text>
+            <view class="publisher-rating">
+              <text class="rating-score">{{item.merchant.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="verified-badge" wx:if="{{item.merchant.isVerified}}">已认证</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="publisher-actions">
+          <button 
+            class="contact-btn"
+            data-wechat="publisher_{{item.id}}"
+            bindtap="contactPublisher"
+            catchtap="contactPublisher"
+          >
+            联系发布者
+          </button>
+        </view>
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="item-footer">
+        <view class="price-info">
+          <text class="price-label">价格：</text>
+          <text class="price-value">{{item.price}}</text>
+        </view>
+        <view class="view-count">
+          <text class="count-icon">👁️</text>
+          <text class="count-text">{{item.viewCount}}次浏览</text>
+        </view>
+        <view class="create-time">
+          <text class="time-text">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && rentalList.length > 0}}">
+    <text class="no-more-text">没有更多信息了</text>
+  </view>
+  
+  <view class="empty-state" wx:if="{{rentalList.length === 0}}">
+    <text class="empty-text">暂无出租转让信息</text>
+  </view>
+</view> 

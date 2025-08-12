@@ -1,0 +1,258 @@
+/* 环境调试页面样式 */
+
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 页面标题 */
+.header {
+  text-align: center;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 调试卡片 */
+.debug-card {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.error-card {
+  background-color: #ffebee;
+  border-left: 6rpx solid #f44336;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-bottom: 10rpx;
+  border-bottom: 2rpx solid #eee;
+}
+
+/* 信息展示 */
+.info-grid, .config-info, .user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.value.success {
+  color: #4caf50;
+}
+
+.value.error {
+  color: #f44336;
+}
+
+.value.normal {
+  color: #333;
+}
+
+.value.warning {
+  color: #ff9800;
+}
+
+/* 方法列表 */
+.method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.method-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+}
+
+.method-name {
+  font-size: 26rpx;
+  color: #495057;
+  font-family: monospace;
+}
+
+.method-status {
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.method-status.success {
+  color: #28a745;
+}
+
+.method-status.error {
+  color: #dc3545;
+}
+
+/* 错误信息 */
+.error-info, .no-user {
+  text-align: center;
+  padding: 20rpx;
+  color: #666;
+}
+
+.error-detail {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.error-content {
+  background-color: #f8f8f8;
+  border-radius: 8rpx;
+  padding: 20rpx;
+}
+
+.error-message {
+  display: block;
+  color: #d32f2f;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.error-stack {
+  display: block;
+  font-size: 22rpx;
+  color: #666;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+/* 用户头像 */
+.avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 2rpx solid #eee;
+}
+
+/* 操作按钮 */
+.action-section {
+  margin: 30rpx 0;
+}
+
+.action-btn {
+  width: 100%;
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background-color: #2196f3;
+  color: white;
+}
+
+.action-btn.primary:active {
+  background-color: #1976d2;
+}
+
+.action-btn.secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.action-btn.secondary:active {
+  background-color: #545b62;
+}
+
+.action-btn.warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.action-btn.warning:active {
+  background-color: #f57c00;
+}
+
+/* 帮助说明 */
+.help-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.help-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.help-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.help-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+  padding: 8rpx 0;
+  border-left: 4rpx solid #2196f3;
+  padding-left: 15rpx;
+}
+
+/* 底部信息 */
+.footer {
+  text-align: center;
+  padding: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.timestamp {
+  font-size: 22rpx;
+  color: #999;
+} 

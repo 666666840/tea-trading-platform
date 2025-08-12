@@ -1,0 +1,556 @@
+<!-- 页面标题 -->
+<view class="header">
+  <text class="title">数据管理后台</text>
+  <text class="subtitle">管理商户数据和系统配置</text>
+  <view class="user-info" wx:if="{{isAdmin}}">
+    <text class="role-tag">{{userRole}}</text>
+    <text class="permission-info">权限: {{permissions.join(', ')}}</text>
+  </view>
+</view>
+
+<!-- 标签导航 -->
+<view class="tabs">
+  <view class="tab-item {{currentTab === index ? 'active' : ''}}" 
+        wx:for="{{tabs}}" 
+        wx:key="*this" 
+        wx:for-index="index"
+        bindtap="switchTab" 
+        data-index="{{index}}">
+    {{item}}
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">加载中...</text>
+</view>
+
+<!-- 商户管理 -->
+<view class="tab-content" wx:if="{{currentTab === 0 && !loading}}">
+  <!-- 筛选条件 -->
+  <view class="filter-section">
+    <view class="filter-row">
+      <picker bindchange="onFilterChange" data-field="status" value="{{merchantFilters.status}}" range="{{['all', 'pending', 'approved', 'rejected']}}" range-key="label">
+        <view class="picker">
+          状态筛选
+          <text class="picker-text">{{merchantFilters.status === 'all' ? '全部' : merchantFilters.status === 'pending' ? '待审核' : merchantFilters.status === 'approved' ? '已通过' : '已拒绝'}}</text>
+        </view>
+      </picker>
+      
+      <picker bindchange="onFilterChange" data-field="category" value="{{merchantFilters.category}}" range="{{merchantCategories}}" range-key="*this">
+        <view class="picker">
+          类别筛选
+          <text class="picker-text">{{merchantFilters.category === 'all' ? '全部' : merchantCategories[merchantFilters.category]}}</text>
+        </view>
+      </picker>
+      
+      <picker bindchange="onFilterChange" data-field="dateRange" value="{{merchantFilters.dateRange}}" range="{{['all', '7', '30', '90']}}" range-key="label">
+        <view class="picker">
+          时间筛选
+          <text class="picker-text">{{merchantFilters.dateRange === 'all' ? '全部' : merchantFilters.dateRange === '7' ? '7天内' : merchantFilters.dateRange === '30' ? '30天内' : '90天内'}}</text>
+        </view>
+      </picker>
+    </view>
+    
+    <view class="search-row">
+      <input class="search-input" 
+             placeholder="搜索商户名称、联系人、电话..." 
+             bindinput="onSearchInput" 
+             value="{{merchantFilters.keyword}}" />
+    </view>
+  </view>
+
+  <!-- 商户列表 -->
+  <view class="merchant-list">
+    <view class="list-header">
+      <text class="header-title">商户列表 ({{merchants.length}})</text>
+      <text class="header-subtitle">点击商户查看详情</text>
+    </view>
+    
+    <view class="merchant-item" wx:for="{{merchants}}" wx:key="id">
+      <view class="merchant-header">
+        <text class="merchant-name">{{item.name}}</text>
+        <text class="merchant-status status-{{item.status}}">
+          {{item.status === 'pending' ? '待审核' : item.status === 'approved' ? '已通过' : '已拒绝'}}
+        </text>
+      </view>
+      
+      <view class="merchant-info">
+        <text class="info-item">类型: {{item.category}}</text>
+        <text class="info-item">联系人: {{item.contactName || item.contact}}</text>
+        <text class="info-item">电话: {{item.phone}}</text>
+        <text class="info-item">地区: {{item.province}} {{item.city}}</text>
+        <text class="info-item">申请时间: {{item.createTime}}</text>
+      </view>
+      
+      <view class="merchant-actions" wx:if="{{item.status === 'pending'}}">
+        <button class="action-btn approve" bindtap="approveMerchant" data-id="{{item.id}}" data-action="approve">
+          通过
+        </button>
+        <button class="action-btn reject" bindtap="approveMerchant" data-id="{{item.id}}" data-action="reject">
+          拒绝
+        </button>
+        <button class="action-btn delete" bindtap="deleteMerchant" data-id="{{item.id}}">
+          删除
+        </button>
+      </view>
+      
+      <view class="merchant-actions" wx:else>
+        <button class="action-btn view" bindtap="viewMerchantDetail" data-id="{{item.id}}">
+          查看详情
+        </button>
+        <button class="action-btn delete" bindtap="deleteMerchant" data-id="{{item.id}}">
+          删除
+        </button>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{merchants.length === 0}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无商户数据</text>
+    </view>
+  </view>
+</view>
+
+<!-- 内容管理 -->
+<view class="tab-content" wx:if="{{currentTab === 1 && !loading}}">
+  <view class="content-section">
+    <view class="section-header">
+      <text class="section-title">内容管理</text>
+      <text class="section-subtitle">管理推荐内容、资讯、茶艺、热点等</text>
+    </view>
+    
+    <!-- 内容筛选 -->
+    <view class="filter-section">
+      <view class="filter-row">
+        <picker bindchange="onContentFilterChange" data-field="type" value="{{contentFilters.type}}" range="{{['all', 'recommend', 'news', 'art', 'hot']}}" range-key="label">
+          <view class="picker">
+            内容类型
+            <text class="picker-text">{{contentFilters.type === 'all' ? '全部' : contentFilters.type === 'recommend' ? '推荐' : contentFilters.type === 'news' ? '资讯' : contentFilters.type === 'art' ? '茶艺' : '热点'}}</text>
+          </view>
+        </picker>
+        
+        <picker bindchange="onContentFilterChange" data-field="status" value="{{contentFilters.status}}" range="{{['all', 'active', 'inactive']}}" range-key="label">
+          <view class="picker">
+            状态
+            <text class="picker-text">{{contentFilters.status === 'all' ? '全部' : contentFilters.status === 'active' ? '启用' : '禁用'}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="search-row">
+        <input class="search-input" 
+               placeholder="搜索内容标题..." 
+               bindinput="onContentSearchInput" 
+               value="{{contentFilters.keyword}}" />
+      </view>
+    </view>
+
+    <!-- 内容列表 -->
+    <view class="content-list">
+      <view class="content-item" wx:for="{{contents}}" wx:key="id">
+        <view class="content-header">
+          <text class="content-title">{{item.title}}</text>
+          <text class="content-type type-{{item.type}}">
+            {{item.type === 'recommend' ? '推荐' : item.type === 'news' ? '资讯' : item.type === 'art' ? '茶艺' : '热点'}}
+          </text>
+        </view>
+        
+        <view class="content-info">
+          <text class="content-preview">{{item.content}}</text>
+          <text class="content-stats">浏览量: {{item.views}} | 创建时间: {{item.createTime}}</text>
+        </view>
+        
+        <view class="content-actions">
+          <button class="action-btn edit" bindtap="editContent" data-id="{{item.id}}">
+            编辑
+          </button>
+          <button class="action-btn {{item.status === 'active' ? 'disable' : 'enable'}}" 
+                  bindtap="toggleContentStatus" data-id="{{item.id}}" data-status="{{item.status}}">
+            {{item.status === 'active' ? '禁用' : '启用'}}
+          </button>
+          <button class="action-btn delete" bindtap="deleteContent" data-id="{{item.id}}">
+            删除
+          </button>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{contents.length === 0}}">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无内容数据</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 用户管理 -->
+<view class="tab-content" wx:if="{{currentTab === 2 && !loading}}">
+  <view class="user-section">
+    <view class="section-header">
+      <text class="section-title">用户管理</text>
+      <text class="section-subtitle">管理平台用户和权限</text>
+    </view>
+    
+    <!-- 用户筛选 -->
+    <view class="filter-section">
+      <view class="filter-row">
+        <picker bindchange="onUserFilterChange" data-field="status" value="{{userFilters.status}}" range="{{['all', 'active', 'inactive']}}" range-key="label">
+          <view class="picker">
+            用户状态
+            <text class="picker-text">{{userFilters.status === 'all' ? '全部' : userFilters.status === 'active' ? '活跃' : '非活跃'}}</text>
+          </view>
+        </picker>
+        
+        <picker bindchange="onUserFilterChange" data-field="type" value="{{userFilters.type}}" range="{{['all', 'normal', 'vip', 'merchant']}}" range-key="label">
+          <view class="picker">
+            用户类型
+            <text class="picker-text">{{userFilters.type === 'all' ? '全部' : userFilters.type === 'normal' ? '普通用户' : userFilters.type === 'vip' ? 'VIP用户' : '商户用户'}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="search-row">
+        <input class="search-input" 
+               placeholder="搜索用户昵称..." 
+               bindinput="onUserSearchInput" 
+               value="{{userFilters.keyword}}" />
+      </view>
+    </view>
+
+    <!-- 用户列表 -->
+    <view class="user-list">
+      <view class="user-item" wx:for="{{users}}" wx:key="id">
+        <view class="user-avatar">
+          <image src="{{item.avatar}}" mode="aspectFill"></image>
+        </view>
+        
+        <view class="user-info">
+          <text class="user-name">{{item.nickName}}</text>
+          <text class="user-type type-{{item.type}}">
+            {{item.type === 'normal' ? '普通用户' : item.type === 'vip' ? 'VIP用户' : '商户用户'}}
+          </text>
+          <text class="user-stats">注册时间: {{item.registerTime}} | 最后登录: {{item.lastLoginTime}}</text>
+        </view>
+        
+        <view class="user-actions">
+          <button class="action-btn view" bindtap="viewUserDetail" data-id="{{item.id}}">
+            查看详情
+          </button>
+          <button class="action-btn {{item.status === 'active' ? 'disable' : 'enable'}}" 
+                  bindtap="toggleUserStatus" data-id="{{item.id}}" data-status="{{item.status}}">
+            {{item.status === 'active' ? '禁用' : '启用'}}
+          </button>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{users.length === 0}}">
+        <text class="empty-icon">👥</text>
+        <text class="empty-text">暂无用户数据</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 数据导入 -->
+<view class="tab-content" wx:if="{{currentTab === 3 && !loading}}">
+  <view class="import-section">
+    <view class="section-title">批量导入数据</view>
+    
+    <!-- 导入类型选择 -->
+    <view class="import-type-section">
+      <text class="section-subtitle">选择导入数据类型</text>
+      <picker bindchange="onImportTypeChange" value="{{importType}}" range="{{['merchants', 'products']}}" range-key="label">
+        <view class="picker">
+          数据类型
+          <text class="picker-text">{{importType === 'merchants' ? '商户数据' : '产品数据'}}</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 操作按钮 -->
+    <view class="import-actions">
+      <button class="action-btn secondary" bindtap="viewTemplate">
+        查看模板
+      </button>
+      <button class="action-btn secondary" bindtap="exportData">
+        导出数据
+      </button>
+    </view>
+
+    <!-- 数据输入 -->
+    <view class="import-input-section">
+      <textarea class="import-textarea" 
+                placeholder="请粘贴JSON格式的数据..." 
+                bindinput="onImportDataInput" 
+                value="{{importData}}" />
+      
+      <view class="import-buttons">
+        <button class="action-btn primary" 
+                bindtap="importMerchants" 
+                disabled="{{importing || !importData}}">
+          {{importing ? '导入中...' : '开始导入'}}
+        </button>
+        <button class="action-btn secondary" 
+                bindtap="clearImportData" 
+                disabled="{{importing}}">
+          清空
+        </button>
+      </view>
+    </view>
+
+    <!-- 导入结果 -->
+    <view class="import-result" wx:if="{{importResult}}">
+      <view class="result-title">导入结果</view>
+      <view class="result-stats">
+        <text class="stat-item success">成功: {{importResult.success}}</text>
+        <text class="stat-item error">失败: {{importResult.failed}}</text>
+        <text class="stat-item">总计: {{importResult.total}}</text>
+      </view>
+      
+      <view class="result-errors" wx:if="{{importResult.errors.length > 0}}">
+        <text class="error-title">错误信息:</text>
+        <text class="error-item" wx:for="{{importResult.errors}}" wx:key="*this">
+          {{item}}
+        </text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 统计分析 -->
+<view class="tab-content" wx:if="{{currentTab === 4 && !loading}}">
+  <view class="stats-section">
+    <view class="section-title">数据统计</view>
+    
+    <!-- 实时统计 -->
+    <view class="realtime-stats" wx:if="{{realtimeStats}}">
+      <view class="stats-grid">
+        <view class="stat-card realtime">
+          <text class="stat-number">{{realtimeStats.onlineUsers}}</text>
+          <text class="stat-label">在线用户</text>
+        </view>
+        
+        <view class="stat-card realtime">
+          <text class="stat-number">{{realtimeStats.todayVisits}}</text>
+          <text class="stat-label">今日访问</text>
+        </view>
+        
+        <view class="stat-card realtime">
+          <text class="stat-number">{{realtimeStats.todayRegistrations}}</text>
+          <text class="stat-label">今日注册</text>
+        </view>
+        
+        <view class="stat-card realtime">
+          <text class="stat-number">{{realtimeStats.systemLoad.toFixed(1)}}%</text>
+          <text class="stat-label">系统负载</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 基础统计 -->
+    <view class="stats-grid" wx:if="{{stats}}">
+      <view class="stat-card">
+        <text class="stat-number">{{stats.merchants.total}}</text>
+        <text class="stat-label">总商户数</text>
+      </view>
+      
+      <view class="stat-card">
+        <text class="stat-number">{{stats.merchants.pending}}</text>
+        <text class="stat-label">待审核</text>
+      </view>
+      
+      <view class="stat-card">
+        <text class="stat-number">{{stats.merchants.approved}}</text>
+        <text class="stat-label">已通过</text>
+      </view>
+      
+      <view class="stat-card">
+        <text class="stat-number">{{stats.products.total}}</text>
+        <text class="stat-label">产品总数</text>
+      </view>
+    </view>
+
+    <!-- 存储信息 -->
+    <view class="storage-info" wx:if="{{stats}}">
+      <text class="info-title">存储使用情况</text>
+      <view class="storage-bars">
+        <view class="storage-bar">
+          <text class="bar-label">商户数据</text>
+          <view class="bar-container">
+            <view class="bar-fill" style="width: {{stats.storage.merchants / stats.storage.total * 100}}%"></view>
+          </view>
+          <text class="bar-value">{{stats.storage.merchants}}KB</text>
+        </view>
+        
+        <view class="storage-bar">
+          <text class="bar-label">产品数据</text>
+          <view class="bar-container">
+            <view class="bar-fill" style="width: {{stats.storage.products / stats.storage.total * 100}}%"></view>
+          </view>
+          <text class="bar-value">{{stats.storage.products}}KB</text>
+        </view>
+      </view>
+      <text class="storage-total">总使用量: {{stats.storage.total}}KB</text>
+    </view>
+  </view>
+</view>
+
+<!-- 系统监控 -->
+<view class="tab-content" wx:if="{{currentTab === 5 && !loading}}">
+  <view class="monitor-section">
+    <view class="section-title">系统监控</view>
+    
+    <!-- 系统状态 -->
+    <view class="system-status" wx:if="{{systemStatus}}">
+      <view class="status-grid">
+        <view class="status-card {{systemStatus.serverStatus === 'running' ? 'success' : 'error'}}">
+          <text class="status-icon">{{systemStatus.serverStatus === 'running' ? '🟢' : '🔴'}}</text>
+          <text class="status-title">服务器状态</text>
+          <text class="status-value">{{systemStatus.serverStatus === 'running' ? '运行中' : '异常'}}</text>
+        </view>
+        
+        <view class="status-card {{systemStatus.databaseStatus === 'connected' ? 'success' : 'error'}}">
+          <text class="status-icon">{{systemStatus.databaseStatus === 'connected' ? '🟢' : '🔴'}}</text>
+          <text class="status-title">数据库状态</text>
+          <text class="status-value">{{systemStatus.databaseStatus === 'connected' ? '已连接' : '连接失败'}}</text>
+        </view>
+        
+        <view class="status-card {{systemStatus.apiStatus === 'healthy' ? 'success' : 'error'}}">
+          <text class="status-icon">{{systemStatus.apiStatus === 'healthy' ? '🟢' : '🔴'}}</text>
+          <text class="status-title">API状态</text>
+          <text class="status-value">{{systemStatus.apiStatus === 'healthy' ? '正常' : '异常'}}</text>
+        </view>
+      </view>
+      
+      <view class="system-info">
+        <text class="info-item">运行时间: {{systemStatus.uptime}}</text>
+        <text class="info-item">最后更新: {{systemStatus.lastUpdate}}</text>
+      </view>
+    </view>
+    
+    <!-- 性能指标 -->
+    <view class="performance-metrics" wx:if="{{performanceMetrics}}">
+      <text class="metrics-title">性能指标</text>
+      <view class="metrics-grid">
+        <view class="metric-card">
+          <text class="metric-value">{{performanceMetrics.memoryUsage}}%</text>
+          <text class="metric-label">内存使用率</text>
+        </view>
+        
+        <view class="metric-card">
+          <text class="metric-value">{{performanceMetrics.cpuUsage}}%</text>
+          <text class="metric-label">CPU使用率</text>
+        </view>
+        
+        <view class="metric-card">
+          <text class="metric-value">{{performanceMetrics.responseTime}}ms</text>
+          <text class="metric-label">平均响应时间</text>
+        </view>
+        
+        <view class="metric-card">
+          <text class="metric-value">{{performanceMetrics.errorRate}}%</text>
+          <text class="metric-label">错误率</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 错误日志 -->
+    <view class="error-logs" wx:if="{{errorLogs.length > 0}}">
+      <text class="logs-title">错误日志</text>
+      <view class="log-list">
+        <view class="log-item" wx:for="{{errorLogs}}" wx:key="id">
+          <view class="log-header">
+            <text class="log-level level-{{item.level}}">{{item.level.toUpperCase()}}</text>
+            <text class="log-time">{{item.timestamp}}</text>
+          </view>
+          <text class="log-message">{{item.message}}</text>
+          <text class="log-details" wx:if="{{item.details}}">{{item.details}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!systemStatus && !performanceMetrics && errorLogs.length === 0}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无监控数据</text>
+    </view>
+  </view>
+</view>
+
+<!-- 系统管理 -->
+<view class="tab-content" wx:if="{{currentTab === 6 && !loading}}">
+  <view class="system-section">
+    <view class="section-title">系统管理</view>
+    
+    <!-- 系统配置 -->
+    <view class="system-config" wx:if="{{systemConfig}}">
+      <text class="config-title">系统配置</text>
+      <view class="config-list">
+        <view class="config-item">
+          <text class="config-label">最大商户数</text>
+          <text class="config-value">{{systemConfig.maxMerchants}}</text>
+        </view>
+        
+        <view class="config-item">
+          <text class="config-label">最大产品数</text>
+          <text class="config-value">{{systemConfig.maxProducts}}</text>
+        </view>
+        
+        <view class="config-item">
+          <text class="config-label">最大图片大小</text>
+          <text class="config-value">{{systemConfig.maxImageSize}}</text>
+        </view>
+        
+        <view class="config-item">
+          <text class="config-label">自动备份</text>
+          <text class="config-value">{{systemConfig.autoBackup ? '启用' : '禁用'}}</text>
+        </view>
+        
+        <view class="config-item">
+          <text class="config-label">备份间隔</text>
+          <text class="config-value">{{systemConfig.backupInterval}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 系统操作 -->
+    <view class="system-actions">
+      <button class="system-btn" bindtap="backupData">
+        备份数据
+      </button>
+      
+      <button class="system-btn" bindtap="cleanupData">
+        清理数据
+      </button>
+      
+      <button class="system-btn danger" bindtap="resetSystem">
+        重置系统
+      </button>
+    </view>
+
+    <!-- 备份列表 -->
+    <view class="backup-list" wx:if="{{backups.length > 0}}">
+      <text class="list-title">数据备份</text>
+      <view class="backup-item" wx:for="{{backups}}" wx:key="id">
+        <view class="backup-info">
+          <text class="backup-name">{{item.name}}</text>
+          <text class="backup-date">{{item.date}}</text>
+          <text class="backup-size">{{item.size}}</text>
+        </view>
+        <button class="restore-btn" bindtap="restoreData" data-id="{{item.id}}">
+          恢复
+        </button>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{backups.length === 0}}">
+      <text class="empty-icon">💾</text>
+      <text class="empty-text">暂无备份数据</text>
+    </view>
+  </view>
+</view> 

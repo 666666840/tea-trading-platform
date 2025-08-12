@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选择状态显示预览</title>
+    <style>
+        .selection-display {
+            margin: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+        .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .selected-item {
+            display: flex;
+            align-items: center;
+            background: #2196F3;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+        }
+        .feature-item {
+            background: #4CAF50;
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+        }
+        .item-text {
+            margin-right: 8px;
+        }
+        .remove-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h3>茶叶类型选择状态</h3>
+    <div class="selection-display">
+        <div class="selected-items">
+            <div class="selected-item">
+                <span class="item-text">红茶</span>
+                <span class="remove-btn">×</span>
+            </div>
+            <div class="selected-item">
+                <span class="item-text">绿茶</span>
+                <span class="remove-btn">×</span>
+            </div>
+            <div class="selected-item">
+                <span class="item-text">白茶</span>
+                <span class="remove-btn">×</span>
+            </div>
+        </div>
+    </div>
+    
+    <h3>特色标签选择状态</h3>
+    <div class="selection-display">
+        <div class="selected-items">
+            <div class="selected-item feature-item">
+                <span class="item-text">明前采摘</span>
+                <span class="remove-btn">×</span>
+            </div>
+            <div class="selected-item feature-item">
+                <span class="item-text">核心产区</span>
+                <span class="remove-btn">×</span>
+            </div>
+            <div class="selected-item feature-item">
+                <span class="item-text">有机认证</span>
+                <span class="remove-btn">×</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    

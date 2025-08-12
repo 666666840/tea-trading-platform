@@ -1,0 +1,654 @@
+/* 茶园详情页面样式 */
+.garden-detail-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #999;
+}
+
+/* 详情内容 */
+.detail-content {
+  padding-bottom: 40rpx;
+}
+
+/* 图片轮播 */
+.image-section {
+  position: relative;
+  height: 500rpx;
+}
+
+.image-swiper {
+  height: 100%;
+}
+
+.swiper-item {
+  width: 100%;
+  height: 100%;
+}
+
+.garden-image {
+  width: 100%;
+  height: 100%;
+}
+
+.certification-badge,
+.seasonal-badge,
+.brand-badge {
+  position: absolute;
+  top: 30rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 25rpx;
+  font-size: 24rpx;
+  color: white;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.certification-badge {
+  left: 30rpx;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+.seasonal-badge {
+  left: 30rpx;
+  top: 80rpx;
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.brand-badge {
+  right: 30rpx;
+  background: linear-gradient(135deg, #feca57, #ff9ff3);
+}
+
+.badge-text {
+  font-size: 24rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  position: absolute;
+  right: 30rpx;
+  bottom: 30rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+  z-index: 10;
+}
+
+.action-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+  box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+/* 基本信息 */
+.basic-info {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.garden-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.garden-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.garden-tags {
+  display: flex;
+  gap: 10rpx;
+}
+
+.tag-item {
+  padding: 8rpx 16rpx;
+  border-radius: 15rpx;
+  font-size: 24rpx;
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.garden-location {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.location-icon {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+}
+
+.location-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.harvest-info {
+  margin-bottom: 20rpx;
+}
+
+.harvest-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.harvest-period {
+  font-size: 28rpx;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.garden-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.feature-tag {
+  padding: 10rpx 20rpx;
+  border-radius: 25rpx;
+  font-size: 26rpx;
+  background: #f0f8ff;
+  color: #1890ff;
+  border: 1rpx solid #d6e4ff;
+}
+
+/* 通用区块样式 */
+.price-section,
+.merchant-section,
+.details-section,
+.reviews-section,
+.related-section {
+  background: white;
+  margin: 0 20rpx 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+  border-left: 6rpx solid #4CAF50;
+  padding-left: 20rpx;
+}
+
+/* 价格信息 */
+.current-price {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.price-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 15rpx;
+}
+
+.price-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+  margin-right: 15rpx;
+}
+
+.price-trend {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.price-trend.up {
+  color: #ff6b6b;
+}
+
+.price-trend.down {
+  color: #4ecdc4;
+}
+
+.price-trend.stable {
+  color: #999;
+}
+
+.price-details {
+  margin-bottom: 20rpx;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.detail-value {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.payment-methods {
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 20rpx;
+}
+
+.payment-label {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.payment-tags {
+  display: flex;
+  gap: 10rpx;
+}
+
+.payment-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 15rpx;
+  font-size: 24rpx;
+  background: #f8f9fa;
+  color: #666;
+  border: 1rpx solid #e9ecef;
+}
+
+/* 茶农信息 */
+.merchant-basic {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 25rpx;
+}
+
+.merchant-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.merchant-details {
+  flex: 1;
+}
+
+.merchant-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.rating-score {
+  font-size: 26rpx;
+  color: #ff9500;
+  font-weight: bold;
+}
+
+.rating-star {
+  font-size: 26rpx;
+}
+
+.verified-badge {
+  font-size: 24rpx;
+  color: #4CAF50;
+  background: #e8f5e8;
+  padding: 6rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.merchant-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 联系信息 */
+.contact-info {
+  border-top: 1rpx solid #f0f0f0;
+  padding-top: 20rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-item:active {
+  background: #f8f9fa;
+}
+
+.contact-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 20rpx;
+  min-width: 80rpx;
+}
+
+.contact-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.contact-arrow {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 详细信息 */
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f8f9fa;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #666;
+  min-width: 120rpx;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+  text-align: right;
+}
+
+.section-subtitle {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 25rpx 0 15rpx;
+  padding-left: 0;
+  border-left: none;
+}
+
+.certification-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.certification-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 15rpx;
+  font-size: 24rpx;
+  background: #e8f5e8;
+  color: #4CAF50;
+  border: 1rpx solid #c8e6c9;
+}
+
+.awards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.award-item {
+  font-size: 26rpx;
+  color: #333;
+  padding: 10rpx 0;
+}
+
+/* 用户评价 */
+.reviews-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25rpx;
+}
+
+.review-item {
+  border-bottom: 1rpx solid #f0f0f0;
+  padding-bottom: 25rpx;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.reviewer-avatar {
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.reviewer-info {
+  flex: 1;
+}
+
+.reviewer-name {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.review-rating {
+  display: flex;
+  gap: 2rpx;
+}
+
+.rating-star {
+  font-size: 24rpx;
+  color: #ff9500;
+}
+
+.review-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.review-content {
+  padding-left: 65rpx;
+}
+
+.review-text {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 15rpx;
+}
+
+.review-images {
+  display: flex;
+  gap: 10rpx;
+}
+
+.review-image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 8rpx;
+}
+
+/* 相关茶园 */
+.related-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.related-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.related-item:active {
+  background: #e9ecef;
+}
+
+.related-image {
+  width: 120rpx;
+  height: 80rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+}
+
+.related-info {
+  flex: 1;
+}
+
+.related-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.related-location {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.related-price {
+  font-size: 26rpx;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+/* 底部信息 */
+.footer-info {
+  background: white;
+  margin: 0 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .garden-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .garden-tags {
+    margin-top: 15rpx;
+  }
+  
+  .current-price {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .price-value {
+    margin-right: 0;
+    margin-bottom: 10rpx;
+  }
+  
+  .merchant-basic {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .merchant-avatar {
+    margin-right: 0;
+    margin-bottom: 15rpx;
+  }
+} 

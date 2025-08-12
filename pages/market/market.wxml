@@ -1,0 +1,289 @@
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <view class="title">全国茶叶市场</view>
+    <view class="subtitle">覆盖{{totalProvinceCount}}个省份，{{totalMarketCount}}个市场</view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <input 
+        class="search-input" 
+        placeholder="搜索市场名称、城市或区域" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch">搜索</view>
+    </view>
+    <view class="clear-btn" wx:if="{{searchKeyword}}" bindtap="clearSearch">清空</view>
+  </view>
+
+  <!-- 省份列表 -->
+  <view class="province-section" wx:if="{{!selectedProvince && !showSearchResult}}">
+    <view class="section-title">按省份浏览</view>
+    <view class="province-grid">
+      <view 
+        class="province-item" 
+        wx:for="{{provinces}}" 
+        wx:key="id"
+        bindtap="selectProvince"
+        data-id="{{item.id}}"
+      >
+        <view class="province-name">{{item.name}}</view>
+        <view class="market-count">{{item.marketCount}}个市场</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选中的省份 -->
+  <view class="selected-province" wx:if="{{selectedProvince}}">
+    <view class="province-header">
+      <view class="back-btn" bindtap="backToProvinces">← 返回</view>
+      <view class="province-info">
+        <view class="province-name">{{selectedProvince.name}}</view>
+        <view class="province-stats" wx:if="{{provinceStats}}">
+          <text>{{provinceStats.totalCities}}个城市</text>
+          <text>{{provinceStats.totalDistricts}}个区县</text>
+          <text>{{provinceStats.totalMarkets}}个市场</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果标题 -->
+  <view class="search-result-title" wx:if="{{showSearchResult}}">
+    <view class="back-btn" bindtap="clearSearch">← 返回</view>
+    <view class="result-info">
+      <view class="result-text">搜索结果</view>
+      <view class="result-count">{{markets.length}}个市场</view>
+    </view>
+  </view>
+
+  <!-- 按区县分组显示市场 -->
+  <view class="grouped-market-list" wx:if="{{groupedMarkets.length > 0}}">
+    <view class="city-group" wx:for="{{groupedMarkets}}" wx:key="city">
+      <view class="city-header">
+        <view class="city-name">{{item.city}}</view>
+        <view class="city-market-count">{{item.districts.length}}个区县</view>
+      </view>
+      
+      <view class="district-group" wx:for="{{item.districts}}" wx:for-item="districtData" wx:key="district">
+        <view class="district-header">
+          <view class="district-name">{{districtData.district}}</view>
+          <view class="district-market-count">{{districtData.markets.length}}个市场</view>
+        </view>
+        
+        <view class="market-list">
+          <view 
+            class="market-item" 
+            wx:for="{{districtData.markets}}" 
+            wx:for-item="market"
+            wx:key="id"
+            bindtap="viewMarketDetail"
+            data-market="{{market}}"
+          >
+            <view class="market-info">
+              <view class="market-name">{{market.name}}</view>
+              <view class="market-address">{{market.address}}</view>
+            </view>
+            <view class="market-arrow">></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果市场列表 -->
+  <view class="market-list" wx:if="{{showSearchResult && markets.length > 0}}">
+    <view 
+      class="market-item" 
+      wx:for="{{markets}}" 
+      wx:key="id"
+      bindtap="viewMarketDetail"
+      data-market="{{item}}"
+    >
+      <view class="market-info">
+        <view class="market-name">{{item.name}}</view>
+        <view class="market-location">{{item.city}} · {{item.district}}</view>
+        <view class="market-address">{{item.address}}</view>
+      </view>
+      <view class="market-arrow">></view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{(selectedProvince || showSearchResult) && markets.length === 0 && groupedMarkets.length === 0}}">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">暂无市场信息</view>
+    <view class="empty-desc">请尝试其他搜索条件或选择其他省份</view>
+  </view>
+
+  <!-- 快速导航 -->
+  <view class="quick-nav" wx:if="{{!selectedProvince && !showSearchResult}}">
+    <view class="nav-title">快速导航</view>
+    <view class="nav-grid">
+      <view class="nav-item" bindtap="goToFamous">
+        <view class="nav-icon">🏆</view>
+        <view class="nav-text">知名市场</view>
+      </view>
+      <view class="nav-item" bindtap="goToArea">
+        <view class="nav-icon">🗺️</view>
+        <view class="nav-text">地理大区</view>
+      </view>
+      <view class="nav-item" bindtap="goToJoin">
+        <view class="nav-icon">➕</view>
+        <view class="nav-text">市场入驻</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 入驻申请弹窗 -->
+  <view class="modal-overlay" wx:if="{{showJoinModal}}" bindtap="closeJoinForm">
+    <view class="modal-content join-form" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">申请入驻茶叶市场</text>
+        <text class="modal-close" bindtap="closeJoinForm">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <!-- 入驻流程说明 -->
+        <view class="join-process">
+          <view class="process-step">
+            <text class="step-number">1</text>
+            <text class="step-text">填写基本信息</text>
+          </view>
+          <view class="process-step">
+            <text class="step-number">2</text>
+            <text class="step-text">选择目标市场</text>
+          </view>
+          <view class="process-step">
+            <text class="step-number">3</text>
+            <text class="step-text">上传资质证明</text>
+          </view>
+          <view class="process-step">
+            <text class="step-number">4</text>
+            <text class="step-text">等待审核通过</text>
+          </view>
+        </view>
+
+        <!-- 入驻表单 -->
+        <view class="form-section">
+          <text class="form-label">商户信息</text>
+          <input class="form-input" 
+                 placeholder="商户名称" 
+                 value="{{joinForm.merchantName}}"
+                 data-field="merchantName"
+                 bindinput="inputJoinForm" />
+          <input class="form-input" 
+                 placeholder="联系人姓名" 
+                 value="{{joinForm.contactName}}"
+                 data-field="contactName"
+                 bindinput="inputJoinForm" />
+          <input class="form-input" 
+                 placeholder="联系电话" 
+                 value="{{joinForm.phone}}"
+                 data-field="phone"
+                 bindinput="inputJoinForm" />
+          <input class="form-input" 
+                 placeholder="微信号" 
+                 value="{{joinForm.wechat}}"
+                 data-field="wechat"
+                 bindinput="inputJoinForm" />
+        </view>
+
+        <view class="form-section">
+          <text class="form-label">经营信息</text>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{businessTypes}}"
+                  bindchange="onBusinessTypeChange">
+            <view class="picker-text">
+              {{joinForm.businessType || '请选择经营类型'}}
+            </view>
+          </picker>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{mainCategories}}"
+                  bindchange="onCategoryChange">
+            <view class="picker-text">
+              {{joinForm.mainCategory || '请选择主营品类'}}
+            </view>
+          </picker>
+          <textarea class="form-textarea" 
+                    placeholder="经营描述（选填）"
+                    value="{{joinForm.description}}"
+                    data-field="description"
+                    bindinput="inputJoinForm"></textarea>
+        </view>
+
+        <view class="form-section">
+          <text class="form-label">选择市场</text>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{joinForm.provinceList}}"
+                  range-key="name"
+                  bindchange="onProvinceChange">
+            <view class="picker-text">
+              {{joinForm.selectedProvince.name || '请选择省份'}}
+            </view>
+          </picker>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{joinForm.cityList}}"
+                  range-key="name"
+                  bindchange="onCityChange"
+                  wx:if="{{joinForm.cityList.length > 0}}">
+            <view class="picker-text">
+              {{joinForm.selectedCity.name || '请选择城市'}}
+            </view>
+          </picker>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{joinForm.districtList}}"
+                  range-key="name"
+                  bindchange="onDistrictChange"
+                  wx:if="{{joinForm.districtList.length > 0}}">
+            <view class="picker-text">
+              {{joinForm.selectedDistrict.name || '请选择区县'}}
+            </view>
+          </picker>
+          <picker class="form-picker"
+                  mode="selector"
+                  range="{{joinForm.marketList}}"
+                  range-key="name"
+                  bindchange="onMarketChange"
+                  wx:if="{{joinForm.marketList.length > 0}}">
+            <view class="picker-text">
+              {{joinForm.selectedMarket.name || '请选择市场'}}
+            </view>
+          </picker>
+        </view>
+
+        <view class="form-section">
+          <text class="form-label">资质证明</text>
+          <view class="upload-section">
+            <view class="upload-item" bindtap="uploadLicense">
+              <text class="upload-icon">📄</text>
+              <text class="upload-text">营业执照</text>
+              <text class="upload-status" wx:if="{{joinForm.license}}">✓ 已上传</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="form-tips">
+          <text class="tip-text">• 请确保信息真实有效</text>
+          <text class="tip-text">• 平台将在3个工作日内审核</text>
+          <text class="tip-text">• 审核通过后可发布商品信息</text>
+          <text class="tip-text">• 入驻费用：300-500元/年（按市场等级）</text>
+        </view>
+        
+        <view class="form-actions">
+          <button class="cancel-btn" bindtap="closeJoinForm">取消</button>
+          <button class="submit-btn" bindtap="submitJoinForm">提交申请</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

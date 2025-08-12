@@ -1,0 +1,512 @@
+<!--数据分析页面-->
+<view class="analytics-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">
+      <text class="title-text">📊 数据分析</text>
+      <text class="subtitle-text">实时监控平台数据表现</text>
+    </view>
+    
+    <!-- 时间范围选择 -->
+    <view class="time-range-selector">
+      <view class="range-buttons">
+        <button 
+          class="range-btn {{timeRange === '7d' ? 'active' : ''}}" 
+          data-range="7d" 
+          bindtap="switchTimeRange"
+        >7天</button>
+        <button 
+          class="range-btn {{timeRange === '30d' ? 'active' : ''}}" 
+          data-range="30d" 
+          bindtap="switchTimeRange"
+        >30天</button>
+        <button 
+          class="range-btn {{timeRange === '90d' ? 'active' : ''}}" 
+          data-range="90d" 
+          bindtap="switchTimeRange"
+        >90天</button>
+      </view>
+      
+      <!-- 自定义日期 -->
+      <view class="custom-date">
+        <picker mode="date" value="{{customStartDate}}" bindchange="onStartDateChange">
+          <view class="date-picker">
+            <text class="date-label">开始:</text>
+            <text class="date-value">{{customStartDate}}</text>
+          </view>
+        </picker>
+        <picker mode="date" value="{{customEndDate}}" bindchange="onEndDateChange">
+          <view class="date-picker">
+            <text class="date-label">结束:</text>
+            <text class="date-value">{{customEndDate}}</text>
+          </view>
+        </picker>
+        <button class="apply-btn" bindtap="applyCustomDate">应用</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标签页导航 -->
+  <view class="tab-navigation">
+    <view 
+      class="tab-item {{activeTab === 'dashboard' ? 'active' : ''}}" 
+      data-tab="dashboard" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📈</text>
+      <text class="tab-text">仪表板</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'users' ? 'active' : ''}}" 
+      data-tab="users" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">👥</text>
+      <text class="tab-text">用户行为</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'content' ? 'active' : ''}}" 
+      data-tab="content" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📝</text>
+      <text class="tab-text">内容表现</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'search' ? 'active' : ''}}" 
+      data-tab="search" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">🔍</text>
+      <text class="tab-text">搜索分析</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'events' ? 'active' : ''}}" 
+      data-tab="events" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📋</text>
+      <text class="tab-text">事件追踪</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'reports' ? 'active' : ''}}" 
+      data-tab="reports" 
+      bindtap="switchTab"
+    >
+      <text class="tab-icon">📊</text>
+      <text class="tab-text">报告</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">数据加载中...</text>
+  </view>
+
+  <!-- 仪表板标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'dashboard' && !loading}}">
+    <!-- 概览卡片 -->
+    <view class="overview-cards">
+      <view class="overview-card">
+        <view class="card-header">
+          <text class="card-icon">📊</text>
+          <text class="card-title">总事件数</text>
+        </view>
+        <text class="card-value">{{formatNumber(dashboard.overview.totalEvents)}}</text>
+        <text class="card-trend {{getTrendIcon(dashboard.trends.trendDirection)}}">
+          {{getTrendIcon(dashboard.trends.trendDirection)}}
+        </text>
+      </view>
+      
+      <view class="overview-card">
+        <view class="card-header">
+          <text class="card-icon">👥</text>
+          <text class="card-title">独立用户</text>
+        </view>
+        <text class="card-value">{{formatNumber(dashboard.overview.uniqueUsers)}}</text>
+      </view>
+      
+      <view class="overview-card">
+        <view class="card-header">
+          <text class="card-icon">🔄</text>
+          <text class="card-title">会话数</text>
+        </view>
+        <text class="card-value">{{formatNumber(dashboard.overview.uniqueSessions)}}</text>
+      </view>
+      
+      <view class="overview-card">
+        <view class="card-header">
+          <text class="card-icon">👁️</text>
+          <text class="card-title">内容浏览</text>
+        </view>
+        <text class="card-value">{{formatNumber(dashboard.overview.totalContentViews)}}</text>
+      </view>
+    </view>
+
+    <!-- 用户行为分析 -->
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">👥 用户行为分析</text>
+      </view>
+      
+      <!-- 用户分段 -->
+      <view class="chart-container">
+        <text class="chart-title">用户分段分布</text>
+        <view class="segment-chart">
+          <view 
+            class="segment-item" 
+            wx:for="{{userBehavior.userSegments}}" 
+            wx:key="segment"
+          >
+            <view class="segment-info">
+              <view class="segment-color" style="background-color: {{getSegmentColor(item.segment)}}"></view>
+              <text class="segment-name">{{item.segment}}</text>
+              <text class="segment-count">{{item.count}}</text>
+            </view>
+            <view class="segment-bar">
+              <view class="bar-fill" style="width: {{item.percentage}}%; background-color: {{getSegmentColor(item.segment)}}"></view>
+            </view>
+            <text class="segment-percentage">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 设备类型 -->
+      <view class="chart-container">
+        <text class="chart-title">设备类型分布</text>
+        <view class="device-chart">
+          <view 
+            class="device-item" 
+            wx:for="{{userBehavior.deviceTypes}}" 
+            wx:key="device"
+          >
+            <text class="device-name">{{item.device}}</text>
+            <text class="device-count">{{item.count}}</text>
+            <text class="device-percentage">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 内容表现分析 -->
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">📝 内容表现分析</text>
+      </view>
+      
+      <!-- 热门内容 -->
+      <view class="content-list">
+        <text class="list-title">热门内容 TOP 10</text>
+        <view 
+          class="content-item" 
+          wx:for="{{contentPerformance.topContent}}" 
+          wx:key="content_id"
+          data-id="{{item.content_id}}"
+          bindtap="viewContentDetail"
+        >
+          <view class="content-info">
+            <text class="content-title">{{item.title}}</text>
+            <text class="content-type">{{item.content_type}}</text>
+          </view>
+          <view class="content-stats">
+            <text class="stat-item">👁️ {{item.views}}</text>
+            <text class="stat-item">⭐ {{item.performance_score}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索洞察 -->
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">🔍 搜索洞察</text>
+      </view>
+      
+      <!-- 热门关键词 -->
+      <view class="keyword-list">
+        <text class="list-title">热门搜索关键词</text>
+        <view 
+          class="keyword-item" 
+          wx:for="{{searchAnalytics.topKeywords}}" 
+          wx:key="keyword"
+        >
+          <text class="keyword-text">{{item.keyword}}</text>
+          <text class="keyword-count">{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户行为标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'users' && !loading}}">
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">👥 用户行为详细分析</text>
+      </view>
+      
+      <!-- 用户分段详细 -->
+      <view class="detail-chart">
+        <text class="chart-title">用户分段详细分析</text>
+        <view class="segment-details">
+          <view 
+            class="segment-detail" 
+            wx:for="{{userBehavior.userSegments}}" 
+            wx:key="segment"
+          >
+            <view class="detail-header">
+              <view class="segment-color" style="background-color: {{getSegmentColor(item.segment)}}"></view>
+              <text class="segment-name">{{item.segment}}</text>
+            </view>
+            <view class="detail-stats">
+              <text class="stat-label">用户数:</text>
+              <text class="stat-value">{{item.count}}</text>
+            </view>
+            <view class="detail-stats">
+              <text class="stat-label">占比:</text>
+              <text class="stat-value">{{item.percentage}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 热门页面 -->
+      <view class="page-list">
+        <text class="list-title">热门页面访问</text>
+        <view 
+          class="page-item" 
+          wx:for="{{userBehavior.topPages}}" 
+          wx:key="page"
+        >
+          <text class="page-path">{{item.page}}</text>
+          <text class="page-count">{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容表现标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'content' && !loading}}">
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">📝 内容表现详细分析</text>
+      </view>
+      
+      <!-- 内容类型分布 -->
+      <view class="content-type-chart">
+        <text class="chart-title">内容类型分布</text>
+        <view class="type-list">
+          <view 
+            class="type-item" 
+            wx:for="{{contentPerformance.contentTypes}}" 
+            wx:key="type"
+          >
+            <text class="type-name">{{item.type}}</text>
+            <view class="type-bar">
+              <view class="bar-fill" style="width: {{item.percentage}}%"></view>
+            </view>
+            <text class="type-count">{{item.count}}</text>
+            <text class="type-percentage">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 内容表现排行榜 -->
+      <view class="performance-ranking">
+        <text class="list-title">内容表现排行榜</text>
+        <view 
+          class="ranking-item" 
+          wx:for="{{contentPerformance.topContent}}" 
+          wx:key="content_id"
+          data-id="{{item.content_id}}"
+          bindtap="viewContentDetail"
+        >
+          <view class="ranking-number">{{index + 1}}</view>
+          <view class="ranking-content">
+            <text class="content-title">{{item.title}}</text>
+            <text class="content-type">{{item.content_type}}</text>
+          </view>
+          <view class="ranking-stats">
+            <text class="stat-item">👁️ {{item.views}}</text>
+            <text class="stat-item">⭐ {{item.performance_score}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索分析标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'search' && !loading}}">
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">🔍 搜索分析详细报告</text>
+      </view>
+      
+      <!-- 搜索意图分析 -->
+      <view class="intent-analysis">
+        <text class="chart-title">搜索意图分布</text>
+        <view class="intent-chart">
+          <view 
+            class="intent-item" 
+            wx:for="{{searchAnalytics.searchIntents}}" 
+            wx:key="intent"
+          >
+            <view class="intent-info">
+              <view class="intent-color" style="background-color: {{getIntentColor(item.intent)}}"></view>
+              <text class="intent-name">{{item.intent}}</text>
+              <text class="intent-count">{{item.count}}</text>
+            </view>
+            <view class="intent-bar">
+              <view class="bar-fill" style="width: {{item.percentage}}%; background-color: {{getIntentColor(item.intent)}}"></view>
+            </view>
+            <text class="intent-percentage">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 热门关键词详细 -->
+      <view class="keyword-details">
+        <text class="list-title">热门搜索关键词详细</text>
+        <view 
+          class="keyword-detail" 
+          wx:for="{{searchAnalytics.topKeywords}}" 
+          wx:key="keyword"
+        >
+          <view class="keyword-info">
+            <text class="keyword-text">{{item.keyword}}</text>
+            <text class="keyword-count">{{item.count}}次</text>
+          </view>
+          <view class="keyword-trend">
+            <text class="trend-icon">📈</text>
+            <text class="trend-text">上升趋势</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 事件追踪标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'events' && !loading}}">
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">📋 事件追踪记录</text>
+        <button class="refresh-btn" bindtap="refreshData">🔄 刷新</button>
+      </view>
+      
+      <!-- 事件列表 -->
+      <view class="events-list">
+        <view 
+          class="event-item" 
+          wx:for="{{events.list}}" 
+          wx:key="event_id"
+          data-id="{{item.event_id}}"
+          bindtap="viewEventDetail"
+        >
+          <view class="event-header">
+            <text class="event-type">{{item.event_type}}</text>
+            <text class="event-time">{{item.timestamp}}</text>
+          </view>
+          <view class="event-details">
+            <text class="event-page">页面: {{item.page}}</text>
+            <text class="event-user" wx:if="{{item.user_id}}">用户: {{item.user_id}}</text>
+          </view>
+          <view class="event-meta" wx:if="{{item.item_title}}">
+            <text class="event-item-title">{{item.item_title}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 分页 -->
+      <view class="pagination" wx:if="{{events.pagination.pages > 1}}">
+        <button 
+          class="page-btn" 
+          disabled="{{events.pagination.page <= 1}}"
+          data-page="{{events.pagination.page - 1}}"
+          bindtap="loadEvents"
+        >上一页</button>
+        <text class="page-info">{{events.pagination.page}} / {{events.pagination.pages}}</text>
+        <button 
+          class="page-btn" 
+          disabled="{{events.pagination.page >= events.pagination.pages}}"
+          data-page="{{events.pagination.page + 1}}"
+          bindtap="loadEvents"
+        >下一页</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 报告标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'reports' && !loading}}">
+    <view class="analysis-section">
+      <view class="section-header">
+        <text class="section-title">📊 数据报告</text>
+      </view>
+      
+      <!-- 报告生成 -->
+      <view class="report-actions">
+        <button 
+          class="report-btn" 
+          data-type="daily" 
+          bindtap="generateReport"
+        >📅 生成日报</button>
+        <button 
+          class="report-btn" 
+          data-type="weekly" 
+          bindtap="generateReport"
+        >📊 生成周报</button>
+      </view>
+      
+      <!-- 数据导出 -->
+      <view class="export-actions">
+        <text class="export-title">数据导出</text>
+        <view class="export-buttons">
+          <button 
+            class="export-btn" 
+            data-type="events" 
+            bindtap="exportData"
+          >📋 导出事件</button>
+          <button 
+            class="export-btn" 
+            data-type="users" 
+            bindtap="exportData"
+          >👥 导出用户</button>
+          <button 
+            class="export-btn" 
+            data-type="content" 
+            bindtap="exportData"
+          >📝 导出内容</button>
+          <button 
+            class="export-btn" 
+            data-type="all" 
+            bindtap="exportData"
+          >📦 导出全部</button>
+        </view>
+      </view>
+      
+      <!-- 报告显示 -->
+      <view class="report-display" wx:if="{{reports.daily || reports.weekly}}">
+        <text class="report-title">最新报告</text>
+        
+        <!-- 日报 -->
+        <view class="report-content" wx:if="{{reports.daily}}">
+          <text class="report-type">📅 日报 ({{reports.daily.date}})</text>
+          <view class="report-summary">
+            <text class="summary-item">总事件: {{reports.daily.summary.total_events}}</text>
+            <text class="summary-item">独立用户: {{reports.daily.summary.unique_users}}</text>
+            <text class="summary-item">会话数: {{reports.daily.summary.unique_sessions}}</text>
+          </view>
+        </view>
+        
+        <!-- 周报 -->
+        <view class="report-content" wx:if="{{reports.weekly}}">
+          <text class="report-type">📊 周报 ({{reports.weekly.period.start}} - {{reports.weekly.period.end}})</text>
+          <view class="report-summary">
+            <text class="summary-item">总事件: {{reports.weekly.summary.total_events}}</text>
+            <text class="summary-item">独立用户: {{reports.weekly.summary.unique_users}}</text>
+            <text class="summary-item">会话数: {{reports.weekly.summary.unique_sessions}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

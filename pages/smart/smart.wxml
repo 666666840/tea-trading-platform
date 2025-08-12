@@ -1,0 +1,82 @@
+<!-- 智慧茶业页面 -->
+<view class="smart-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-content">
+      <text class="header-title">智慧茶业</text>
+      <text class="header-subtitle">AI赋能 · 科技兴茶</text>
+    </view>
+  </view>
+
+  <!-- 智能功能模块 -->
+  <view class="modules-section">
+    <view class="section-title">
+      <text class="title-text">智能功能</text>
+      <text class="title-desc">六大核心智能服务</text>
+    </view>
+    <view class="modules-grid">
+      <view 
+        wx:for="{{smartModules}}" 
+        wx:key="id"
+        class="module-item"
+        data-id="{{item.id}}"
+        bindtap="onModuleTap"
+        style="border-left: 6rpx solid {{item.color}}"
+      >
+        <view class="module-icon" style="background: {{item.color}}">{{item.icon}}</view>
+        <view class="module-content">
+          <text class="module-title">{{item.title}}</text>
+          <text class="module-desc">{{item.description}}</text>
+          <view class="module-features">
+            <text 
+              wx:for="{{item.features}}" 
+              wx:key="*this" 
+              wx:for-item="feature"
+              class="feature-tag"
+            >
+              {{feature}}
+            </text>
+          </view>
+        </view>
+        <view class="module-status active">已上线</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门功能 -->
+  <view class="hot-features">
+    <view class="section-title">
+      <text class="title-text">热门功能</text>
+      <text class="title-desc">用户最喜爱的智能服务</text>
+    </view>
+    <view class="features-list">
+      <view 
+        wx:for="{{hotFeatures}}" 
+        wx:key="id"
+        class="feature-item"
+        data-id="{{item.id}}"
+        bindtap="onHotFeatureTap"
+      >
+        <view class="feature-rank">{{index + 1}}</view>
+        <view class="feature-info">
+          <text class="feature-title">{{item.title}}</text>
+          <text class="feature-desc">{{item.description}}</text>
+          <view class="feature-stats">
+            <text class="stat-text">{{item.users}}人使用</text>
+            <text class="rating-text">⭐ {{item.rating}}</text>
+          </view>
+        </view>
+        <view class="feature-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+
+
+
+
+  <!-- 底部说明 -->
+  <view class="footer-note">
+    <text class="note-text">智慧茶业平台持续优化中，更多功能即将上线</text>
+  </view>
+</view> 

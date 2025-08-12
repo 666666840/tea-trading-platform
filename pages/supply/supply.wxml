@@ -1,0 +1,429 @@
+<!-- 供求平台页面 -->
+<view class="supply-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-actions">
+      <button class="publish-btn supply" bindtap="publishSupply">
+        <text class="publish-icon">+</text>
+        <text class="publish-text">发布供应</text>
+      </button>
+      <button class="publish-btn demand" bindtap="publishDemand">
+        <text class="publish-icon">+</text>
+        <text class="publish-text">发布求购</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input"
+        placeholder="搜索茶类、产地、关键词..."
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+    </view>
+  </view>
+
+  <!-- Tab切换 -->
+  <view class="tab-section">
+    <view class="tab-list">
+      <view 
+        class="tab-item {{currentTab === 'supply' ? 'active' : ''}}"
+        data-tab="supply"
+        bindtap="onTabChange"
+      >
+        <text class="tab-text">供应信息</text>
+        <text class="tab-count">{{supplyList.length}}</text>
+      </view>
+      <view 
+        class="tab-item {{currentTab === 'demand' ? 'active' : ''}}"
+        data-tab="demand"
+        bindtap="onTabChange"
+      >
+        <text class="tab-text">求购信息</text>
+        <text class="tab-count">{{demandList.length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 智能推荐 -->
+  <view class="recommend-section" wx:if="{{recommendedList.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">为您推荐</text>
+      <text class="section-desc">根据您的偏好智能推荐</text>
+    </view>
+    <view class="recommend-list">
+      <view 
+        wx:for="{{recommendedList}}" 
+        wx:key="id"
+        class="recommend-item"
+        data-id="{{item.id}}"
+        data-type="{{item.type}}"
+        bindtap="onItemTap"
+      >
+        <view class="recommend-type {{item.type}}">{{item.typeText}}</view>
+        <view class="recommend-content">
+          <text class="recommend-title">{{item.title}}</text>
+          <text class="recommend-desc">{{item.description}}</text>
+          <view class="recommend-tags">
+            <text 
+              wx:for="{{item.tags}}" 
+              wx:key="*this" 
+              wx:for-item="tag"
+              class="recommend-tag"
+            >
+              {{tag}}
+            </text>
+          </view>
+        </view>
+        <view class="recommend-badge">推荐</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选和排序 -->
+  <view class="filter-section">
+    <!-- 茶类筛选 -->
+    <view class="filter-row">
+      <text class="filter-label">茶类：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{filterOptions.teaType}}" 
+          wx:key="value"
+          class="filter-item {{currentFilter.teaType === item.value ? 'active' : ''}}"
+          data-type="teaType"
+          data-value="{{item.value}}"
+          bindtap="onFilterChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 排序选项 -->
+    <view class="filter-row">
+      <text class="filter-label">排序：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{filterOptions.sortOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentFilter.sort === item.value ? 'active' : ''}}"
+          data-type="sort"
+          data-value="{{item.value}}"
+          bindtap="onFilterChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 供应信息流 -->
+  <view class="info-list" wx:if="{{currentTab === 'supply'}}">
+    <view class="list-title">供应信息</view>
+    
+    <view 
+      wx:for="{{supplyList}}" 
+      wx:key="id"
+      class="info-item supply"
+      data-id="{{item.id}}"
+      data-type="{{item.type}}"
+      bindtap="onItemTap"
+    >
+      <!-- 信息头部 -->
+      <view class="item-header">
+        <view class="item-type supply">{{item.typeText}}</view>
+        <view class="item-badges">
+          <view class="badge new" wx:if="{{item.isNew}}">新品</view>
+          <view class="badge clearance" wx:if="{{item.isClearance}}">尾货</view>
+          <view class="badge recommend" wx:if="{{item.isRecommended}}">推荐</view>
+        </view>
+      </view>
+
+      <!-- 信息内容 -->
+      <view class="item-content">
+        <view class="content-main">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-desc">{{item.description}}</text>
+          
+          <!-- 关键信息 -->
+          <view class="key-info">
+            <view class="info-row">
+              <text class="info-label">茶类：</text>
+              <text class="info-value">{{item.teaType}} - {{item.teaSubType}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">价格：</text>
+              <text class="info-value price">{{item.price}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">数量：</text>
+              <text class="info-value">{{item.quantity}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">产地：</text>
+              <text class="info-value">{{item.location}} {{item.market}}</text>
+            </view>
+          </view>
+          
+          <!-- 标签 -->
+          <view class="item-tags">
+            <text 
+              wx:for="{{item.tags}}" 
+              wx:key="*this" 
+              wx:for-item="tag"
+              class="tag-item"
+            >
+              {{tag}}
+            </text>
+          </view>
+        </view>
+        
+        <!-- 图片 -->
+        <view class="item-image" wx:if="{{item.images.length > 0}}">
+          <image class="info-image" src="{{item.images[0]}}" mode="aspectFill"></image>
+        </view>
+      </view>
+
+      <!-- 商户信息 -->
+      <view class="merchant-info">
+        <view class="merchant-basic">
+          <image class="merchant-avatar" src="{{item.merchant.avatar}}" mode="aspectFill"></image>
+          <view class="merchant-details">
+            <text class="merchant-name">{{item.merchant.name}}</text>
+            <view class="merchant-rating">
+              <text class="rating-score">{{item.merchant.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="verified-badge" wx:if="{{item.merchant.isVerified}}">已认证</text>
+            </view>
+            <text class="merchant-business">{{item.merchant.mainBusiness}}</text>
+          </view>
+        </view>
+        
+        <view class="merchant-actions">
+          <button 
+            class="contact-btn"
+            data-wechat="merchant_{{item.id}}"
+            bindtap="contactPublisher"
+            catchtap="contactPublisher"
+          >
+            联系商户
+          </button>
+        </view>
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="item-footer">
+        <view class="footer-left">
+          <view class="stats-item">
+            <text class="stats-icon">👁️</text>
+            <text class="stats-text">{{item.viewCount}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-icon">❤️</text>
+            <text class="stats-text">{{item.favoriteCount}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-icon">💬</text>
+            <text class="stats-text">{{item.contactCount}}</text>
+          </view>
+        </view>
+        
+        <view class="footer-right">
+          <text class="validity-period">有效期：{{item.validityPeriod}}</text>
+          <text class="update-time">{{item.updateTime}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="item-actions">
+        <button 
+          class="action-btn favorite {{item.isFavorited ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          data-type="{{item.type}}"
+          bindtap="toggleFavorite"
+          catchtap="toggleFavorite"
+        >
+          <text class="action-icon">{{item.isFavorited ? '❤️' : '🤍'}}</text>
+          <text class="action-text">收藏</text>
+        </button>
+        
+        <button 
+          class="action-btn share"
+          data-id="{{item.id}}"
+          data-type="{{item.type}}"
+        >
+          <text class="action-icon">📤</text>
+          <text class="action-text">分享</text>
+        </button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 求购信息流 -->
+  <view class="info-list" wx:if="{{currentTab === 'demand'}}">
+    <view class="list-title">求购信息</view>
+    
+    <view 
+      wx:for="{{demandList}}" 
+      wx:key="id"
+      class="info-item demand"
+      data-id="{{item.id}}"
+      data-type="{{item.type}}"
+      bindtap="onItemTap"
+    >
+      <!-- 信息头部 -->
+      <view class="item-header">
+        <view class="item-type demand">{{item.typeText}}</view>
+        <view class="item-badges">
+          <view class="badge urgent" wx:if="{{item.isUrgent}}">紧急</view>
+          <view class="badge recommend" wx:if="{{item.isRecommended}}">推荐</view>
+        </view>
+      </view>
+
+      <!-- 信息内容 -->
+      <view class="item-content">
+        <view class="content-main">
+          <text class="item-title">{{item.title}}</text>
+          <text class="item-desc">{{item.description}}</text>
+          
+          <!-- 关键信息 -->
+          <view class="key-info">
+            <view class="info-row">
+              <text class="info-label">茶类：</text>
+              <text class="info-value">{{item.teaType}} - {{item.teaSubType}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">数量：</text>
+              <text class="info-value">{{item.quantity}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">预算：</text>
+              <text class="info-value budget">{{item.budget}}</text>
+            </view>
+            <view class="info-row">
+              <text class="info-label">收货地：</text>
+              <text class="info-value">{{item.location}} {{item.market}}</text>
+            </view>
+          </view>
+          
+          <!-- 要求 -->
+          <view class="requirements-section" wx:if="{{item.requirements.length > 0}}">
+            <text class="requirements-title">要求：</text>
+            <view class="requirements-list">
+              <text 
+                wx:for="{{item.requirements}}" 
+                wx:key="*this" 
+                wx:for-item="req"
+                class="requirement-item"
+              >
+                • {{req}}
+              </text>
+            </view>
+          </view>
+          
+          <!-- 标签 -->
+          <view class="item-tags">
+            <text 
+              wx:for="{{item.tags}}" 
+              wx:key="*this" 
+              wx:for-item="tag"
+              class="tag-item"
+            >
+              {{tag}}
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 买家信息 -->
+      <view class="buyer-info">
+        <view class="buyer-basic">
+          <image class="buyer-avatar" src="{{item.buyer.avatar}}" mode="aspectFill"></image>
+          <view class="buyer-details">
+            <text class="buyer-name">{{item.buyer.name}}</text>
+            <view class="buyer-rating">
+              <text class="rating-score">{{item.buyer.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="verified-badge" wx:if="{{item.buyer.isVerified}}">已认证</text>
+            </view>
+            <text class="buyer-scale">{{item.buyer.purchaseScale}}</text>
+          </view>
+        </view>
+        
+        <view class="buyer-actions">
+          <button 
+            class="contact-btn"
+            data-wechat="buyer_{{item.id}}"
+            bindtap="contactPublisher"
+            catchtap="contactPublisher"
+          >
+            联系买家
+          </button>
+        </view>
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="item-footer">
+        <view class="footer-left">
+          <view class="stats-item">
+            <text class="stats-icon">👁️</text>
+            <text class="stats-text">{{item.viewCount}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-icon">❤️</text>
+            <text class="stats-text">{{item.favoriteCount}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-icon">💬</text>
+            <text class="stats-text">{{item.contactCount}}</text>
+          </view>
+        </view>
+        
+        <view class="footer-right">
+          <text class="validity-period">有效期：{{item.validityPeriod}}</text>
+          <text class="update-time">{{item.updateTime}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="item-actions">
+        <button 
+          class="action-btn favorite {{item.isFavorited ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          data-type="{{item.type}}"
+          bindtap="toggleFavorite"
+          catchtap="toggleFavorite"
+        >
+          <text class="action-icon">{{item.isFavorited ? '❤️' : '🤍'}}</text>
+          <text class="action-text">收藏</text>
+        </button>
+        
+        <button 
+          class="action-btn share"
+          data-id="{{item.id}}"
+          data-type="{{item.type}}"
+        >
+          <text class="action-icon">📤</text>
+          <text class="action-text">分享</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && (supplyList.length > 0 || demandList.length > 0)}}">
+    <text class="no-more-text">没有更多信息了</text>
+  </view>
+  
+  <view class="empty-state" wx:if="{{(currentTab === 'supply' && supplyList.length === 0) || (currentTab === 'demand' && demandList.length === 0)}}">
+    <text class="empty-text">暂无{{currentTab === 'supply' ? '供应' : '求购'}}信息</text>
+  </view>
+</view> 

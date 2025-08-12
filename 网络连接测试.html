@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>茶叶平台网络连接测试</title>
+    <style>
+        body { font-family: 'Microsoft YaHei'; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; color: #2c5530; margin-bottom: 30px; }
+        .test-item { margin: 15px 0; padding: 15px; border-radius: 5px; border-left: 4px solid #ccc; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        .warning { background: #fff3cd; border-color: #ffc107; }
+        .info { background: #cce7ff; border-color: #007bff; }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #218838; }
+        .status { font-weight: bold; margin-left: 10px; }
+        .loading { color: #007bff; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow: auto; max-height: 200px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍃 茶叶平台网络连接测试</h1>
+            <p>检测您的网络连接状态和API服务器状态</p>
+        </div>
+
+        <div id="tests">
+            <div class="test-item info">
+                <h3>📋 测试项目</h3>
+                <button onclick="testAll()">🔄 开始全面测试</button>
+                <button onclick="testLocal()">🏠 测试本地服务器</button>
+                <button onclick="testRemote()">🌐 测试远程服务器</button>
+                <button onclick="clearResults()">🗑️ 清空结果</button>
+            </div>
+
+            <div id="local-test" class="test-item">
+                <h3>🏠 本地服务器测试 (localhost:3000)</h3>
+                <div id="local-status" class="status loading">等待测试...</div>
+                <div id="local-details"></div>
+            </div>
+
+            <div id="remote-test" class="test-item">
+                <h3>🌐 远程服务器测试</h3>
+                <div id="remote-status" class="status loading">等待测试...</div>
+                <div id="remote-details"></div>
+            </div>
+
+            <div id="solution" class="test-item" style="display:none;">
+                <h3>🔧 解决方案</h3>
+                <div id="solution-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            element.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+        }
+
+        function setStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        async function testLocal() {
+            setStatus('local-status', '正在测试本地服务器...', 'loading');
+            document.getElementById('local-details').innerHTML = '';
+
+            try {
+                // 测试健康检查
+                const healthResponse = await fetch('http://localhost:3000/health', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (healthResponse.ok) {
+                    const healthData = await healthResponse.json();
+                    setStatus('local-status', '✅ 本地服务器正常运行', 'success');
+                    log('local-details', `健康检查成功: ${healthData.message}`, 'success');
+
+                    // 测试API接口
+                    const apiResponse = await fetch('http://localhost:3000/api/content?type=recommend');
+                    if (apiResponse.ok) {
+                        const apiData = await apiResponse.json();
+                        log('local-details', `API接口正常，数据条数: ${apiData.data ? apiData.data.length : 0}`, 'success');
+                    }
+                } else {
+                    setStatus('local-status', '❌ 本地服务器响应异常', 'error');
+                    log('local-details', `HTTP状态码: ${healthResponse.status}`, 'error');
+                }
+            } catch (error) {
+                setStatus('local-status', '❌ 无法连接本地服务器', 'error');
+                log('local-details', `错误信息: ${error.message}`, 'error');
+                log('local-details', '可能的原因:', 'warning');
+                log('local-details', '1. Python未安装或server.py未启动', 'warning');
+                log('local-details', '2. 端口3000被占用', 'warning');
+                log('local-details', '3. 防火墙阻止连接', 'warning');
+                showSolution();
+            }
+        }
+
+        async function testRemote() {
+            setStatus('remote-status', '正在测试远程服务器...', 'loading');
+            document.getElementById('remote-details').innerHTML = '';
+
+            // 这里可以添加远程服务器测试
+            try {
+                const response = await fetch('https://httpbin.org/json');
+                if (response.ok) {
+                    setStatus('remote-status', '✅ 网络连接正常', 'success');
+                    log('remote-details', '网络连接测试通过', 'success');
+                }
+            } catch (error) {
+                setStatus('remote-status', '❌ 网络连接异常', 'error');
+                log('remote-details', `网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        function showSolution() {
+            const solutionDiv = document.getElementById('solution');
+            const solutionContent = document.getElementById('solution-content');
+            
+            solutionContent.innerHTML = `
+                <h4>🎯 解决"当前离线"问题的步骤：</h4>
+                <ol>
+                    <li><strong>安装Python环境：</strong>
+                        <ul>
+                            <li>双击运行 <code>快速安装Python.bat</code></li>
+                            <li>或者手动下载安装Python 3.11</li>
+                        </ul>
+                    </li>
+                    <li><strong>启动服务器：</strong>
+                        <ul>
+                            <li>双击运行 <code>启动服务器.bat</code></li>
+                            <li>或者在命令行中运行 <code>python server.py</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>确认服务器运行：</strong>
+                        <ul>
+                            <li>看到"Running on http://0.0.0.0:3000"消息</li>
+                            <li>重新测试本地连接</li>
+                        </ul>
+                    </li>
+                    <li><strong>重启小程序：</strong>
+                        <ul>
+                            <li>关闭微信开发者工具</li>
+                            <li>重新打开项目</li>
+                            <li>点击编译或刷新</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h4>📝 快速命令：</h4>
+                <pre>
+# 检查Python版本
+python --version
+
+# 安装依赖
+pip install Flask Flask-CORS requests
+
+# 启动服务器
+python server.py
+                </pre>
+            `;
+            
+            solutionDiv.style.display = 'block';
+        }
+
+        function testAll() {
+            clearResults();
+            testLocal();
+            setTimeout(testRemote, 1000);
+        }
+
+        function clearResults() {
+            document.getElementById('local-details').innerHTML = '';
+            document.getElementById('remote-details').innerHTML = '';
+            document.getElementById('solution').style.display = 'none';
+            setStatus('local-status', '等待测试...', 'loading');
+            setStatus('remote-status', '等待测试...', 'loading');
+        }
+
+        // 页面加载完成后自动运行测试
+        window.onload = function() {
+            log('local-details', '页面已加载，可以开始测试', 'info');
+        };
+    </script>
+</body>
+</html> 

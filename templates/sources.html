@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}来源管理 - 茶叶一点通管理后台{% endblock %}
+
+{% block page_title %}来源管理{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('add_source') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i> 添加来源
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-link-45deg"></i> 转载来源列表
+                    <span class="badge bg-primary ms-2">{{ sources|length }} 个</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if sources %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>来源名称</th>
+                                <th>网址</th>
+                                <th>类型</th>
+                                <th>描述</th>
+                                <th>状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for source in sources %}
+                            <tr>
+                                <td>{{ source.id }}</td>
+                                <td>
+                                    <strong>{{ source.name }}</strong>
+                                </td>
+                                <td>
+                                    {% if source.url %}
+                                    <a href="{{ source.url }}" target="_blank" class="text-decoration-none">
+                                        {{ source.url[:50] }}{% if source.url|length > 50 %}...{% endif %}
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if source.type == 'recommend' %}
+                                    <span class="badge bg-warning">推荐</span>
+                                    {% elif source.type == 'news' %}
+                                    <span class="badge bg-info">新闻</span>
+                                    {% elif source.type == 'art' %}
+                                    <span class="badge bg-success">茶艺</span>
+                                    {% elif source.type == 'hot' %}
+                                    <span class="badge bg-danger">热门</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ source.type }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if source.description %}
+                                    {{ source.description[:50] }}{% if source.description|length > 50 %}...{% endif %}
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if source.is_active %}
+                                    <span class="badge bg-success">启用</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">禁用</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ source.created_at[:10] }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                onclick="editSource({{ source.id }}, '{{ source.name }}')">
+                                            <i class="bi bi-pencil"></i> 编辑
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteSource({{ source.id }}, '{{ source.name }}')">
+                                            <i class="bi bi-trash"></i> 删除
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-link-45deg fa-3x text-muted"></i>
+                    <h5 class="text-muted mt-3">暂无来源</h5>
+                    <p class="text-muted">点击上方"添加来源"按钮开始添加转载来源</p>
+                    <a href="{{ url_for('add_source') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> 添加来源
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 推荐来源说明 -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> 推荐来源说明
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>推荐内容来源：</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success"></i> 中茶官网 - 中国茶叶官网</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 大益茶官网 - 大益茶业官网</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 其他知名茶企官网</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>茶讯新闻来源：</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success"></i> 中国茶叶流通协会</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 茶叶行业资讯网站</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 专业茶叶媒体</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6>茶艺教程来源：</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success"></i> 茶艺师联盟</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 茶艺教学平台</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 专业茶艺师博客</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>热门资讯来源：</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success"></i> 茶叶行业资讯</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 茶文化传播平台</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 茶叶市场动态</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function editSource(sourceId, name) {
+    // 这里可以添加编辑来源的功能
+    alert(`编辑来源: ${name} (ID: ${sourceId})`);
+}
+
+function deleteSource(sourceId, name) {
+    if (confirm(`确定要删除来源"${name}"吗？此操作不可恢复！`)) {
+        // 这里可以添加删除来源的功能
+        alert(`删除来源: ${name} (ID: ${sourceId})`);
+    }
+}
+
+// 页面加载完成后的初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('来源管理页面加载完成');
+});
+</script>
+{% endblock %}

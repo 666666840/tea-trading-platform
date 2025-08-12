@@ -1,0 +1,385 @@
+.container {
+  padding: 0;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 页面头部 */
+.page-header {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  padding: 40rpx 30rpx;
+  text-align: center;
+  color: white;
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 快速开始 */
+.quick-start {
+  margin: 30rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.start-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.start-desc {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 30rpx;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  padding: 25rpx 40rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.btn-icon {
+  margin-right: 10rpx;
+  font-size: 36rpx;
+}
+
+.btn-text {
+  font-size: 32rpx;
+}
+
+/* 通用标题样式 */
+.section-title {
+  text-align: center;
+  margin-bottom: 40rpx;
+  padding: 0 30rpx;
+}
+
+.title-text {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.title-desc {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+}
+
+/* 入驻流程 */
+.join-process {
+  margin: 30rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f8f9fa;
+}
+
+.step-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.step-icon {
+  font-size: 40rpx;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.step-desc {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.step-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.detail-item {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 费用说明 */
+.fee-info {
+  margin: 30rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.fee-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.fee-card {
+  border-radius: 12rpx;
+  padding: 30rpx;
+  border: 2rpx solid #eee;
+  transition: all 0.3s ease;
+}
+
+.fee-card.national {
+  border-color: #4CAF50;
+  background: linear-gradient(135deg, #f1f8e9, #e8f5e8);
+}
+
+.fee-card.provincial {
+  border-color: #2196F3;
+  background: linear-gradient(135deg, #e3f2fd, #e1f5fe);
+}
+
+.fee-card.city {
+  border-color: #FF9800;
+  background: linear-gradient(135deg, #fff3e0, #fff8e1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-level {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-fee {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.card-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.benefit-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 常见问题 */
+.faq-section {
+  margin: 30rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.faq-item {
+  border: 1rpx solid #eee;
+  border-radius: 12rpx;
+  padding: 25rpx;
+  background: #fafafa;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.question-text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.question-icon {
+  font-size: 32rpx;
+  color: #4CAF50;
+}
+
+.faq-answer {
+  padding-left: 20rpx;
+  border-left: 4rpx solid #4CAF50;
+}
+
+.answer-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 联系我们 */
+.contact-section {
+  margin: 30rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.contact-icon {
+  font-size: 40rpx;
+  width: 60rpx;
+  text-align: center;
+}
+
+.contact-detail {
+  flex: 1;
+}
+
+.contact-label {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.contact-value {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.contact-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  padding: 25rpx 40rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 底部提示 */
+.bottom-tip {
+  text-align: center;
+  padding: 30rpx;
+  background: #e8f5e8;
+  margin: 30rpx;
+  border-radius: 12rpx;
+}
+
+.tip-text {
+  font-size: 28rpx;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .fee-cards {
+    flex-direction: column;
+  }
+  
+  .step-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .step-header {
+    margin-bottom: 15rpx;
+  }
+} 

@@ -1,0 +1,409 @@
+<!--pages/publish-supply/publish-supply.wxml-->
+<view class="publish-page">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="header-title">发布供应</view>
+    <view class="header-desc">发布您的茶叶供应信息，让更多买家找到您</view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
+      <!-- 供应标题 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">供应标题</text>
+          <text class="required">*</text>
+        </view>
+        <input 
+          class="form-input {{!validation.title.valid ? 'error' : ''}}"
+          placeholder="请输入供应标题，如：优质明前龙井茶供应"
+          value="{{formData.title}}"
+          data-field="title"
+          bindinput="onInputChange"
+          maxlength="50"
+        />
+        <text class="error-message" wx:if="{{!validation.title.valid}}">{{validation.title.message}}</text>
+      </view>
+
+      <!-- 茶叶类型 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">茶叶类型</text>
+          <text class="required">*</text>
+          <text class="label-desc">（可多选）</text>
+        </view>
+        <view class="selection-tip">
+          <text class="tip-text">💡 点击标签进行选择，可多选</text>
+        </view>
+        <view class="tea-type-tags">
+          <view 
+            wx:for="{{teaTypeOptions}}" 
+            wx:key="*this"
+            class="tea-type-tag {{formData.teaTypes.indexOf(item) > -1 ? 'selected' : ''}}"
+            data-tea-type="{{item}}"
+            catchtap="onTeaTypeToggle"
+            hover-class="tea-type-tag-hover"
+          >
+            {{item}}
+          </view>
+          <!-- 其他选项 -->
+          <view 
+            class="tea-type-tag other-option {{formData.teaTypes.indexOf('其他') > -1 ? 'selected' : ''}}"
+            data-tea-type="其他"
+            catchtap="onTeaTypeToggle"
+            hover-class="tea-type-tag-hover"
+          >
+            其他
+          </view>
+        </view>
+        
+        <!-- 手动输入其他茶叶类型 -->
+        <view class="custom-tea-input" wx:if="{{formData.teaTypes.indexOf('其他') > -1}}">
+          <input 
+            class="custom-input"
+            placeholder="请输入其他茶叶类型，如：大红袍、铁观音等"
+            value="{{formData.customTeaType}}"
+            data-field="customTeaType"
+            bindinput="onInputChange"
+            maxlength="20"
+          />
+          <button 
+            class="add-custom-btn"
+            bindtap="addCustomTeaType"
+            disabled="{{!formData.customTeaType.trim()}}"
+          >
+            添加
+          </button>
+        </view>
+        <view class="selection-status" wx:if="{{formData.teaTypes.length > 0}}">
+          <text class="status-text">已选择: {{formData.teaTypes.join('、')}}</text>
+          <text class="clear-btn" bindtap="clearTeaTypes">清空</text>
+        </view>
+        <!-- 选择状态显示 -->
+        <view class="selection-display" wx:if="{{formData.teaTypes.length > 0}}">
+          <view class="selected-items">
+            <view class="selected-item" wx:for="{{formData.teaTypes}}" wx:key="*this">
+              <text class="item-text">{{item}}</text>
+              <text class="remove-btn" data-tea-type="{{item}}" bindtap="onTeaTypeToggle">×</text>
+            </view>
+          </view>
+        </view>
+        <text class="error-message" wx:if="{{!validation.teaTypes.valid}}">{{validation.teaTypes.message}}</text>
+      </view>
+
+      <!-- 产地 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">产地</text>
+          <text class="required">*</text>
+        </view>
+        <input 
+          class="form-input {{!validation.origin.valid ? 'error' : ''}}"
+          placeholder="请输入茶叶产地，如：浙江杭州西湖区"
+          value="{{formData.origin}}"
+          data-field="origin"
+          bindinput="onInputChange"
+          maxlength="50"
+        />
+        <text class="error-message" wx:if="{{!validation.origin.valid}}">{{validation.origin.message}}</text>
+      </view>
+
+      <!-- 等级 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">等级</text>
+          <text class="required">*</text>
+        </view>
+        <picker 
+          mode="selector" 
+          range="{{gradeOptions}}"
+          data-field="grade"
+          bindchange="onPickerChange"
+        >
+          <view class="picker-input {{!validation.grade.valid ? 'error' : ''}}">
+            <text class="picker-text {{formData.grade ? '' : 'placeholder'}}">
+              {{formData.grade || '请选择茶叶等级'}}
+            </text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+        <text class="error-message" wx:if="{{!validation.grade.valid}}">{{validation.grade.message}}</text>
+      </view>
+
+      <!-- 采摘时间 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">采摘时间</text>
+        </view>
+        <picker 
+          mode="selector" 
+          range="{{harvestTimeOptions}}"
+          data-field="harvestTime"
+          bindchange="onPickerChange"
+        >
+          <view class="picker-input">
+            <text class="picker-text {{formData.harvestTime ? '' : 'placeholder'}}">
+              {{formData.harvestTime || '请选择采摘时间'}}
+            </text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 特色标签 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">特色标签</text>
+          <text class="label-desc">（最多选择6个）</text>
+        </view>
+        <view class="selection-tip">
+          <text class="tip-text">💡 点击标签进行选择，最多6个</text>
+        </view>
+        <view class="feature-tags">
+          <view 
+            wx:for="{{featureOptions}}" 
+            wx:key="*this"
+            class="feature-tag {{formData.features.indexOf(item) > -1 ? 'selected' : ''}}"
+            data-feature="{{item}}"
+            catchtap="onFeatureToggle"
+            hover-class="feature-tag-hover"
+          >
+            {{item}}
+          </view>
+        </view>
+        <view class="selection-status" wx:if="{{formData.features.length > 0}}">
+          <text class="status-text">已选择: {{formData.features.join('、')}}</text>
+          <text class="clear-btn" bindtap="clearFeatures">清空</text>
+        </view>
+        <!-- 选择状态显示 -->
+        <view class="selection-display feature-selection" wx:if="{{formData.features.length > 0}}">
+          <view class="selected-items">
+            <view class="selected-item feature-item" wx:for="{{formData.features}}" wx:key="*this">
+              <text class="item-text">{{item}}</text>
+              <text class="remove-btn" data-feature="{{item}}" bindtap="onFeatureToggle">×</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 详细描述 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">详细描述</text>
+        </view>
+        <textarea 
+          class="form-textarea"
+          placeholder="请详细描述茶叶特点、品质、包装等信息"
+          value="{{formData.description}}"
+          data-field="description"
+          bindinput="onInputChange"
+          maxlength="500"
+        ></textarea>
+        <text class="char-count">{{formData.description.length}}/500</text>
+      </view>
+    </view>
+
+    <!-- 价格信息 -->
+    <view class="form-section">
+      <view class="section-title">价格信息</view>
+      
+      <!-- 价格 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">价格</text>
+          <text class="required">*</text>
+        </view>
+        <view class="price-input">
+          <input 
+            class="price-value {{!validation.price.valid ? 'error' : ''}}"
+            placeholder="请输入价格"
+            value="{{formData.price}}"
+            data-field="price"
+            bindinput="onInputChange"
+            type="digit"
+          />
+          <picker 
+            mode="selector" 
+            range="{{priceUnits}}"
+            data-field="priceUnit"
+            bindchange="onPickerChange"
+          >
+            <view class="price-unit">
+              <text class="unit-text">{{formData.priceUnit}}</text>
+              <text class="unit-arrow">></text>
+            </view>
+          </picker>
+        </view>
+        <text class="error-message" wx:if="{{!validation.price.valid}}">{{validation.price.message}}</text>
+      </view>
+
+      <!-- 数量 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">供应数量</text>
+          <text class="required">*</text>
+        </view>
+        <view class="quantity-input">
+          <input 
+            class="quantity-value {{!validation.quantity.valid ? 'error' : ''}}"
+            placeholder="请输入数量"
+            value="{{formData.quantity}}"
+            data-field="quantity"
+            bindinput="onInputChange"
+            type="digit"
+          />
+          <picker 
+            mode="selector" 
+            range="{{quantityUnits}}"
+            data-field="quantityUnit"
+            bindchange="onPickerChange"
+          >
+            <view class="quantity-unit">
+              <text class="unit-text">{{formData.quantityUnit}}</text>
+              <text class="unit-arrow">></text>
+            </view>
+          </picker>
+        </view>
+        <text class="error-message" wx:if="{{!validation.quantity.valid}}">{{validation.quantity.message}}</text>
+      </view>
+    </view>
+
+    <!-- 交易信息 -->
+    <view class="form-section">
+      <view class="section-title">交易信息</view>
+      
+      <!-- 发货时间 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">发货时间</text>
+        </view>
+        <picker 
+          mode="selector" 
+          range="{{deliveryOptions}}"
+          data-field="delivery"
+          bindchange="onPickerChange"
+        >
+          <view class="picker-input">
+            <text class="picker-text">{{formData.delivery}}</text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 保障服务 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">保障服务</text>
+        </view>
+        <picker 
+          mode="selector" 
+          range="{{guaranteeOptions}}"
+          data-field="guarantee"
+          bindchange="onPickerChange"
+        >
+          <view class="picker-input">
+            <text class="picker-text">{{formData.guarantee}}</text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 图片上传 -->
+    <view class="form-section">
+      <view class="section-title">产品图片</view>
+      <view class="form-item">
+        <view class="image-upload">
+          <view class="image-list">
+            <view 
+              class="image-item" 
+              wx:for="{{formData.images}}" 
+              wx:key="*this"
+            >
+              <image 
+                class="uploaded-image" 
+                src="{{item}}" 
+                mode="aspectFill"
+                data-url="{{item}}"
+                bindtap="previewImage"
+              />
+              <view 
+                class="delete-btn" 
+                data-index="{{index}}"
+                bindtap="deleteImage"
+              >×</view>
+            </view>
+            <view 
+              class="upload-btn" 
+              wx:if="{{formData.images.length < 9}}"
+              bindtap="chooseImage"
+            >
+              <text class="upload-icon">+</text>
+              <text class="upload-text">添加图片</text>
+            </view>
+          </view>
+          <text class="upload-tip">最多上传9张图片，建议尺寸800x800px</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系信息 -->
+    <view class="form-section">
+      <view class="section-title">联系信息</view>
+      
+      <!-- 联系人 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">联系人</text>
+          <text class="required">*</text>
+        </view>
+        <input 
+          class="form-input {{!validation.contact.valid ? 'error' : ''}}"
+          placeholder="请输入联系人姓名"
+          value="{{formData.contact}}"
+          data-field="contact"
+          bindinput="onInputChange"
+          maxlength="20"
+        />
+        <text class="error-message" wx:if="{{!validation.contact.valid}}">{{validation.contact.message}}</text>
+      </view>
+
+      <!-- 联系电话 -->
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">联系电话</text>
+          <text class="required">*</text>
+        </view>
+        <input 
+          class="form-input {{!validation.phone.valid ? 'error' : ''}}"
+          placeholder="请输入手机号码"
+          value="{{formData.phone}}"
+          data-field="phone"
+          bindinput="onInputChange"
+          type="number"
+          maxlength="11"
+        />
+        <text class="error-message" wx:if="{{!validation.phone.valid}}">{{validation.phone.message}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <view class="action-buttons">
+      <button class="btn btn-secondary" bindtap="saveDraft">保存草稿</button>
+      <button class="btn btn-secondary" bindtap="resetForm">重置</button>
+      <button 
+        class="btn btn-primary {{submitting ? 'disabled' : ''}}" 
+        bindtap="submitForm"
+        disabled="{{submitting}}"
+      >
+        {{submitting ? '发布中...' : '发布供应'}}
+      </button>
+    </view>
+  </view>
+</view>

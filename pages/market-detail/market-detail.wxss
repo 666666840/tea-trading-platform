@@ -1,0 +1,748 @@
+/* 市场详情页面样式 */
+.container {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 市场信息头部 */
+.market-header {
+  background: #fff;
+  padding: 30rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.market-basic {
+  margin-bottom: 30rpx;
+}
+
+.market-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.market-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-right: 15rpx;
+}
+
+.market-level {
+  background: #ff6b35;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.market-location {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.market-description {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+.market-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30rpx;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.market-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.specialty-tag {
+  background: #e8f5e8;
+  color: #4CAF50;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 市场详细信息 */
+.market-details {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.detail-section {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.detail-item {
+  display: flex;
+  margin-bottom: 15rpx;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #666;
+  min-width: 140rpx;
+}
+
+.detail-value {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+}
+
+.facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.facility-tag {
+  background: #f0f8ff;
+  color: #2196F3;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 商户控制栏 */
+.merchant-controls {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.search-bar {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 25rpx;
+  padding: 15rpx 20rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 15rpx;
+  color: #999;
+}
+
+.search-input input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.filter-bar {
+  display: flex;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.filter-item {
+  flex: 1;
+  text-align: center;
+  padding: 15rpx 20rpx;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.filter-item.active {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.sort-bar {
+  display: flex;
+  padding: 20rpx;
+}
+
+.sort-item {
+  flex: 1;
+  text-align: center;
+  padding: 15rpx 20rpx;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.sort-item.active {
+  background: #4CAF50;
+  color: #fff;
+}
+
+/* 商户列表 */
+.merchant-list {
+  background: #fff;
+}
+
+.merchant-item {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.merchant-item:last-child {
+  border-bottom: none;
+}
+
+.merchant-item:active {
+  background: #f8f9fa;
+}
+
+.merchant-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.merchant-logo {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.merchant-info {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.merchant-name {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.merchant-name text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.verification-badge {
+  background: #4CAF50;
+  color: #fff;
+  font-size: 20rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10rpx;
+}
+
+.merchant-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.product-tag {
+  background: #e8f5e8;
+  color: #4CAF50;
+  font-size: 22rpx;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+}
+
+.merchant-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.activity-status {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.activity-status.high {
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.activity-status.medium {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.activity-status.low {
+  background: #f0f0f0;
+  color: #999;
+}
+
+.rating {
+  font-size: 24rpx;
+  color: #ff9800;
+}
+
+.merchant-content {
+  margin-bottom: 20rpx;
+}
+
+.merchant-description {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 15rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.merchant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.meta-item {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.merchant-actions {
+  display: flex;
+  gap: 15rpx;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 15rpx 20rpx;
+  border-radius: 25rpx;
+  font-size: 26rpx;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.contact-btn {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.contact-btn:active {
+  background: #45a049;
+}
+
+.detail-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 1rpx solid #e0e0e0;
+}
+
+.detail-btn:active {
+  background: #e9ecef;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 20rpx;
+  background: #fff;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 20rpx;
+  background: #fff;
+}
+
+.loading-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 40rpx;
+  background: #fff;
+}
+
+.load-more text {
+  font-size: 28rpx;
+  color: #4CAF50;
+}
+
+/* 入驻按钮样式 */
+.join-market-section {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border-radius: 12rpx;
+  text-align: center;
+}
+
+.join-market-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  padding: 20rpx 40rpx;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+}
+
+.join-icon {
+  margin-right: 10rpx;
+  font-size: 36rpx;
+}
+
+.join-text {
+  font-size: 32rpx;
+}
+
+.join-tip {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+}
+
+.join-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15rpx;
+}
+
+.guide-link {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24rpx;
+  text-decoration: underline;
+  padding: 5rpx 10rpx;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16rpx;
+  width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+.join-form {
+  max-width: 600rpx;
+}
+
+.modal-header {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+/* 入驻流程样式 */
+.join-process {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40rpx;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+}
+
+.process-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.step-text {
+  font-size: 24rpx;
+  color: #666;
+  text-align: center;
+}
+
+/* 表单样式 */
+.form-section {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  margin-bottom: 15rpx;
+  box-sizing: border-box;
+}
+
+.form-picker {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  margin-bottom: 15rpx;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  min-height: 120rpx;
+  box-sizing: border-box;
+}
+
+/* 上传区域样式 */
+.upload-section {
+  display: flex;
+  gap: 20rpx;
+}
+
+.upload-item {
+  flex: 1;
+  padding: 30rpx 20rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 8rpx;
+  text-align: center;
+  position: relative;
+}
+
+.upload-item:active {
+  background: #f5f5f5;
+}
+
+.upload-icon {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.upload-text {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+}
+
+.upload-status {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  font-size: 24rpx;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+/* 提示信息样式 */
+.form-tips {
+  background: #f8f9fa;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  margin-bottom: 30rpx;
+}
+
+.tip-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+}
+
+/* 按钮样式 */
+.form-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.cancel-btn {
+  flex: 1;
+  padding: 20rpx;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.submit-btn {
+  flex: 1;
+  padding: 20rpx;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.submit-btn:active {
+  background: #45a049;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .join-process {
+    flex-direction: column;
+    gap: 20rpx;
+  }
+  
+  .upload-section {
+    flex-direction: column;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+/* 调试信息样式 */
+.debug-info {
+  background: #f0f0f0;
+  padding: 20rpx;
+  margin: 20rpx;
+  border-radius: 8rpx;
+}
+
+.debug-text {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 8rpx;
+} 

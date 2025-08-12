@@ -1,0 +1,98 @@
+<!-- pages/index/index.wxml - 首页内容展示模板 -->
+
+<view class="container">
+  <!-- 内容Tab导航 -->
+  <view class="content-tabs">
+    <view class="tab-item {{currentTab === 'recommend' ? 'active' : ''}}" 
+          data-tab="recommend" bindtap="switchTab">
+      <text>推荐</text>
+    </view>
+    <view class="tab-item {{currentTab === 'news' ? 'active' : ''}}" 
+          data-tab="news" bindtap="switchTab">
+      <text>茶讯</text>
+    </view>
+    <view class="tab-item {{currentTab === 'art' ? 'active' : ''}}" 
+          data-tab="art" bindtap="switchTab">
+      <text>茶艺</text>
+    </view>
+    <view class="tab-item {{currentTab === 'hot' ? 'active' : ''}}" 
+          data-tab="hot" bindtap="switchTab">
+      <text>热点</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 推荐内容 -->
+  <view wx:if="{{currentTab === 'recommend' && !loading}}" class="content-list">
+    <view wx:for="{{recommendList}}" wx:key="id" class="content-item" 
+          data-item="{{item}}" bindtap="viewDetail">
+      <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+      <view class="content-title">{{item.title}}</view>
+      <view class="content-summary">{{item.content}}</view>
+      <view class="content-time">{{item.create_time}}</view>
+    </view>
+    
+    <view wx:if="{{recommendList.length === 0}}" class="empty-state">
+      <text>暂无推荐内容</text>
+    </view>
+  </view>
+
+  <!-- 茶讯内容 -->
+  <view wx:if="{{currentTab === 'news' && !loading}}" class="content-list">
+    <view wx:for="{{newsList}}" wx:key="id" class="content-item" 
+          data-item="{{item}}" bindtap="viewDetail">
+      <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+      <view class="content-title">{{item.title}}</view>
+      <view class="content-summary">{{item.content}}</view>
+      <view class="content-time">{{item.create_time}}</view>
+    </view>
+    
+    <view wx:if="{{newsList.length === 0}}" class="empty-state">
+      <text>暂无茶讯内容</text>
+    </view>
+  </view>
+
+  <!-- 茶艺内容 -->
+  <view wx:if="{{currentTab === 'art' && !loading}}" class="content-list">
+    <view wx:for="{{artList}}" wx:key="id" class="content-item" 
+          data-item="{{item}}" bindtap="viewDetail">
+      <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+      <view class="content-title">{{item.title}}</view>
+      <view class="content-summary">{{item.content}}</view>
+      <view class="content-time">{{item.create_time}}</view>
+    </view>
+    
+    <view wx:if="{{artList.length === 0}}" class="empty-state">
+      <text>暂无茶艺内容</text>
+    </view>
+  </view>
+
+  <!-- 热点内容 -->
+  <view wx:if="{{currentTab === 'hot' && !loading}}" class="content-list">
+    <view wx:for="{{hotList}}" wx:key="id" class="content-item" 
+          data-item="{{item}}" bindtap="viewDetail">
+      <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+      <view class="content-title">{{item.title}}</view>
+      <view class="content-summary">{{item.content}}</view>
+      <view class="content-time">{{item.create_time}}</view>
+    </view>
+    
+    <view wx:if="{{hotList.length === 0}}" class="empty-state">
+      <text>暂无热点内容</text>
+    </view>
+  </view>
+
+  <!-- 刷新按钮 -->
+  <view class="refresh-btn" bindtap="onRefresh">
+    <text>刷新内容</text>
+  </view>
+
+  <!-- 测试API按钮 -->
+  <view class="test-btn" bindtap="testAPI">
+    <text>测试API连接</text>
+  </view>
+</view> 

@@ -1,0 +1,7 @@
+<view class="login-container">
+  <view class="login-title">账号密码登录</view>
+  <input class="login-input" placeholder="请输入账号" bindinput="onUsernameInput" />
+  <input class="login-input" placeholder="请输入密码" password="true" bindinput="onPasswordInput" />
+  <button class="login-btn" loading="{{loading}}" bindtap="onLoginTap">登录</button>
+  <view class="error-msg" wx:if="{{errorMsg}}">{{errorMsg}}</view>
+</view> 

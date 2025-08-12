@@ -1,0 +1,140 @@
+<view class="category-container">
+  <!-- 调试信息 -->
+  <view class="debug-info" style="background: #f0f0f0; padding: 10rpx; font-size: 24rpx; color: #666;">
+    调试信息: 价格列表长度={{priceList.length}}, 加载状态={{loading}}, 当前分类={{activeCategory}}
+  </view>
+
+  <!-- 页面头部 -->
+  <view class="header">
+    <view class="title">品类行情</view>
+    <view class="subtitle">实时价格 · 市场动态 · 趋势分析</view>
+  </view>
+
+
+
+  <!-- 分类选择 -->
+  <view class="category-tabs">
+    <view 
+      class="tab-item {{activeCategory === 'all' ? 'active' : ''}}" 
+      data-category="all" 
+      bindtap="switchCategory"
+    >
+      全部茶类
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'green' ? 'active' : ''}}" 
+      data-category="green" 
+      bindtap="switchCategory"
+    >
+      绿茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'white' ? 'active' : ''}}" 
+      data-category="white" 
+      bindtap="switchCategory"
+    >
+      白茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'yellow' ? 'active' : ''}}" 
+      data-category="yellow" 
+      bindtap="switchCategory"
+    >
+      黄茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'oolong' ? 'active' : ''}}" 
+      data-category="oolong" 
+      bindtap="switchCategory"
+    >
+      青茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'black' ? 'active' : ''}}" 
+      data-category="black" 
+      bindtap="switchCategory"
+    >
+      红茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'dark' ? 'active' : ''}}" 
+      data-category="dark" 
+      bindtap="switchCategory"
+    >
+      黑茶
+    </view>
+    <view 
+      class="tab-item {{activeCategory === 'flower' ? 'active' : ''}}" 
+      data-category="flower" 
+      bindtap="switchCategory"
+    >
+      花茶
+    </view>
+  </view>
+
+  <!-- 价格列表 -->
+  <view class="price-list">
+    <view wx:if="{{priceList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="https://img.icons8.com/clouds/200/tea.png" mode="aspectFit"></image>
+      <view class="empty-text">暂无{{categoryNames[activeCategory]}}价格数据</view>
+      <view class="empty-desc">请稍后再试或选择其他茶类</view>
+      <view class="empty-desc">调试: 当前分类={{activeCategory}}, 列表长度={{priceList.length}}</view>
+    </view>
+    
+    <view wx:for="{{priceList}}" wx:key="id" class="price-item" bindtap="viewPriceDetail" data-item="{{item}}">
+      <view class="price-header">
+        <view class="tea-name">{{item.name}}</view>
+        <view class="price-change {{item.changeType}}">
+          <text wx:if="{{item.changeType === 'up'}}">↗</text>
+          <text wx:elif="{{item.changeType === 'down'}}">↘</text>
+          <text wx:else>→</text>
+          {{item.changePercent}}%
+        </view>
+      </view>
+      
+      <view class="price-info">
+        <view class="price-range">
+          <text class="price-label">价格区间：</text>
+          <text class="price-value">¥{{item.minPrice}}-{{item.maxPrice}}/{{item.unit}}</text>
+        </view>
+        <view class="price-avg">
+          <text class="price-label">平均价格：</text>
+          <text class="price-value">¥{{item.avgPrice}}/{{item.unit}}</text>
+        </view>
+      </view>
+      
+      <view class="price-details">
+        <view class="detail-item">
+          <text class="detail-label">产地：</text>
+          <text class="detail-value">{{item.origin}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">更新时间：</text>
+          <text class="detail-value">{{item.updateTime}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">数据来源：</text>
+          <text class="detail-value">{{item.sourceCount}}个商户</text>
+        </view>
+      </view>
+      
+      <view class="price-tags">
+        <view wx:if="{{item.isHot}}" class="tag hot">热门</view>
+        <view wx:if="{{item.isNew}}" class="tag new">新品</view>
+        <view wx:if="{{item.isRecommended}}" class="tag recommended">推荐</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore && priceList.length > 0}}" class="load-more" bindtap="loadMore">
+    <text wx:if="{{loading}}" class="loading-text">加载中...</text>
+    <text wx:else class="load-more-text">点击加载更多</text>
+  </view>
+
+  <!-- 发布价格按钮 -->
+  <view class="publish-btn" bindtap="publishPrice">
+    <text class="publish-icon">📝</text>
+    <text class="publish-text">发布价格</text>
+  </view>
+</view>

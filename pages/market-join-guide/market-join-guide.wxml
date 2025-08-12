@@ -1,0 +1,178 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">商户入驻指南</view>
+    <view class="header-subtitle">快速了解入驻流程，开启茶叶贸易之旅</view>
+  </view>
+
+  <!-- 快速开始 -->
+  <view class="quick-start">
+    <view class="start-content">
+      <text class="start-title">想要入驻市场？</text>
+      <text class="start-desc">选择您喜欢的市场，开始您的茶叶贸易之旅</text>
+      <button class="start-btn" bindtap="startJoin">
+        <text class="btn-icon">🚀</text>
+        <text class="btn-text">立即开始入驻</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 入驻流程 -->
+  <view class="join-process">
+    <view class="section-title">
+      <text class="title-text">入驻流程</text>
+      <text class="title-desc">6个简单步骤，轻松完成入驻</text>
+    </view>
+
+    <view class="steps-container">
+      <view class="step-item" 
+            wx:for="{{joinSteps}}" 
+            wx:key="step"
+            wx:for-item="step">
+        <view class="step-header">
+          <view class="step-number">{{step.step}}</view>
+          <view class="step-icon">{{step.icon}}</view>
+        </view>
+        <view class="step-content">
+          <text class="step-title">{{step.title}}</text>
+          <text class="step-desc">{{step.description}}</text>
+          <view class="step-details">
+            <text class="detail-item" 
+                  wx:for="{{step.details}}" 
+                  wx:key="*this"
+                  wx:for-item="detail">
+              • {{detail}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 费用说明 -->
+  <view class="fee-info">
+    <view class="section-title">
+      <text class="title-text">入驻费用</text>
+      <text class="title-desc">根据市场等级，享受不同服务</text>
+    </view>
+
+    <view class="fee-cards">
+      <view class="fee-card national">
+        <view class="card-header">
+          <text class="card-level">{{feeInfo.national.level}}</text>
+          <text class="card-fee">{{feeInfo.national.fee}}</text>
+        </view>
+        <view class="card-benefits">
+          <text class="benefit-item" 
+                wx:for="{{feeInfo.national.benefits}}" 
+                wx:key="*this"
+                wx:for-item="benefit">
+            ✓ {{benefit}}
+          </text>
+        </view>
+      </view>
+
+      <view class="fee-card provincial">
+        <view class="card-header">
+          <text class="card-level">{{feeInfo.provincial.level}}</text>
+          <text class="card-fee">{{feeInfo.provincial.fee}}</text>
+        </view>
+        <view class="card-benefits">
+          <text class="benefit-item" 
+                wx:for="{{feeInfo.provincial.benefits}}" 
+                wx:key="*this"
+                wx:for-item="benefit">
+            ✓ {{benefit}}
+          </text>
+        </view>
+      </view>
+
+      <view class="fee-card city">
+        <view class="card-header">
+          <text class="card-level">{{feeInfo.city.level}}</text>
+          <text class="card-fee">{{feeInfo.city.fee}}</text>
+        </view>
+        <view class="card-benefits">
+          <text class="benefit-item" 
+                wx:for="{{feeInfo.city.benefits}}" 
+                wx:key="*this"
+                wx:for-item="benefit">
+            ✓ {{benefit}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faq-section">
+    <view class="section-title">
+      <text class="title-text">常见问题</text>
+      <text class="title-desc">解答您关心的入驻问题</text>
+    </view>
+
+    <view class="faq-list">
+      <view class="faq-item" 
+            wx:for="{{faqs}}" 
+            wx:key="question"
+            wx:for-item="faq">
+        <view class="faq-question">
+          <text class="question-text">{{faq.question}}</text>
+          <text class="question-icon">❓</text>
+        </view>
+        <view class="faq-answer">
+          <text class="answer-text">{{faq.answer}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系我们 -->
+  <view class="contact-section">
+    <view class="section-title">
+      <text class="title-text">联系我们</text>
+      <text class="title-desc">有任何问题都可以联系我们</text>
+    </view>
+
+    <view class="contact-info">
+      <view class="contact-item">
+        <text class="contact-icon">📞</text>
+        <view class="contact-detail">
+          <text class="contact-label">客服电话</text>
+          <text class="contact-value">{{contactInfo.phone}}</text>
+        </view>
+      </view>
+      <view class="contact-item">
+        <text class="contact-icon">💬</text>
+        <view class="contact-detail">
+          <text class="contact-label">微信客服</text>
+          <text class="contact-value">{{contactInfo.wechat}}</text>
+        </view>
+      </view>
+      <view class="contact-item">
+        <text class="contact-icon">📧</text>
+        <view class="contact-detail">
+          <text class="contact-label">邮箱地址</text>
+          <text class="contact-value">{{contactInfo.email}}</text>
+        </view>
+      </view>
+      <view class="contact-item">
+        <text class="contact-icon">⏰</text>
+        <view class="contact-detail">
+          <text class="contact-label">工作时间</text>
+          <text class="contact-value">{{contactInfo.workTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="contact-btn" bindtap="contactService">
+      <text class="btn-icon">📞</text>
+      <text class="btn-text">立即联系客服</text>
+    </button>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="bottom-tip">
+    <text class="tip-text">入驻成功后，您将获得专业的茶叶贸易平台服务</text>
+  </view>
+</view> 

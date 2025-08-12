@@ -1,0 +1,142 @@
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 商户详情 -->
+  <view class="merchant-detail" wx:if="{{!loading && merchantInfo}}">
+    <!-- 商户基本信息 -->
+    <view class="merchant-header">
+      <view class="merchant-basic">
+        <image class="merchant-logo" src="{{merchantInfo.logo}}" mode="aspectFill"></image>
+        <view class="merchant-info">
+          <view class="merchant-name">
+            <text>{{merchantInfo.name}}</text>
+            <view class="verification-badge" wx:if="{{merchantInfo.verified}}">✓</view>
+          </view>
+          <view class="merchant-rating">
+            <text class="rating-stars">⭐⭐⭐⭐⭐</text>
+            <text class="rating-score">{{merchantInfo.rating}}</text>
+          </view>
+          <view class="merchant-status">
+            <view class="activity-status {{merchantInfo.activityLevel}}">
+              {{merchantInfo.activityText}}
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="contact-actions">
+        <button class="contact-btn" bindtap="contactMerchant">联系商户</button>
+      </view>
+    </view>
+
+    <!-- 商户统计信息 -->
+    <view class="merchant-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{merchantInfo.responseTime}}</text>
+        <text class="stat-label">响应时间</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{merchantInfo.lastActive}}</text>
+        <text class="stat-label">最后活跃</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{merchantInfo.established}}</text>
+        <text class="stat-label">成立时间</text>
+      </view>
+    </view>
+
+    <!-- 主营产品 -->
+    <view class="section">
+      <view class="section-title">主营产品</view>
+      <view class="product-tags">
+        <text class="product-tag" wx:for="{{merchantInfo.mainProducts}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 商户介绍 -->
+    <view class="section">
+      <view class="section-title">商户介绍</view>
+      <text class="merchant-description">{{merchantInfo.description}}</text>
+    </view>
+
+    <!-- 联系信息 -->
+    <view class="section">
+      <view class="section-title">联系信息</view>
+      <view class="contact-info">
+        <view class="contact-item">
+          <text class="contact-label">联系电话：</text>
+          <text class="contact-value" bindtap="makePhoneCall">{{merchantInfo.contact.phone}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">微信号：</text>
+          <text class="contact-value" bindtap="copyWechat">{{merchantInfo.contact.wechat}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">详细地址：</text>
+          <text class="contact-value">{{merchantInfo.address}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">营业时间：</text>
+          <text class="contact-value">{{merchantInfo.businessHours}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 产品展示 -->
+    <view class="section">
+      <view class="section-title">产品展示</view>
+      <view class="product-list">
+        <view class="product-item" 
+              wx:for="{{merchantInfo.products}}" 
+              wx:key="id"
+              bindtap="viewProduct" 
+              data-id="{{item.id}}">
+          <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="product-info">
+            <text class="product-name">{{item.name}}</text>
+            <text class="product-type">{{item.type}}</text>
+            <text class="product-price">{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 资质证书 -->
+    <view class="section">
+      <view class="section-title">资质证书</view>
+      <view class="certificate-list">
+        <view class="certificate-item" wx:for="{{merchantInfo.certificates}}" wx:key="*this">
+          <text class="certificate-icon">📄</text>
+          <text class="certificate-name">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 服务项目 -->
+    <view class="section">
+      <view class="section-title">服务项目</view>
+      <view class="service-list">
+        <view class="service-item" wx:for="{{merchantInfo.services}}" wx:key="*this">
+          <text class="service-icon">✓</text>
+          <text class="service-name">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 微信二维码 -->
+    <view class="section">
+      <view class="section-title">微信二维码</view>
+      <view class="qrcode-container">
+        <image class="qrcode-image" 
+               src="{{merchantInfo.contact.qrcode}}" 
+               mode="aspectFit"
+               bindtap="viewQRCode"></image>
+        <text class="qrcode-tip">点击查看大图</text>
+      </view>
+    </view>
+  </view>
+</view> 

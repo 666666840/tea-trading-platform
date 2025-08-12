@@ -1,0 +1,44 @@
+{
+  "name": "smart-tea-crawler",
+  "version": "6.0.0",
+  "description": "智能茶叶内容采集系统",
+  "main": "smart-tea-crawler.js",
+  "scripts": {
+    "start": "node smart-tea-crawler.js",
+    "dev": "nodemon smart-tea-crawler.js",
+    "test": "node test-crawler.js",
+    "install-deps": "npm install",
+    "setup": "npm run install-deps && mkdir -p /usr/share/nginx/html"
+  },
+  "keywords": [
+    "tea",
+    "crawler",
+    "rss",
+    "content",
+    "automation"
+  ],
+  "author": "茶叶一点通",
+  "license": "MIT",
+  "dependencies": {
+    "rss-parser": "^3.13.0",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "node-schedule": "^2.1.1",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tea-platform/smart-crawler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tea-platform/smart-crawler/issues"
+  },
+  "homepage": "https://github.com/tea-platform/smart-crawler#readme"
+} 

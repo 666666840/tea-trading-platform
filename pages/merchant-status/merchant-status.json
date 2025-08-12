@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "申请状态",
+  "navigationBarBackgroundColor": "#4caf50",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f5f5",
+  "enablePullDownRefresh": true
+} 

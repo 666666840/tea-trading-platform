@@ -1,0 +1,255 @@
+<view class="container">
+  <!-- 发布求购按钮 -->
+  <view class="publish-header">
+    <button class="publish-btn" bindtap="publishInquiry">
+      <text class="publish-icon">📝</text>
+      <text class="publish-text">发布求购信息</text>
+    </button>
+  </view>
+
+  <!-- 求购信息发布表单 -->
+  <view class="inquiry-form" wx:if="{{!previewMode}}">
+    <view class="form-section">
+      <view class="section-title">求购品类 <text class="required">*</text></view>
+      
+      <!-- 一级分类选择 -->
+      <view class="category-grid">
+        <view class="category-item {{selectedCategory === item ? 'active' : ''}}" 
+              wx:for="{{categoryList}}" 
+              wx:key="*this"
+              wx:for-item="item"
+              bindtap="selectCategory" 
+              data-category="{{item}}">
+          <text class="category-name">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 子分类选择 -->
+      <view class="subcategory-grid" wx:if="{{selectedCategory}}">
+        <view class="subcategory-item {{selectedSubCategory === item ? 'active' : ''}}" 
+              wx:for="{{teaCategories[selectedCategory]}}" 
+              wx:key="*this"
+              wx:for-item="item"
+              bindtap="selectSubCategory" 
+              data-subcategory="{{item}}">
+          <text class="subcategory-name">{{item}}</text>
+        </view>
+      </view>
+
+      <view class="error-text" wx:if="{{formErrors.category}}">{{formErrors.category}}</view>
+      <view class="error-text" wx:if="{{formErrors.subCategory}}">{{formErrors.subCategory}}</view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">求购数量 <text class="required">*</text></view>
+      <view class="quantity-row">
+        <input class="quantity-input" 
+               type="number" 
+               placeholder="请输入数量" 
+               value="{{formData.quantity}}"
+               bindinput="onQuantityInput" />
+        <picker class="unit-picker" 
+                range="{{units}}" 
+                bindchange="onUnitChange">
+          <view class="unit-text">{{formData.unit}}</view>
+        </picker>
+      </view>
+      <view class="error-text" wx:if="{{formErrors.quantity}}">{{formErrors.quantity}}</view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">要求/规格描述 <text class="required">*</text></view>
+      <textarea class="description-input" 
+                placeholder="请详细描述对茶叶的要求，如等级标准、年份、产地要求、包装规格、工艺要求、认证要求等（至少10个字符）"
+                value="{{formData.description}}"
+                bindinput="onDescriptionInput"
+                maxlength="500"></textarea>
+      <view class="char-count">{{formData.description.length}}/500</view>
+      <view class="error-text" wx:if="{{formErrors.description}}">{{formErrors.description}}</view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">预算范围 <text class="optional">（供参考）</text></view>
+      <view class="budget-row">
+        <input class="budget-input" 
+               type="digit" 
+               placeholder="最低预算" 
+               value="{{formData.budgetMin}}"
+               bindinput="onBudgetMinInput" />
+        <text class="budget-separator">-</text>
+        <input class="budget-input" 
+               type="digit" 
+               placeholder="最高预算" 
+               value="{{formData.budgetMax}}"
+               bindinput="onBudgetMaxInput" />
+        <text class="budget-unit">元</text>
+      </view>
+      <view class="error-text" wx:if="{{formErrors.budget}}">{{formErrors.budget}}</view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">收货地区 <text class="optional">（推荐填写）</text></view>
+      <view class="location-row">
+        <picker class="location-picker" 
+                range="{{provinces}}" 
+                range-key="name"
+                bindchange="onProvinceChange">
+          <view class="location-text">{{formData.province || '选择省份'}}</view>
+        </picker>
+        <picker class="location-picker" 
+                range="{{currentCities}}" 
+                wx:if="{{formData.province}}"
+                bindchange="onCityChange">
+          <view class="location-text">{{formData.city || '选择城市'}}</view>
+        </picker>
+        <picker class="location-picker" 
+                range="{{currentDistricts}}" 
+                wx:if="{{formData.city}}"
+                bindchange="onDistrictChange">
+          <view class="location-text">{{formData.district || '选择区县'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">期望联系时间</view>
+      <picker class="time-picker" 
+              range="{{contactTimes}}" 
+              bindchange="onContactTimeChange">
+        <view class="time-text">{{formData.contactTime}}</view>
+      </picker>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">有效期限</view>
+      <picker class="valid-picker" 
+              range="{{validDaysOptions}}" 
+              bindchange="onValidDaysChange">
+        <view class="valid-text">{{formData.validDays}}天</view>
+      </picker>
+    </view>
+
+    <view class="form-section">
+      <view class="section-title">附件上传 <text class="optional">（可选）</text></view>
+      <view class="attachment-area">
+        <view class="attachment-list">
+          <view class="attachment-item" 
+                wx:for="{{formData.attachments}}" 
+                wx:key="*this">
+            <image class="attachment-image" 
+                   src="{{item}}" 
+                   mode="aspectFill"
+                   bindtap="previewAttachment"
+                   data-index="{{index}}"></image>
+            <view class="attachment-delete" 
+                  bindtap="deleteAttachment" 
+                  data-index="{{index}}">×</view>
+          </view>
+          <view class="attachment-add" 
+                bindtap="chooseAttachment" 
+                wx:if="{{formData.attachments.length < 9}}">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+        <text class="attachment-tip">最多上传9张图片，支持样品图片、规格书等</text>
+      </view>
+    </view>
+
+    <!-- 表单操作按钮 -->
+    <view class="form-actions">
+      <button class="action-btn reset-btn" bindtap="resetForm">重置</button>
+      <button class="action-btn preview-btn" bindtap="previewInquiry">预览</button>
+    </view>
+  </view>
+
+  <!-- 预览模式 -->
+  <view class="inquiry-preview" wx:if="{{previewMode}}">
+    <view class="preview-header">
+      <text class="preview-title">求购信息预览</text>
+      <text class="preview-tip">请确认信息无误后提交</text>
+    </view>
+
+    <view class="preview-content">
+      <view class="preview-item">
+        <text class="preview-label">求购品类：</text>
+        <text class="preview-value">{{formData.category}} - {{formData.subCategory}}</text>
+      </view>
+      <view class="preview-item">
+        <text class="preview-label">求购数量：</text>
+        <text class="preview-value">{{formData.quantity}} {{formData.unit}}</text>
+      </view>
+      <view class="preview-item">
+        <text class="preview-label">要求描述：</text>
+        <text class="preview-value">{{formData.description}}</text>
+      </view>
+      <view class="preview-item" wx:if="{{formData.budgetMin || formData.budgetMax}}">
+        <text class="preview-label">预算范围：</text>
+        <text class="preview-value">{{formData.budgetMin || '不限'}} - {{formData.budgetMax || '不限'}} 元</text>
+      </view>
+      <view class="preview-item" wx:if="{{formData.province}}">
+        <text class="preview-label">收货地区：</text>
+        <text class="preview-value">{{formData.province}} {{formData.city}} {{formData.district}}</text>
+      </view>
+      <view class="preview-item">
+        <text class="preview-label">联系时间：</text>
+        <text class="preview-value">{{formData.contactTime}}</text>
+      </view>
+      <view class="preview-item">
+        <text class="preview-label">有效期限：</text>
+        <text class="preview-value">{{formData.validDays}}天</text>
+      </view>
+      <view class="preview-item" wx:if="{{formData.attachments.length > 0}}">
+        <text class="preview-label">附件数量：</text>
+        <text class="preview-value">{{formData.attachments.length}}张图片</text>
+      </view>
+    </view>
+
+    <!-- 预览操作按钮 -->
+    <view class="preview-actions">
+      <button class="action-btn back-btn" bindtap="backToEdit">返回编辑</button>
+      <button class="action-btn submit-btn" 
+              bindtap="submitInquiry" 
+              loading="{{submitting}}"
+              disabled="{{submitting}}">
+        {{submitting ? '提交中...' : '确认发布'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 求购信息列表 -->
+  <view class="inquiry-list" wx:if="{{!previewMode}}">
+    <view class="list-header">
+      <text class="list-title">最新求购信息</text>
+    </view>
+    
+    <view class="inquiry-item" 
+          wx:for="{{inquiryList}}" 
+          wx:key="id"
+          bindtap="viewInquiryDetail" 
+          data-id="{{item.id}}">
+      <view class="inquiry-header">
+        <text class="inquiry-title">{{item.title}}</text>
+        <view class="inquiry-status {{item.status}}">{{item.statusText}}</view>
+      </view>
+      <text class="inquiry-desc">{{item.description}}</text>
+      <text class="inquiry-req">{{item.requirements}}</text>
+      <view class="inquiry-footer">
+        <view class="user-info">
+          <image class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill"></image>
+          <text class="user-name">{{item.userName}}</text>
+        </view>
+        <view class="inquiry-meta">
+          <text class="meta-item">{{item.time}}</text>
+          <text class="meta-item">报价 {{item.quoteCount}}</text>
+          <text class="meta-item">浏览 {{item.viewCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}">
+      <text bindtap="loadMore">加载更多</text>
+    </view>
+  </view>
+</view> 

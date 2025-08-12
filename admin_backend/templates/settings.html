@@ -1,0 +1,607 @@
+{% extends "base.html" %}
+
+{% block title %}系统设置 - 茶叶平台管理后台{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs"></i> 系统设置
+                    </h5>
+                    <button class="btn btn-primary" onclick="showAddSettingModal()">
+                        <i class="fas fa-plus"></i> 添加设置
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- 设置分类标签 -->
+                    <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab">
+                                <i class="fas fa-globe"></i> 基本设置
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="security-tab" data-toggle="tab" href="#security" role="tab">
+                                <i class="fas fa-shield-alt"></i> 安全设置
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="notification-tab" data-toggle="tab" href="#notification" role="tab">
+                                <i class="fas fa-bell"></i> 通知设置
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="system-tab" data-toggle="tab" href="#system" role="tab">
+                                <i class="fas fa-server"></i> 系统设置
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="business-tab" data-toggle="tab" href="#business" role="tab">
+                                <i class="fas fa-store"></i> 业务设置
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="ui-tab" data-toggle="tab" href="#ui" role="tab">
+                                <i class="fas fa-palette"></i> 界面设置
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- 设置内容 -->
+                    <div class="tab-content mt-3" id="settingsTabContent">
+                        <!-- 基本设置 -->
+                        <div class="tab-pane fade show active" id="general" role="tabpanel">
+                            <div class="row" id="general-settings">
+                                {% for setting in settings.get('general', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 安全设置 -->
+                        <div class="tab-pane fade" id="security" role="tabpanel">
+                            <div class="row" id="security-settings">
+                                {% for setting in settings.get('security', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                {% if setting.key in ['enable_registration', 'enable_captcha', 'password_require_special', 'enable_two_factor'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="true" {{ 'selected' if setting.value == 'true' else '' }}>启用</option>
+                                                    <option value="false" {{ 'selected' if setting.value == 'false' else '' }}>禁用</option>
+                                                </select>
+                                                {% else %}
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                                {% endif %}
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 通知设置 -->
+                        <div class="tab-pane fade" id="notification" role="tabpanel">
+                            <div class="row" id="notification-settings">
+                                {% for setting in settings.get('notification', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                {% if setting.key in ['email_notifications', 'enable_sms_notifications'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="true" {{ 'selected' if setting.value == 'true' else '' }}>启用</option>
+                                                    <option value="false" {{ 'selected' if setting.value == 'false' else '' }}>禁用</option>
+                                                </select>
+                                                {% else %}
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                                {% endif %}
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 系统设置 -->
+                        <div class="tab-pane fade" id="system" role="tabpanel">
+                            <div class="row" id="system-settings">
+                                {% for setting in settings.get('system', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                {% if setting.key in ['system_maintenance', 'enable_auto_cleanup'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="true" {{ 'selected' if setting.value == 'true' else '' }}>启用</option>
+                                                    <option value="false" {{ 'selected' if setting.value == 'false' else '' }}>禁用</option>
+                                                </select>
+                                                {% elif setting.key in ['backup_frequency'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="daily" {{ 'selected' if setting.value == 'daily' else '' }}>每日</option>
+                                                    <option value="weekly" {{ 'selected' if setting.value == 'weekly' else '' }}>每周</option>
+                                                    <option value="monthly" {{ 'selected' if setting.value == 'monthly' else '' }}>每月</option>
+                                                </select>
+                                                {% else %}
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                                {% endif %}
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 业务设置 -->
+                        <div class="tab-pane fade" id="business" role="tabpanel">
+                            <div class="row" id="business-settings">
+                                {% for setting in settings.get('business', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                {% if setting.key in ['market_approval_required', 'merchant_approval_required', 'enable_price_alerts', 'enable_market_analytics'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="true" {{ 'selected' if setting.value == 'true' else '' }}>启用</option>
+                                                    <option value="false" {{ 'selected' if setting.value == 'false' else '' }}>禁用</option>
+                                                </select>
+                                                {% else %}
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                                {% endif %}
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- 界面设置 -->
+                        <div class="tab-pane fade" id="ui" role="tabpanel">
+                            <div class="row" id="ui-settings">
+                                {% for setting in settings.get('ui', []) %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ setting.description }}</h6>
+                                            <p class="card-text text-muted">键名: {{ setting.key }}</p>
+                                            <div class="form-group">
+                                                {% if setting.key in ['enable_dark_mode', 'enable_animations', 'show_breadcrumbs', 'enable_tooltips'] %}
+                                                <select class="form-control setting-value" 
+                                                        data-id="{{ setting.id }}" 
+                                                        data-key="{{ setting.key }}">
+                                                    <option value="true" {{ 'selected' if setting.value == 'true' else '' }}>启用</option>
+                                                    <option value="false" {{ 'selected' if setting.value == 'false' else '' }}>禁用</option>
+                                                </select>
+                                                {% elif setting.key in ['theme_color'] %}
+                                                <input type="color" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       style="height: 38px;">
+                                                {% else %}
+                                                <input type="text" class="form-control setting-value" 
+                                                       data-id="{{ setting.id }}" 
+                                                       data-key="{{ setting.key }}"
+                                                       value="{{ setting.value }}"
+                                                       placeholder="设置值">
+                                                {% endif %}
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    最后更新: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </small>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="updateSetting({{ setting.id }})">
+                                                        <i class="fas fa-save"></i> 保存
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSetting({{ setting.id }}, '{{ setting.key }}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加设置模态框 -->
+<div class="modal fade" id="addSettingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加系统设置</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addSettingForm">
+                    <div class="form-group">
+                        <label for="settingKey">设置键名 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="settingKey" required>
+                        <small class="form-text text-muted">设置键名必须唯一，建议使用下划线分隔的小写字母</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="settingValue">设置值</label>
+                        <input type="text" class="form-control" id="settingValue">
+                    </div>
+                    <div class="form-group">
+                        <label for="settingDescription">描述</label>
+                        <input type="text" class="form-control" id="settingDescription">
+                    </div>
+                    <div class="form-group">
+                        <label for="settingCategory">分类 <span class="text-danger">*</span></label>
+                        <select class="form-control" id="settingCategory" required>
+                            <option value="">请选择分类</option>
+                            <option value="general">基本设置</option>
+                            <option value="security">安全设置</option>
+                            <option value="notification">通知设置</option>
+                            <option value="system">系统设置</option>
+                            <option value="business">业务设置</option>
+                            <option value="ui">界面设置</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="settingPublic">
+                            <label class="custom-control-label" for="settingPublic">公开可见</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveSetting()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 页面加载完成后初始化
+$(document).ready(function() {
+    // 绑定设置值变化事件
+    $(document).on('change', '.setting-value', function() {
+        const settingId = $(this).data('id');
+        const settingKey = $(this).data('key');
+        const value = $(this).val();
+        
+        // 自动保存设置
+        updateSetting(settingId, value);
+    });
+});
+
+// 显示添加设置模态框
+function showAddSettingModal() {
+    $('#addSettingForm')[0].reset();
+    $('#addSettingModal').modal('show');
+}
+
+// 保存新设置
+function saveSetting() {
+    const formData = {
+        key: $('#settingKey').val(),
+        value: $('#settingValue').val(),
+        description: $('#settingDescription').val(),
+        category: $('#settingCategory').val(),
+        is_public: $('#settingPublic').is(':checked')
+    };
+
+    // 表单验证
+    if (!formData.key || !formData.category) {
+        alert('请填写必填字段');
+        return;
+    }
+
+    fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#addSettingModal').modal('hide');
+            alert('设置添加成功');
+            location.reload(); // 重新加载页面以显示新设置
+        } else {
+            alert(data.error || '添加设置失败');
+        }
+    })
+    .catch(error => {
+        console.error('添加设置失败:', error);
+        alert('添加设置失败');
+    });
+}
+
+// 更新设置
+function updateSetting(settingId, value = null) {
+    const settingElement = $(`.setting-value[data-id="${settingId}"]`);
+    const settingValue = value !== null ? value : settingElement.val();
+    const settingKey = settingElement.data('key');
+    
+    fetch(`/api/settings/${settingId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            value: settingValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 更新最后更新时间
+            const cardBody = settingElement.closest('.card-body');
+            const timeElement = cardBody.find('.text-muted');
+            const now = new Date().toLocaleString('zh-CN');
+            timeElement.text(`最后更新: ${now}`);
+            
+            // 显示成功提示
+            showToast('设置更新成功', 'success');
+        } else {
+            alert(data.error || '更新设置失败');
+        }
+    })
+    .catch(error => {
+        console.error('更新设置失败:', error);
+        alert('更新设置失败');
+    });
+}
+
+// 删除设置
+function deleteSetting(settingId, settingKey) {
+    if (confirm(`确定要删除设置 "${settingKey}" 吗？此操作不可恢复。`)) {
+        fetch(`/api/settings/${settingId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 移除设置卡片
+                $(`.setting-value[data-id="${settingId}"]`).closest('.col-md-6').remove();
+                showToast('设置删除成功', 'success');
+            } else {
+                alert(data.error || '删除设置失败');
+            }
+        })
+        .catch(error => {
+            console.error('删除设置失败:', error);
+            alert('删除设置失败');
+        });
+    }
+}
+
+// 显示提示消息
+function showToast(message, type = 'info') {
+    const toastClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-info';
+    const toast = $(`
+        <div class="toast ${toastClass} text-white" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `);
+    
+    $('body').append(toast);
+    toast.fadeIn();
+    
+    setTimeout(() => {
+        toast.fadeOut(() => {
+            toast.remove();
+        });
+    }, 3000);
+}
+
+// 批量更新设置
+function batchUpdateSettings(category) {
+    const settings = $(`#${category}-settings .setting-value`);
+    const updates = [];
+    
+    settings.each(function() {
+        const settingId = $(this).data('id');
+        const value = $(this).val();
+        updates.push({ id: settingId, value: value });
+    });
+    
+    if (updates.length === 0) {
+        alert('没有需要更新的设置');
+        return;
+    }
+    
+    // 这里可以实现批量更新API，目前使用单个更新
+    let successCount = 0;
+    let totalCount = updates.length;
+    
+    updates.forEach(update => {
+        updateSetting(update.id, update.value);
+        successCount++;
+    });
+    
+    if (successCount === totalCount) {
+        showToast(`成功更新 ${successCount} 个设置`, 'success');
+    }
+}
+
+// 导出设置
+function exportSettings() {
+    fetch('/api/settings')
+        .then(response => response.json())
+        .then(data => {
+            const settingsData = JSON.stringify(data, null, 2);
+            const blob = new Blob([settingsData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `system_settings_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('导出设置失败:', error);
+            alert('导出设置失败');
+        });
+}
+
+// 导入设置
+function importSettings() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const settings = JSON.parse(e.target.result);
+                    // 这里可以实现批量导入API
+                    alert('导入功能待实现');
+                } catch (error) {
+                    alert('文件格式错误');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+</script>
+{% endblock %} 

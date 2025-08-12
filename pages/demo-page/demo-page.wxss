@@ -1,0 +1,358 @@
+/* 页面样式 - 开发者和用户界面分离演示 */
+
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* === 用户界面样式 === */
+.user-section {
+  background: white;
+  margin-bottom: 20rpx;
+}
+
+.user-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.user-header .title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 16rpx;
+}
+
+.user-header .subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding: 40rpx;
+}
+
+.feature-item {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.feature-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+}
+
+.user-feature {
+  border-left: 6rpx solid #667eea;
+}
+
+.feature-icon {
+  font-size: 48rpx;
+  margin-bottom: 16rpx;
+}
+
+.feature-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.user-actions {
+  padding: 0 40rpx 40rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background-color: #667eea;
+  color: white;
+}
+
+.action-btn.secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* === 开发者界面样式 === */
+.developer-section {
+  background: #fff3cd;
+  border: 2rpx solid #ffc107;
+  border-radius: 16rpx;
+  margin: 20rpx;
+  overflow: hidden;
+}
+
+/* 环境横幅 */
+.env-banner {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1rpx solid #dee2e6;
+}
+
+.env-banner.dev-mode {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+}
+
+.env-banner.test-mode {
+  background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+  color: #333;
+}
+
+.env-banner.prod-mode {
+  background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+  color: white;
+}
+
+.env-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.env-text {
+  flex: 1;
+}
+
+.env-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 4rpx;
+}
+
+.env-desc {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.env-action {
+  font-size: 32rpx;
+  padding: 10rpx;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+/* 开发者标题 */
+.dev-header {
+  padding: 30rpx;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.dev-header .title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #dc3545;
+  margin-bottom: 8rpx;
+}
+
+.dev-header .subtitle {
+  font-size: 24rpx;
+  color: #6c757d;
+}
+
+/* 开发工具网格 */
+.dev-grid {
+  background: #f8f9fa;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15rpx;
+  padding: 30rpx;
+}
+
+.dev-feature {
+  border-left: 6rpx solid #dc3545;
+  background: white;
+  min-height: 120rpx;
+}
+
+.dev-feature .feature-name {
+  color: #dc3545;
+}
+
+/* 数据监控 */
+.data-monitor {
+  background: white;
+  margin: 20rpx;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  border: 2rpx solid #28a745;
+}
+
+.monitor-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.monitor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.monitor-item {
+  text-align: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+}
+
+.monitor-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #28a745;
+  margin-bottom: 8rpx;
+}
+
+.monitor-value.error {
+  color: #dc3545;
+}
+
+.monitor-label {
+  font-size: 24rpx;
+  color: #6c757d;
+}
+
+.monitor-update {
+  text-align: center;
+  font-size: 22rpx;
+  color: #6c757d;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #dee2e6;
+}
+
+/* 开发者操作 */
+.dev-actions {
+  padding: 30rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn.dev-primary {
+  background-color: #dc3545;
+  color: white;
+}
+
+.action-btn.dev-secondary {
+  background-color: #ffc107;
+  color: #333;
+}
+
+/* 警告提示 */
+.dev-warning {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 20rpx;
+  text-align: center;
+  font-size: 24rpx;
+  border-top: 1rpx solid #f5c6cb;
+}
+
+/* === 环境信息栏 === */
+.env-info-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 15rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24rpx;
+}
+
+.env-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-text {
+  margin-right: 15rpx;
+}
+
+.status-dot {
+  font-size: 20rpx;
+}
+
+.status-dot.dev {
+  color: #ff6b6b;
+}
+
+.status-dot.test {
+  color: #feca57;
+}
+
+.status-dot.prod {
+  color: #48dbfb;
+}
+
+.env-toggle {
+  color: #17a2b8;
+  text-decoration: underline;
+}
+
+/* === 响应式适配 === */
+@media (max-width: 750rpx) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dev-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .monitor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === 动画效果 === */
+.developer-section {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

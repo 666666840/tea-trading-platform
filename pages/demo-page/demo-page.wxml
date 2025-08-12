@@ -1,0 +1,134 @@
+<!--页面模板 - 开发者和用户界面分离演示-->
+<view class="container">
+  
+  <!-- === 用户界面 (所有环境下都显示) === -->
+  <view class="user-section">
+    <view class="page-header user-header">
+      <view class="title">{{userContent.title}}</view>
+      <view class="subtitle">{{userContent.subtitle}}</view>
+    </view>
+
+    <!-- 用户功能区 -->
+    <view class="features-grid">
+      <view 
+        wx:for="{{userContent.features}}" 
+        wx:key="name"
+        class="feature-item user-feature"
+        data-name="{{item.name}}"
+        bindtap="onUserFeatureTap"
+      >
+        <view class="feature-icon">{{item.icon}}</view>
+        <view class="feature-content">
+          <view class="feature-name">{{item.name}}</view>
+          <view class="feature-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 用户操作按钮 -->
+    <view class="user-actions">
+      <button class="action-btn primary" bindtap="viewProducts">
+        🫖 查看茶叶产品
+      </button>
+      <button class="action-btn secondary" bindtap="contactService">
+        📞 联系客服
+      </button>
+    </view>
+  </view>
+
+  <!-- === 开发者界面 (仅开发/测试环境显示) === -->
+  <view class="developer-section" wx:if="{{canShowDevTools}}">
+    
+    <!-- 环境标识横幅 -->
+    <view class="env-banner {{isDeveloper ? 'dev-mode' : isTester ? 'test-mode' : 'prod-mode'}}">
+      <view class="env-icon">
+        {{isDeveloper ? '🔧' : isTester ? '🧪' : '🔵'}}
+      </view>
+      <view class="env-text">
+        <view class="env-title">
+          {{isDeveloper ? '开发者模式' : isTester ? '测试模式' : '生产模式'}}
+        </view>
+        <view class="env-desc">
+          {{isDeveloper ? '完整开发调试功能' : isTester ? '内测验收环境' : '用户正式版本'}}
+        </view>
+      </view>
+      <view class="env-action" bindtap="showEnvironmentInfo">ℹ️</view>
+    </view>
+
+    <!-- 开发者功能区 -->
+    <view class="dev-header">
+      <view class="title">{{developerContent.title}}</view>
+      <view class="subtitle">{{developerContent.subtitle}}</view>
+    </view>
+
+    <!-- 开发工具网格 -->
+    <view class="features-grid dev-grid">
+      <view 
+        wx:for="{{developerContent.features}}" 
+        wx:key="name"
+        class="feature-item dev-feature"
+        data-action="{{item.action}}"
+        bindtap="onDeveloperFeatureTap"
+      >
+        <view class="feature-icon">{{item.icon}}</view>
+        <view class="feature-content">
+          <view class="feature-name">{{item.name}}</view>
+          <view class="feature-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实时数据监控 (仅开发者模式) -->
+    <view class="data-monitor" wx:if="{{isDeveloper}}">
+      <view class="monitor-title">📊 实时监控数据</view>
+      <view class="monitor-grid">
+        <view class="monitor-item">
+          <view class="monitor-value">{{testData.apiCalls}}</view>
+          <view class="monitor-label">API调用</view>
+        </view>
+        <view class="monitor-item">
+          <view class="monitor-value error">{{testData.errorCount}}</view>
+          <view class="monitor-label">错误次数</view>
+        </view>
+        <view class="monitor-item">
+          <view class="monitor-value">{{testData.responseTime}}</view>
+          <view class="monitor-label">响应时间</view>
+        </view>
+        <view class="monitor-item">
+          <view class="monitor-value">{{testData.userCount}}</view>
+          <view class="monitor-label">在线用户</view>
+        </view>
+      </view>
+      <view class="monitor-update">
+        最后更新: {{testData.lastUpdate}}
+      </view>
+    </view>
+
+    <!-- 开发者操作按钮 -->
+    <view class="dev-actions">
+      <button class="action-btn dev-primary" bindtap="exportEnvironmentConfig">
+        📋 导出环境配置
+      </button>
+      <button class="action-btn dev-secondary" bindtap="refreshEnvironment">
+        🔄 刷新环境状态
+      </button>
+    </view>
+
+    <!-- 警告提示 -->
+    <view class="dev-warning">
+      ⚠️ 开发者功能区域 - 普通用户看不到此区域的任何内容
+    </view>
+  </view>
+
+  <!-- === 环境信息栏 (底部) === -->
+  <view class="env-info-bar">
+    <view class="env-status">
+      <text class="status-text">环境: {{isDeveloper ? '开发版' : isTester ? '体验版' : '正式版'}}</text>
+      <text class="status-dot {{isDeveloper ? 'dev' : isTester ? 'test' : 'prod'}}">●</text>
+    </view>
+    <view class="env-toggle" wx:if="{{canShowDevTools}}" bindtap="showEnvironmentInfo">
+      查看详情 >
+    </view>
+  </view>
+
+</view> 

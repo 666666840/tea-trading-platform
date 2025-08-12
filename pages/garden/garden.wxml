@@ -1,0 +1,204 @@
+<!-- 茶园直通页面 -->
+<view class="garden-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">
+      <text class="title-text">茶园直通</text>
+      <text class="title-desc">源头直采 · 品质保证</text>
+    </view>
+    <view class="season-tip" wx:if="{{currentSeason === 'spring'}}">
+      <text class="tip-icon">🌱</text>
+      <text class="tip-text">春茶采摘季，当季推荐优先展示</text>
+    </view>
+  </view>
+
+  <!-- 筛选和排序 -->
+  <view class="filter-section">
+    <!-- 产区筛选 -->
+    <view class="filter-row">
+      <text class="filter-label">产区：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{filterOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentFilter === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onFilterChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 排序选项 -->
+    <view class="filter-row">
+      <text class="filter-label">排序：</text>
+      <view class="filter-options">
+        <view 
+          wx:for="{{sortOptions}}" 
+          wx:key="value"
+          class="filter-item {{currentSort === item.value ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onSortChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 产区地图入口 -->
+  <view class="region-map-section">
+    <view class="section-title">产区地图</view>
+    <view class="province-list">
+      <view 
+        wx:for="{{provinces}}" 
+        wx:key="id"
+        class="province-item"
+        data-province="{{item.id}}"
+        bindtap="viewRegionMap"
+      >
+        <view class="province-info">
+          <text class="province-name">{{item.name}}</text>
+          <text class="region-count">{{item.regions.length}}个核心产区</text>
+        </view>
+        <view class="hot-regions">
+          <text 
+            wx:for="{{item.regions}}" 
+            wx:key="id" 
+            wx:for-item="region"
+            class="region-tag {{region.isHot ? 'hot' : ''}}"
+          >
+            {{region.name}}
+          </text>
+        </view>
+        <view class="arrow-icon">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 茶园列表 -->
+  <view class="garden-list">
+    <view class="list-title">茶园直采</view>
+    
+    <view 
+      wx:for="{{gardenList}}" 
+      wx:key="id"
+      class="garden-item"
+      data-id="{{item.id}}"
+      bindtap="onItemTap"
+    >
+      <!-- 茶园图片 -->
+      <view class="garden-images">
+        <swiper class="image-swiper" indicator-dots="{{item.images.length > 1}}" autoplay="{{false}}">
+          <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-item="image">
+            <image class="garden-image" src="{{image}}" mode="aspectFill"></image>
+          </swiper-item>
+        </swiper>
+        
+        <!-- 认证标识 -->
+        <view class="certification-badge" wx:if="{{item.isCertified}}">
+          <text class="badge-text">实地认证</text>
+        </view>
+        
+        <!-- 当季标识 -->
+        <view class="seasonal-badge" wx:if="{{item.isSeasonal}}">
+          <text class="badge-text">当季采摘</text>
+        </view>
+        
+        <!-- 品牌标识 -->
+        <view class="brand-badge" wx:if="{{item.merchant.brand}}">
+          <text class="badge-text">{{item.merchant.brand}}</text>
+        </view>
+      </view>
+
+      <!-- 茶园信息 -->
+      <view class="garden-info">
+        <view class="garden-header">
+          <text class="garden-name">{{item.name}}</text>
+          <view class="garden-tags">
+            <text class="tag-item">{{item.teaType}}</text>
+            <text class="tag-item">{{item.area}}{{item.areaUnit}}</text>
+          </view>
+        </view>
+        
+        <view class="garden-location">
+          <text class="location-icon">📍</text>
+          <text class="location-text">{{item.location}}</text>
+        </view>
+        
+        <view class="harvest-info">
+          <text class="harvest-label">采摘期：</text>
+          <text class="harvest-period">{{item.harvestPeriod}}</text>
+        </view>
+        
+        <view class="garden-features">
+          <text 
+            wx:for="{{item.features}}" 
+            wx:key="*this" 
+            wx:for-item="feature"
+            class="feature-tag"
+          >
+            {{feature}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 茶农信息 -->
+      <view class="merchant-info">
+        <view class="merchant-basic">
+          <image class="merchant-avatar" src="{{item.merchant.avatar}}" mode="aspectFill"></image>
+          <view class="merchant-details">
+            <text class="merchant-name">{{item.merchant.name}}</text>
+            <view class="merchant-rating">
+              <text class="rating-score">{{item.merchant.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="verified-badge" wx:if="{{item.merchant.isVerified}}">已认证</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="merchant-actions">
+          <button 
+            class="contact-btn"
+            data-wechat="tea_farmer_{{item.id}}"
+            bindtap="contactFarmer"
+            catchtap="contactFarmer"
+          >
+            联系茶农
+          </button>
+        </view>
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="item-footer">
+        <view class="view-count">
+          <text class="count-icon">👁️</text>
+          <text class="count-text">{{item.viewCount}}次浏览</text>
+        </view>
+        <view class="create-time">
+          <text class="time-text">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && gardenList.length > 0}}">
+    <text class="no-more-text">没有更多茶园了</text>
+  </view>
+  
+  <view class="empty-state" wx:if="{{gardenList.length === 0}}">
+    <text class="empty-text">暂无茶园信息</text>
+  </view>
+
+  <!-- 发布按钮 -->
+  <view class="publish-btn" bindtap="navigateToPublish">
+    <text class="publish-icon">🌱</text>
+    <text class="publish-text">发布茶园</text>
+  </view>
+</view> 

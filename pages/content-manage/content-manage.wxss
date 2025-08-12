@@ -1,0 +1,550 @@
+/* 容器样式 */
+.container {
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.back-icon {
+  font-size: 32rpx;
+  color: #333;
+}
+
+.back-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.header-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.refresh-btn {
+  background: none;
+  border: none;
+  padding: 8rpx;
+}
+
+.refresh-icon {
+  font-size: 32rpx;
+  color: #4CAF50;
+}
+
+/* 标签页导航 */
+.tab-nav {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 16rpx;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.tab-item.active {
+  color: #4CAF50;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.tab-item.active .tab-text {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background: #4CAF50;
+  border-radius: 2rpx;
+}
+
+/* 标签页内容 */
+.tab-content {
+  padding: 24rpx;
+}
+
+/* 配置区域 */
+.config-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  display: block;
+}
+
+.config-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.config-item:last-child {
+  border-bottom: none;
+}
+
+.config-info {
+  flex: 1;
+}
+
+.config-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.config-desc {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+/* 状态网格 */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.status-item {
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  text-align: center;
+}
+
+.status-label {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.status-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  display: block;
+}
+
+.status-value.success {
+  color: #4CAF50;
+}
+
+.status-value.error {
+  color: #F44336;
+}
+
+.status-time {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  display: block;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 24rpx 16rpx;
+  border-radius: 12rpx;
+  border: none;
+  background: #f8f8f8;
+  transition: background-color 0.2s;
+}
+
+.action-btn:active {
+  background: #e0e0e0;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.export-btn {
+  background: #E3F2FD;
+}
+
+.import-btn {
+  background: #F3E5F5;
+}
+
+.reset-btn {
+  background: #FFF3E0;
+}
+
+/* API列表 */
+.api-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.api-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.api-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.api-info {
+  flex: 1;
+}
+
+.api-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.api-url {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.status-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #4CAF50;
+}
+
+.api-status.connected .status-dot {
+  background: #4CAF50;
+}
+
+.api-status.error .status-dot {
+  background: #F44336;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.api-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.detail-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.detail-value {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.api-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.test-btn {
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  padding: 12rpx 24rpx;
+  font-size: 24rpx;
+}
+
+/* RSS源列表 */
+.rss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  font-size: 24rpx;
+}
+
+.add-icon {
+  font-size: 24rpx;
+}
+
+.add-text {
+  font-size: 24rpx;
+}
+
+.rss-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.rss-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.rss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.rss-info {
+  flex: 1;
+}
+
+.rss-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.rss-url {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+.rss-status {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.rss-status.active .status-dot {
+  background: #4CAF50;
+}
+
+.rss-status.error .status-dot {
+  background: #F44336;
+}
+
+.rss-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.rss-actions {
+  display: flex;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.delete-btn {
+  background: #F44336;
+  color: #fff;
+  border: none;
+  border-radius: 8rpx;
+  padding: 12rpx 24rpx;
+  font-size: 24rpx;
+}
+
+/* 统计区域 */
+.stats-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.stat-item {
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+.stats-time {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  display: block;
+}
+
+/* 分布图表 */
+.distribution-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.chart-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.chart-bar {
+  height: 24rpx;
+  border-radius: 12rpx;
+  min-width: 60rpx;
+}
+
+.chart-bar.external {
+  background: #4CAF50;
+}
+
+.chart-bar.rss {
+  background: #2196F3;
+}
+
+.chart-bar.local {
+  background: #FF9800;
+}
+
+.chart-label {
+  font-size: 24rpx;
+  color: #333;
+  min-width: 120rpx;
+}
+
+.chart-percent {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .api-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .rss-details {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+} 

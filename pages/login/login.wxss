@@ -1,0 +1,36 @@
+.login-container {
+  padding: 60rpx 40rpx;
+  background: #fff;
+  min-height: 100vh;
+}
+.login-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+.login-input {
+  width: 100%;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  margin-bottom: 32rpx;
+  background: #f8f9fa;
+}
+.login-btn {
+  width: 100%;
+  background: #667eea;
+  color: #fff;
+  font-size: 30rpx;
+  padding: 20rpx 0;
+  border-radius: 8rpx;
+  margin-bottom: 24rpx;
+}
+.error-msg {
+  color: #dc3545;
+  font-size: 26rpx;
+  text-align: center;
+  margin-top: 16rpx;
+} 

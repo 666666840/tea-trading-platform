@@ -1,0 +1,28 @@
+{
+  "cleanupTime": "2025-08-11T18:01:00.429236",
+  "action": "清理示例数据",
+  "purpose": "为输入真实信息做准备",
+  "steps": [
+    "清理数据库中的示例数据",
+    "清理小程序存储中的示例数据",
+    "清理JSON文件中的示例数据",
+    "生成清理脚本"
+  ],
+  "files": {
+    "generated": [
+      "clear_sample_data.js"
+    ],
+    "backup": [
+      "miniprogram_real_data.json.backup",
+      "简化功能测试报告.json.backup",
+      "系统检测报告.json.backup",
+      "系统优化总结报告.json.backup"
+    ]
+  },
+  "nextSteps": [
+    "运行 clear_sample_data.js 清理小程序存储",
+    "使用真实数据录入工具导入真实信息",
+    "测试数据导入是否成功",
+    "验证功能是否正常"
+  ]
+}

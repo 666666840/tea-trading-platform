@@ -1,0 +1,310 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="back-text">返回</text>
+    </view>
+    <view class="header-title">内容管理</view>
+    <view class="header-right">
+      <button class="refresh-btn" bindtap="refreshContent">
+        <text class="refresh-icon">🔄</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 标签页导航 -->
+  <view class="tab-nav">
+    <view class="tab-item {{activeTab === 'config' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="config">
+      <text class="tab-text">配置</text>
+    </view>
+    <view class="tab-item {{activeTab === 'external' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="external">
+      <text class="tab-text">外部API</text>
+    </view>
+    <view class="tab-item {{activeTab === 'rss' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="rss">
+      <text class="tab-text">RSS源</text>
+    </view>
+    <view class="tab-item {{activeTab === 'stats' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="stats">
+      <text class="tab-text">统计</text>
+    </view>
+  </view>
+
+  <!-- 配置标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'config'}}">
+    <view class="config-section">
+      <text class="section-title">内容源配置</text>
+      
+      <!-- 外部内容开关 -->
+      <view class="config-item">
+        <view class="config-info">
+          <text class="config-label">启用外部内容</text>
+          <text class="config-desc">从外部API获取文章内容</text>
+        </view>
+        <switch 
+          checked="{{contentSource.useExternal}}" 
+          bindchange="toggleContentSource" 
+          data-key="useExternal"
+        />
+      </view>
+      
+      <!-- RSS源开关 -->
+      <view class="config-item">
+        <view class="config-info">
+          <text class="config-label">启用RSS源</text>
+          <text class="config-desc">从RSS订阅源获取内容</text>
+        </view>
+        <switch 
+          checked="{{contentSource.useRSS}}" 
+          bindchange="toggleContentSource" 
+          data-key="useRSS"
+        />
+      </view>
+      
+      <!-- 本地内容开关 -->
+      <view class="config-item">
+        <view class="config-info">
+          <text class="config-label">启用本地内容</text>
+          <text class="config-desc">显示本地编辑的内容</text>
+        </view>
+        <switch 
+          checked="{{contentSource.useLocal}}" 
+          bindchange="toggleContentSource" 
+          data-key="useLocal"
+        />
+      </view>
+    </view>
+
+    <view class="config-section">
+      <text class="section-title">内容优先级</text>
+      
+      <!-- 外部内容优先级 -->
+      <view class="config-item">
+        <view class="config-info">
+          <text class="config-label">外部内容优先级</text>
+          <text class="config-desc">{{contentSource.externalPriority * 100}}%</text>
+        </view>
+        <slider 
+          value="{{contentSource.externalPriority * 100}}" 
+          bindchange="adjustPriority" 
+          data-key="externalPriority"
+          min="0" 
+          max="100" 
+          step="10"
+        />
+      </view>
+      
+      <!-- 本地内容优先级 -->
+      <view class="config-item">
+        <view class="config-info">
+          <text class="config-label">本地内容优先级</text>
+          <text class="config-desc">{{contentSource.localPriority * 100}}%</text>
+        </view>
+        <slider 
+          value="{{contentSource.localPriority * 100}}" 
+          bindchange="adjustPriority" 
+          data-key="localPriority"
+          min="0" 
+          max="100" 
+          step="10"
+        />
+      </view>
+    </view>
+
+    <view class="config-section">
+      <text class="section-title">网络状态</text>
+      
+      <view class="status-grid">
+        <view class="status-item">
+          <text class="status-label">外部API</text>
+          <text class="status-value {{networkStatus.externalAvailable ? 'success' : 'error'}}">
+            {{networkStatus.externalAvailable ? '正常' : '异常'}}
+          </text>
+        </view>
+        <view class="status-item">
+          <text class="status-label">RSS源</text>
+          <text class="status-value {{networkStatus.rssAvailable ? 'success' : 'error'}}">
+            {{networkStatus.rssAvailable ? '正常' : '异常'}}
+          </text>
+        </view>
+      </view>
+      
+      <text class="status-time">最后检查: {{networkStatus.lastCheck || '未检查'}}</text>
+    </view>
+
+    <view class="config-section">
+      <text class="section-title">配置操作</text>
+      
+      <view class="action-buttons">
+        <button class="action-btn export-btn" bindtap="exportConfig">
+          <text class="btn-icon">📤</text>
+          <text class="btn-text">导出配置</text>
+        </button>
+        <button class="action-btn import-btn" bindtap="importConfig">
+          <text class="btn-icon">📥</text>
+          <text class="btn-text">导入配置</text>
+        </button>
+        <button class="action-btn reset-btn" bindtap="resetConfig">
+          <text class="btn-icon">🔄</text>
+          <text class="btn-text">重置配置</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 外部API标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'external'}}">
+    <view class="api-list">
+      <view class="api-item" 
+            wx:for="{{externalAPIs}}" 
+            wx:key="baseUrl"
+            wx:for-item="api"
+            wx:for-index="index">
+        <view class="api-header" bindtap="viewContentDetail" data-type="external" data-index="{{index}}">
+          <view class="api-info">
+            <text class="api-name">{{api.name}}</text>
+            <text class="api-url">{{api.baseUrl}}</text>
+          </view>
+          <view class="api-status {{api.status}}">
+            <text class="status-dot"></text>
+            <text class="status-text">{{api.status}}</text>
+          </view>
+        </view>
+        
+        <view class="api-details">
+          <view class="detail-item">
+            <text class="detail-label">文章数量</text>
+            <text class="detail-value">{{api.articleCount}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">最后检查</text>
+            <text class="detail-value">{{api.lastCheck}}</text>
+          </view>
+        </view>
+        
+        <view class="api-actions">
+          <button class="test-btn" 
+                  bindtap="testAPIConnection" 
+                  data-index="{{index}}">
+            测试连接
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- RSS源标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'rss'}}">
+    <view class="rss-header">
+      <text class="section-title">RSS订阅源</text>
+      <button class="add-btn" bindtap="addRSSFeed">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加源</text>
+      </button>
+    </view>
+    
+    <view class="rss-list">
+      <view class="rss-item" 
+            wx:for="{{rssFeeds}}" 
+            wx:key="url"
+            wx:for-item="feed"
+            wx:for-index="index">
+        <view class="rss-header" bindtap="viewContentDetail" data-type="rss" data-index="{{index}}">
+          <view class="rss-info">
+            <text class="rss-name">{{feed.name}}</text>
+            <text class="rss-url">{{feed.url}}</text>
+          </view>
+          <view class="rss-status {{feed.status}}">
+            <text class="status-dot"></text>
+            <text class="status-text">{{feed.status}}</text>
+          </view>
+        </view>
+        
+        <view class="rss-details">
+          <view class="detail-item">
+            <text class="detail-label">分类</text>
+            <text class="detail-value">{{feed.category}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">文章数量</text>
+            <text class="detail-value">{{feed.articleCount}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">最后更新</text>
+            <text class="detail-value">{{feed.lastUpdate}}</text>
+          </view>
+        </view>
+        
+        <view class="rss-actions">
+          <button class="test-btn" 
+                  bindtap="testRSSFeed" 
+                  data-index="{{index}}">
+            测试源
+          </button>
+          <button class="delete-btn" 
+                  bindtap="deleteRSSFeed" 
+                  data-index="{{index}}">
+            删除
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'stats'}}">
+    <view class="stats-section">
+      <text class="section-title">内容统计</text>
+      
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{contentStats.totalArticles}}</text>
+          <text class="stat-label">总文章数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{contentStats.externalArticles}}</text>
+          <text class="stat-label">外部文章</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{contentStats.rssArticles}}</text>
+          <text class="stat-label">RSS文章</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{contentStats.localArticles}}</text>
+          <text class="stat-label">本地文章</text>
+        </view>
+      </view>
+      
+      <text class="stats-time">最后更新: {{contentStats.lastUpdate || '未更新'}}</text>
+    </view>
+
+    <view class="stats-section">
+      <text class="section-title">内容分布</text>
+      
+      <view class="distribution-chart">
+        <view class="chart-item">
+          <view class="chart-bar external" style="width: {{contentStats.externalArticles / contentStats.totalArticles * 100}}%"></view>
+          <text class="chart-label">外部内容</text>
+          <text class="chart-percent">{{Math.round(contentStats.externalArticles / contentStats.totalArticles * 100)}}%</text>
+        </view>
+        <view class="chart-item">
+          <view class="chart-bar rss" style="width: {{contentStats.rssArticles / contentStats.totalArticles * 100}}%"></view>
+          <text class="chart-label">RSS内容</text>
+          <text class="chart-percent">{{Math.round(contentStats.rssArticles / contentStats.totalArticles * 100)}}%</text>
+        </view>
+        <view class="chart-item">
+          <view class="chart-bar local" style="width: {{contentStats.localArticles / contentStats.totalArticles * 100}}%"></view>
+          <text class="chart-label">本地内容</text>
+          <text class="chart-percent">{{Math.round(contentStats.localArticles / contentStats.totalArticles * 100)}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

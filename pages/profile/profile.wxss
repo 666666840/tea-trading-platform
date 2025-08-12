@@ -1,0 +1,386 @@
+/* 个人中心页面样式 */
+.profile-page {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 顶部资料区 */
+.profile-header {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx 30rpx;
+  border-radius: 0 0 30rpx 30rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+  z-index: 1;
+}
+
+.user-info-section {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+/* 头像管理 */
+.avatar-section {
+  position: relative;
+  margin-right: 25rpx;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.2);
+}
+
+.avatar-edit-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 用户详情 */
+.user-details {
+  flex: 1;
+}
+
+.name-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: white;
+  margin-right: 15rpx;
+}
+
+.edit-icon {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-id-section {
+  display: flex;
+  align-items: center;
+}
+
+.user-id {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-right: 15rpx;
+}
+
+.copy-icon {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 认证状态 */
+.auth-status {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 30rpx;
+}
+
+.auth-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 20rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 25rpx;
+  backdrop-filter: blur(10px);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.auth-item:active {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(0.95);
+}
+
+.auth-icon {
+  font-size: 24rpx;
+  margin-right: 10rpx;
+}
+
+.auth-icon.bound {
+  color: #4caf50;
+}
+
+.auth-icon.unbound {
+  color: #f44336;
+}
+
+.auth-text {
+  font-size: 24rpx;
+  color: white;
+  margin-right: 10rpx;
+}
+
+.auth-status-text {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.auth-status-text.bound {
+  color: #4caf50;
+}
+
+.auth-status-text.unbound {
+  color: #f44336;
+}
+
+/* 核心功能区域 */
+.core-functions {
+  padding: 0 30rpx;
+}
+
+.function-section {
+  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  padding: 30rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 功能网格 */
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rpx;
+  background: #f5f5f5;
+}
+
+.function-item {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 20rpx;
+  transition: all 0.3s ease;
+}
+
+.function-item:active {
+  background: #f8f9ff;
+  transform: scale(0.98);
+}
+
+.function-icon {
+  font-size: 48rpx;
+  margin-bottom: 15rpx;
+}
+
+.function-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 店铺数据看板 */
+.shop-stats {
+  padding: 30rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.stats-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20rpx 15rpx;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+  border-radius: 15rpx;
+  border: 1rpx solid #e8f2ff;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 协议列表 */
+.agreement-list {
+  background: white;
+}
+
+.agreement-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+
+.agreement-item:last-child {
+  border-bottom: none;
+}
+
+.agreement-item:active {
+  background: #f8f9ff;
+}
+
+.agreement-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.arrow-icon {
+  font-size: 24rpx;
+  color: #ccc;
+  font-weight: bold;
+}
+
+/* 退出登录 */
+.logout-section {
+  padding: 40rpx 30rpx;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: white;
+  border: none;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 107, 0.3);
+  transition: all 0.3s ease;
+}
+
+.logout-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(255, 107, 107, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .profile-header {
+    padding: 30rpx 20rpx 20rpx;
+  }
+  
+  .user-avatar {
+    width: 100rpx;
+    height: 100rpx;
+  }
+  
+  .user-name {
+    font-size: 32rpx;
+  }
+  
+  .function-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 15rpx;
+  }
+  
+  .auth-status {
+    flex-direction: column;
+    gap: 15rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .profile-page {
+    background: #1a1a1a;
+  }
+  
+  .function-section {
+    background: #2a2a2a;
+  }
+  
+  .function-item {
+    background: #2a2a2a;
+  }
+  
+  .function-item:active {
+    background: #3a3a3a;
+  }
+  
+  .title-text {
+    color: #fff;
+  }
+  
+  .function-text {
+    color: #ccc;
+  }
+  
+  .agreement-text {
+    color: #ccc;
+  }
+  
+  .stat-item {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-color: #4a4a4a;
+  }
+  
+  .stat-number {
+    color: #667eea;
+  }
+  
+  .stat-label {
+    color: #999;
+  }
+} 

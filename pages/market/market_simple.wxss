@@ -1,0 +1,6 @@
+/* pages/market/market_simple.wxss */
+.container {
+  padding: 40rpx;
+  font-size: 32rpx;
+  color: #333;
+}

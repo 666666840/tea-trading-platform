@@ -1,0 +1,320 @@
+<!-- 茶园详情页面 -->
+<view class="garden-detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <view class="detail-content" wx:if="{{!loading && garden}}">
+    <!-- 图片轮播 -->
+    <view class="image-section">
+      <swiper class="image-swiper" indicator-dots="{{garden.images.length > 1}}" autoplay="{{false}}">
+        <swiper-item 
+          wx:for="{{garden.images}}" 
+          wx:key="*this"
+          class="swiper-item"
+        >
+          <image 
+            class="garden-image" 
+            src="{{item}}" 
+            mode="aspectFill"
+            data-current="{{item}}"
+            bindtap="previewImage"
+          ></image>
+        </swiper-item>
+      </swiper>
+      
+      <!-- 认证标识 -->
+      <view class="certification-badge" wx:if="{{garden.isCertified}}">
+        <text class="badge-text">实地认证</text>
+      </view>
+      
+      <!-- 当季标识 -->
+      <view class="seasonal-badge" wx:if="{{garden.isSeasonal}}">
+        <text class="badge-text">当季采摘</text>
+      </view>
+      
+      <!-- 品牌标识 -->
+      <view class="brand-badge" wx:if="{{garden.merchant.brand}}">
+        <text class="badge-text">{{garden.merchant.brand}}</text>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <button class="action-btn favorite-btn" bindtap="toggleFavorite">
+          <text class="btn-icon">❤️</text>
+        </button>
+        <button class="action-btn share-btn" open-type="share">
+          <text class="btn-icon">📤</text>
+        </button>
+        <button class="action-btn report-btn" bindtap="report">
+          <text class="btn-icon">⚠️</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="basic-info">
+      <view class="garden-header">
+        <text class="garden-name">{{garden.name}}</text>
+        <view class="garden-tags">
+          <text class="tag-item">{{garden.teaType}}</text>
+          <text class="tag-item">{{garden.area}}{{garden.areaUnit}}</text>
+        </view>
+      </view>
+      
+      <view class="garden-location">
+        <text class="location-icon">📍</text>
+        <text class="location-text">{{garden.location}}</text>
+      </view>
+      
+      <view class="harvest-info">
+        <text class="harvest-label">采摘期：</text>
+        <text class="harvest-period">{{garden.harvestPeriod}}</text>
+      </view>
+      
+      <view class="garden-features">
+        <text 
+          wx:for="{{garden.features}}" 
+          wx:key="*this" 
+          wx:for-item="feature"
+          class="feature-tag"
+        >
+          {{feature}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 价格信息 -->
+    <view class="price-section">
+      <view class="section-title">价格信息</view>
+      <view class="price-content">
+        <view class="current-price">
+          <text class="price-label">当前价格：</text>
+          <text class="price-value">{{garden.pricing.currentPrice}}</text>
+          <text class="price-trend {{garden.pricing.priceTrend}}">
+            {{garden.pricing.priceTrend === 'up' ? '↗' : garden.pricing.priceTrend === 'down' ? '↘' : '→'}}
+          </text>
+        </view>
+        
+        <view class="price-details">
+          <view class="detail-item">
+            <text class="detail-label">去年价格：</text>
+            <text class="detail-value">{{garden.pricing.lastYearPrice}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">起订量：</text>
+            <text class="detail-value">{{garden.pricing.minOrder}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">发货时间：</text>
+            <text class="detail-value">{{garden.pricing.delivery}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">保障：</text>
+            <text class="detail-value">{{garden.pricing.guarantee}}</text>
+          </view>
+        </view>
+        
+        <view class="payment-methods">
+          <text class="payment-label">支付方式：</text>
+          <view class="payment-tags">
+            <text 
+              wx:for="{{garden.pricing.payment}}" 
+              wx:key="*this"
+              class="payment-tag"
+            >
+              {{item}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 茶农信息 -->
+    <view class="merchant-section">
+      <view class="section-title">茶农信息</view>
+      <view class="merchant-content">
+        <view class="merchant-basic">
+          <image class="merchant-avatar" src="{{garden.merchant.avatar}}" mode="aspectFill"></image>
+          <view class="merchant-details">
+            <text class="merchant-name">{{garden.merchant.name}}</text>
+            <view class="merchant-rating">
+              <text class="rating-score">{{garden.merchant.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="verified-badge" wx:if="{{garden.merchant.isVerified}}">已认证</text>
+            </view>
+            <text class="merchant-desc">{{garden.merchant.description}}</text>
+          </view>
+        </view>
+        
+        <!-- 联系信息 -->
+        <view class="contact-info">
+          <view class="contact-item" data-type="wechat" bindtap="contactFarmer">
+            <text class="contact-icon">💬</text>
+            <text class="contact-label">微信</text>
+            <text class="contact-value">{{contactUnlocked ? garden.merchant.wechat : '点击解锁'}}</text>
+            <text class="contact-arrow">></text>
+          </view>
+          
+          <view class="contact-item" data-type="phone" bindtap="contactFarmer">
+            <text class="contact-icon">📞</text>
+            <text class="contact-label">电话</text>
+            <text class="contact-value">{{contactUnlocked ? garden.merchant.phone : '点击解锁'}}</text>
+            <text class="contact-arrow">></text>
+          </view>
+          
+          <view class="contact-item" data-type="address" bindtap="contactFarmer">
+            <text class="contact-icon">📍</text>
+            <text class="contact-label">地址</text>
+            <text class="contact-value">{{contactUnlocked ? garden.merchant.address : '点击解锁'}}</text>
+            <text class="contact-arrow">></text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 详细信息 -->
+    <view class="details-section">
+      <view class="section-title">茶园详情</view>
+      <view class="details-content">
+        <view class="detail-row">
+          <text class="detail-label">海拔：</text>
+          <text class="detail-value">{{garden.details.altitude}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">土壤：</text>
+          <text class="detail-value">{{garden.details.soil}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">气候：</text>
+          <text class="detail-value">{{garden.details.climate}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">降水量：</text>
+          <text class="detail-value">{{garden.details.rainfall}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">温度：</text>
+          <text class="detail-value">{{garden.details.temperature}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">种植年份：</text>
+          <text class="detail-value">{{garden.details.plantingYear}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">加工工艺：</text>
+          <text class="detail-value">{{garden.details.processing}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">存储条件：</text>
+          <text class="detail-value">{{garden.details.storage}}</text>
+        </view>
+        
+        <view class="certification-section">
+          <text class="section-subtitle">认证资质</text>
+          <view class="certification-tags">
+            <text 
+              wx:for="{{garden.details.certification}}" 
+              wx:key="*this"
+              class="certification-tag"
+            >
+              {{item}}
+            </text>
+          </view>
+        </view>
+        
+        <view class="awards-section">
+          <text class="section-subtitle">获得荣誉</text>
+          <view class="awards-list">
+            <text 
+              wx:for="{{garden.details.awards}}" 
+              wx:key="*this"
+              class="award-item"
+            >
+              🏆 {{item}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 用户评价 -->
+    <view class="reviews-section">
+      <view class="section-title">用户评价 ({{garden.reviews.length}})</view>
+      <view class="reviews-content">
+        <view 
+          wx:for="{{garden.reviews}}" 
+          wx:key="id"
+          class="review-item"
+        >
+          <view class="review-header">
+            <image class="reviewer-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+            <view class="reviewer-info">
+              <text class="reviewer-name">{{item.user}}</text>
+              <view class="review-rating">
+                <text 
+                  wx:for="{{item.rating}}" 
+                  wx:key="*this"
+                  class="rating-star"
+                >⭐</text>
+              </view>
+            </view>
+            <text class="review-time">{{item.time}}</text>
+          </view>
+          
+          <view class="review-content">
+            <text class="review-text">{{item.content}}</text>
+            <view class="review-images" wx:if="{{item.images.length > 0}}">
+              <image 
+                wx:for="{{item.images}}" 
+                wx:key="*this" 
+                wx:for-item="image"
+                class="review-image"
+                src="{{image}}"
+                mode="aspectFill"
+                data-current="{{image}}"
+                data-urls="{{item.images}}"
+                bindtap="previewReviewImage"
+              ></image>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 相关茶园 -->
+    <view class="related-section">
+      <view class="section-title">相关茶园</view>
+      <view class="related-content">
+        <view 
+          wx:for="{{garden.relatedGardens}}" 
+          wx:key="id"
+          class="related-item"
+          data-id="{{item.id}}"
+          bindtap="goToRelatedGarden"
+        >
+          <image class="related-image" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="related-info">
+            <text class="related-name">{{item.name}}</text>
+            <text class="related-location">{{item.location}}</text>
+            <text class="related-price">{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部信息 -->
+    <view class="footer-info">
+      <view class="info-row">
+        <text class="info-label">发布时间：</text>
+        <text class="info-value">{{garden.createTime}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">浏览次数：</text>
+        <text class="info-value">{{garden.viewCount}}次</text>
+      </view>
+    </view>
+  </view>
+</view> 

@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}内容管理 - 茶叶一点通管理后台{% endblock %}
+
+{% block page_title %}内容管理{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('add_content') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i> 添加内容
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- 筛选器 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="type" class="form-label">内容类型</label>
+                <select class="form-select" id="type" name="type">
+                    <option value="all" {% if content_type == 'all' %}selected{% endif %}>全部类型</option>
+                    <option value="recommend" {% if content_type == 'recommend' %}selected{% endif %}>推荐内容</option>
+                    <option value="news" {% if content_type == 'news' %}selected{% endif %}>茶讯新闻</option>
+                    <option value="art" {% if content_type == 'art' %}selected{% endif %}>茶艺教程</option>
+                    <option value="hot" {% if content_type == 'hot' %}selected{% endif %}>热门资讯</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="status" class="form-label">状态</label>
+                <select class="form-select" id="status" name="status">
+                    <option value="all" {% if status == 'all' %}selected{% endif %}>全部状态</option>
+                    <option value="published" {% if status == 'published' %}selected{% endif %}>已发布</option>
+                    <option value="draft" {% if status == 'draft' %}selected{% endif %}>草稿</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> 筛选
+                    </button>
+                    <a href="{{ url_for('content_management') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> 重置
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 内容列表 -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-list-ul"></i> 内容列表
+            <span class="badge bg-primary ms-2">{{ contents|length }} 条</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if contents %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>类型</th>
+                        <th>作者</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for content in contents %}
+                    <tr>
+                        <td>{{ content.id }}</td>
+                        <td>
+                            <strong>{{ content.title[:50] }}{% if content.title|length > 50 %}...{% endif %}</strong>
+                            {% if content.tag %}
+                            <span class="badge bg-info ms-1">{{ content.tag }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if content.type == 'recommend' %}
+                            <span class="badge bg-warning">推荐</span>
+                            {% elif content.type == 'news' %}
+                            <span class="badge bg-info">新闻</span>
+                            {% elif content.type == 'art' %}
+                            <span class="badge bg-success">茶艺</span>
+                            {% elif content.type == 'hot' %}
+                            <span class="badge bg-danger">热门</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ content.type }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ content.author }}</td>
+                        <td>
+                            {% if content.status == 'published' %}
+                            <span class="badge bg-success">已发布</span>
+                            {% else %}
+                            <span class="badge bg-warning">草稿</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ content.created_at[:10] }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('edit_content', content_id=content.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> 编辑
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        onclick="deleteContent({{ content.id }}, '{{ content.title }}')">
+                                    <i class="bi bi-trash"></i> 删除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        {% if total_pages > 1 %}
+        <nav aria-label="内容分页">
+            <ul class="pagination justify-content-center">
+                {% if current_page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('content_management', page=current_page-1, type=content_type, status=status) }}">
+                        上一页
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for page in range(1, total_pages + 1) %}
+                <li class="page-item {% if page == current_page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('content_management', page=page, type=content_type, status=status) }}">
+                        {{ page }}
+                    </a>
+                </li>
+                {% endfor %}
+                
+                {% if current_page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('content_management', page=current_page+1, type=content_type, status=status) }}">
+                        下一页
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox fa-3x text-muted"></i>
+            <h5 class="text-muted mt-3">暂无内容</h5>
+            <p class="text-muted">点击上方"添加内容"按钮开始创建您的第一篇转载内容</p>
+            <a href="{{ url_for('add_content') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> 添加内容
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteContent(contentId, title) {
+    if (confirm(`确定要删除内容"${title}"吗？此操作不可恢复！`)) {
+        window.location.href = `/content/delete/${contentId}`;
+    }
+}
+
+// 页面加载完成后的初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('内容管理页面加载完成');
+});
+</script>
+{% endblock %}

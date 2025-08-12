@@ -1,0 +1,394 @@
+.detail-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 特价提示 */
+.special-notice {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  padding: 20rpx 30rpx;
+  text-align: center;
+}
+
+.notice-text {
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 图片轮播 */
+.image-swiper {
+  width: 100%;
+  height: 500rpx;
+}
+
+.swiper-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 商品信息区域 */
+.info-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.product-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+}
+
+/* 价格区域 */
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.original-price {
+  font-size: 32rpx;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.clearance-price {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ff4757;
+}
+
+.discount-tag {
+  background: #ff4757;
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+/* 库存区域 */
+.stock-section {
+  margin-bottom: 30rpx;
+}
+
+.stock-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 15rpx;
+}
+
+.stock-text {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.stock-range {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.stock-bar {
+  width: 100%;
+  height: 20rpx;
+  background: #f0f0f0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.stock-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4757, #ff3742);
+  border-radius: 10rpx;
+  transition: width 0.3s ease;
+}
+
+.stock-percent {
+  font-size: 26rpx;
+  color: #ff4757;
+  font-weight: bold;
+}
+
+/* 清仓原因 */
+.reason-section {
+  margin-bottom: 30rpx;
+}
+
+.reason-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.reason-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 倒计时 */
+.countdown-section {
+  background: linear-gradient(135deg, #ff4757, #ff3742);
+  padding: 20rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.countdown-label {
+  display: block;
+  font-size: 26rpx;
+  color: white;
+  margin-bottom: 10rpx;
+}
+
+.countdown-time {
+  display: block;
+  font-size: 32rpx;
+  color: white;
+  font-weight: bold;
+}
+
+/* 关注人数 */
+.viewers-section {
+  text-align: center;
+}
+
+.viewers-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 商品描述 */
+.description-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  border-left: 8rpx solid #4CAF50;
+  padding-left: 20rpx;
+}
+
+.description-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 商户信息 */
+.merchant-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.merchant-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.merchant-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e0e0e0;
+}
+
+.merchant-details {
+  flex: 1;
+}
+
+.merchant-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.rating-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.rating-stars {
+  font-size: 24rpx;
+  color: #ffc107;
+}
+
+.merchant-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 5rpx;
+}
+
+.stats-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 联系方式 */
+.contact-section {
+  border-top: 2rpx solid #f0f0f0;
+  padding-top: 30rpx;
+}
+
+.contact-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.contact-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.contact-btn {
+  flex: 1;
+  height: 80rpx;
+  border: none;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.phone-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+}
+
+.wechat-btn {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white;
+}
+
+.contact-btn.locked {
+  background: #ccc;
+  color: #999;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  color: inherit;
+}
+
+.contact-tip {
+  text-align: center;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 历史记录 */
+.history-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.history-item {
+  padding: 20rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 8rpx;
+}
+
+.history-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.history-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.history-price {
+  font-size: 28rpx;
+  color: #ff4757;
+  font-weight: bold;
+}
+
+.history-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.history-status {
+  font-size: 24rpx;
+  color: #4CAF50;
+  background: #e8f5e8;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 发布信息 */
+.publish-info {
+  background: white;
+  padding: 20rpx 30rpx;
+  text-align: center;
+}
+
+.publish-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #666;
+} 

@@ -1,0 +1,132 @@
+<view class="detail-container" wx:if="{{clearanceInfo}}">
+  <!-- 特价提示 -->
+  <view class="special-notice">
+    <text class="notice-text">⚠️ 特价品不支持退换，请验货后交易</text>
+  </view>
+
+  <!-- 商品图片轮播 -->
+  <swiper class="image-swiper" indicator-dots="{{true}}" autoplay="{{false}}">
+    <swiper-item wx:for="{{clearanceInfo.images}}" wx:key="index">
+      <image class="swiper-image" 
+             src="{{item}}" 
+             mode="aspectFill"
+             data-index="{{index}}"
+             bindtap="previewImage" />
+    </swiper-item>
+  </swiper>
+
+  <!-- 商品基本信息 -->
+  <view class="info-section">
+    <view class="product-title">{{clearanceInfo.name}}</view>
+    
+    <!-- 价格信息 -->
+    <view class="price-section">
+      <text class="original-price">¥{{clearanceInfo.originalPrice}}</text>
+      <text class="clearance-price">¥{{clearanceInfo.clearancePrice}}</text>
+      <text class="discount-tag">
+        {{Math.floor((clearanceInfo.originalPrice - clearanceInfo.clearancePrice) / clearanceInfo.originalPrice * 100)}}%OFF
+      </text>
+    </view>
+
+    <!-- 库存信息 -->
+    <view class="stock-section">
+      <view class="stock-info">
+        <text class="stock-text">库存：{{clearanceInfo.stockText}}</text>
+        <text class="stock-range">({{clearanceInfo.stockMin}}-{{clearanceInfo.stockMax}}斤)</text>
+      </view>
+      <view class="stock-bar">
+        <view class="stock-progress" style="width: {{clearanceInfo.stockPercent}}%"></view>
+      </view>
+      <text class="stock-percent">剩余{{clearanceInfo.stockPercent}}%</text>
+    </view>
+
+    <!-- 清仓原因 -->
+    <view class="reason-section">
+      <text class="reason-label">清仓原因：</text>
+      <text class="reason-text">{{clearanceInfo.reason}}</text>
+    </view>
+
+    <!-- 倒计时 -->
+    <view class="countdown-section">
+      <text class="countdown-label">限时特价</text>
+      <text class="countdown-time">{{countdownText}}</text>
+    </view>
+
+    <!-- 关注人数 -->
+    <view class="viewers-section">
+      <text class="viewers-text">{{clearanceInfo.viewers}}人正在关注</text>
+    </view>
+  </view>
+
+  <!-- 商品描述 -->
+  <view class="description-section">
+    <view class="section-title">商品描述</view>
+    <view class="description-content">{{clearanceInfo.description}}</view>
+  </view>
+
+  <!-- 商户信息 -->
+  <view class="merchant-section">
+    <view class="section-title">商户信息</view>
+    <view class="merchant-info">
+      <image class="merchant-avatar" src="{{merchantInfo.avatar}}" mode="aspectFill" />
+      <view class="merchant-details">
+        <view class="merchant-name">{{merchantInfo.name}}</view>
+        <view class="merchant-rating">
+          <text class="rating-text">信用评分：{{merchantInfo.rating}}</text>
+          <text class="rating-stars">★★★★★</text>
+        </view>
+        <view class="merchant-stats">
+          <text class="stats-text">已发布{{merchantInfo.clearanceCount}}次特价</text>
+          <text class="stats-text">入驻时间：{{merchantInfo.joinTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="contact-section">
+      <view class="contact-title">联系方式</view>
+      <view class="contact-buttons">
+        <button class="contact-btn phone-btn {{!isUnlocked ? 'locked' : ''}}" 
+                bindtap="callMerchant">
+          <text class="btn-icon">📞</text>
+          <text class="btn-text">{{isUnlocked ? '拨打电话' : '解锁电话'}}</text>
+        </button>
+        <button class="contact-btn wechat-btn {{!isUnlocked ? 'locked' : ''}}" 
+                bindtap="copyWechat">
+          <text class="btn-icon">💬</text>
+          <text class="btn-text">{{isUnlocked ? '复制微信' : '解锁微信'}}</text>
+        </button>
+      </view>
+      <view class="contact-tip" wx:if="{{!isUnlocked}}">
+        <text class="tip-text">点击按钮解锁商户联系方式</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史清仓记录 -->
+  <view class="history-section">
+    <view class="section-title">历史清仓记录</view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{historyClearance}}" wx:key="id">
+        <view class="history-info">
+          <text class="history-name">{{item.name}}</text>
+          <text class="history-price">¥{{item.price}}/斤</text>
+        </view>
+        <view class="history-meta">
+          <text class="history-date">{{item.date}}</text>
+          <text class="history-status">{{item.status}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布信息 -->
+  <view class="publish-info">
+    <text class="publish-text">发布时间：{{clearanceInfo.createTime}}</text>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:else>
+  <text class="loading-text">加载中...</text>
+</view> 

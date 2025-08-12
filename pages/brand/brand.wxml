@@ -1,0 +1,356 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left">
+      <text class="header-title">知名品牌</text>
+      <text class="header-subtitle">品质保证，品牌认证</text>
+    </view>
+    <view class="header-right">
+      <button class="join-btn" bindtap="showJoinInfo">
+        <text class="btn-icon">🏢</text>
+        <text class="btn-text">品牌入驻</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <button class="filter-btn" bindtap="toggleFilterPanel">
+      <text class="btn-icon">🔍</text>
+      <text class="btn-text">{{filters.category}} · {{filters.region}}</text>
+      <text class="btn-arrow">{{showFilterPanel ? '▲' : '▼'}}</text>
+    </button>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel" wx:if="{{showFilterPanel}}">
+    <!-- 茶类筛选 -->
+    <view class="filter-group">
+      <text class="group-title">茶类</text>
+      <view class="option-list">
+        <text class="option-item {{filters.category === category ? 'active' : ''}}" 
+              wx:for="{{teaCategories}}" 
+              wx:key="*this"
+              wx:for-item="category"
+              bindtap="selectFilter"
+              data-type="category"
+              data-value="{{category}}">
+          {{category}}
+        </text>
+      </view>
+    </view>
+    
+    <!-- 地区筛选 -->
+    <view class="filter-group">
+      <text class="group-title">地区</text>
+      <view class="option-list">
+        <text class="option-item {{filters.region === region ? 'active' : ''}}" 
+              wx:for="{{regions}}" 
+              wx:key="*this"
+              wx:for-item="region"
+              bindtap="selectFilter"
+              data-type="region"
+              data-value="{{region}}">
+          {{region}}
+        </text>
+      </view>
+    </view>
+    
+    <!-- 认证筛选 -->
+    <view class="filter-group">
+      <text class="group-title">认证</text>
+      <view class="option-list">
+        <text class="option-item {{filters.certification === certification ? 'active' : ''}}" 
+              wx:for="{{certifications}}" 
+              wx:key="*this"
+              wx:for-item="certification"
+              bindtap="selectFilter"
+              data-type="certification"
+              data-value="{{certification}}">
+          {{certification}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 品牌列表 -->
+  <view class="brand-list" wx:if="{{filteredBrands.length > 0}}">
+    <view class="brand-item" 
+          wx:for="{{filteredBrands}}" 
+          wx:key="id"
+          wx:for-item="brand">
+      
+      <!-- 品牌卡片头部 -->
+      <view class="brand-header">
+        <view class="brand-logo">
+          <image class="logo-image" src="{{brand.logo}}" mode="aspectFit"></image>
+        </view>
+        <view class="brand-info">
+          <view class="brand-name">
+            <text class="name-text">{{brand.name}}</text>
+            <view class="certification-badges">
+              <text class="badge national" wx:if="{{brand.isNationalBrand}}">国品认证</text>
+              <text class="badge certified" wx:if="{{brand.isCertified}}">品牌认证</text>
+            </view>
+          </view>
+          <text class="brand-slogan">{{brand.slogan}}</text>
+          <view class="brand-meta">
+            <text class="meta-item">创立于{{brand.foundedYear}}年</text>
+            <text class="meta-item">{{brand.headquarters}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 品牌卡片内容 -->
+      <view class="brand-content">
+        <view class="brand-stats">
+          <view class="stat-item">
+            <text class="stat-label">年产量</text>
+            <text class="stat-value">{{brand.annualOutput}}</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-label">覆盖市场</text>
+            <text class="stat-value">{{brand.marketCoverage}}个</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-label">核心产区</text>
+            <text class="stat-value">{{brand.coreRegion}}</text>
+          </view>
+        </view>
+        
+        <view class="brand-description">
+          <text class="desc-text">{{brand.description}}</text>
+        </view>
+        
+        <!-- 认证标签 -->
+        <view class="certification-tags">
+          <text class="cert-tag" 
+                wx:for="{{brand.certifications}}" 
+                wx:key="*this"
+                wx:for-item="cert">
+            {{cert}}
+          </text>
+        </view>
+        
+        <!-- 产品线 -->
+        <view class="product-lines">
+          <text class="line-label">产品线：</text>
+          <text class="line-item" 
+                wx:for="{{brand.productLines}}" 
+                wx:key="*this"
+                wx:for-item="line">
+            {{line}}
+          </text>
+        </view>
+      </view>
+      
+      <!-- 品牌卡片底部 -->
+      <view class="brand-footer">
+        <view class="footer-left">
+          <button class="detail-btn" bindtap="viewBrandDetail" data-id="{{brand.id}}">
+            <text class="btn-text">品牌详情</text>
+            <text class="btn-arrow">→</text>
+          </button>
+        </view>
+        <view class="footer-right">
+          <button class="map-btn" bindtap="viewDealerMap" data-id="{{brand.id}}">
+            <text class="btn-icon">🗺️</text>
+            <text class="btn-text">经销商地图</text>
+          </button>
+          <button class="claim-btn" bindtap="applyBrandClaim" data-id="{{brand.id}}">
+            <text class="btn-icon">📋</text>
+            <text class="btn-text">申请认领</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredBrands.length === 0}}">
+    <view class="empty-icon">🏷️</view>
+    <text class="empty-title">暂无相关品牌</text>
+    <text class="empty-desc">请尝试调整筛选条件或稍后再试</text>
+  </view>
+
+  <!-- 品牌详情弹窗 -->
+  <view class="modal-overlay" wx:if="{{showBrandDetail}}" bindtap="closeBrandDetail">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">品牌详情</text>
+        <text class="modal-close" bindtap="closeBrandDetail">×</text>
+      </view>
+      
+      <view class="modal-body" wx:if="{{selectedBrand}}">
+        <view class="detail-section">
+          <text class="section-title">品牌信息</text>
+          <view class="info-list">
+            <view class="info-item">
+              <text class="info-label">品牌名称</text>
+              <text class="info-value">{{selectedBrand.name}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">创立年份</text>
+              <text class="info-value">{{selectedBrand.foundedYear}}年</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">总部地址</text>
+              <text class="info-value">{{selectedBrand.headquarters}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">核心产区</text>
+              <text class="info-value">{{selectedBrand.coreRegion}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">年产量</text>
+              <text class="info-value">{{selectedBrand.annualOutput}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">覆盖市场</text>
+              <text class="info-value">{{selectedBrand.marketCoverage}}个</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="detail-section">
+          <text class="section-title">认证资质</text>
+          <view class="certification-list">
+            <text class="cert-item" 
+                  wx:for="{{selectedBrand.certifications}}" 
+                  wx:key="*this"
+                  wx:for-item="cert">
+              {{cert}}
+            </text>
+          </view>
+        </view>
+        
+        <view class="detail-section">
+          <text class="section-title">产品线</text>
+          <view class="product-list">
+            <text class="product-item" 
+                  wx:for="{{selectedBrand.productLines}}" 
+                  wx:key="*this"
+                  wx:for-item="line">
+              {{line}}
+            </text>
+          </view>
+        </view>
+        
+        <view class="detail-section">
+          <text class="section-title">品牌纪事</text>
+          <text class="brand-story">{{selectedBrand.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 经销商地图弹窗 -->
+  <view class="modal-overlay" wx:if="{{showDealerMap}}" bindtap="closeDealerMap">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">经销商网络</text>
+        <text class="modal-close" bindtap="closeDealerMap">×</text>
+      </view>
+      
+      <view class="modal-body" wx:if="{{selectedBrand}}">
+        <view class="dealer-list">
+          <view class="dealer-item" 
+                wx:for="{{selectedBrand.dealers}}" 
+                wx:key="id"
+                wx:for-item="dealer">
+            
+            <view class="dealer-info">
+              <text class="dealer-name">{{dealer.name}}</text>
+              <text class="dealer-address">{{dealer.address}}</text>
+              <view class="dealer-meta">
+                <text class="distance" wx:if="{{locationAuthorized}}">{{dealer.distance}}km</text>
+                <text class="pickup-tag" wx:if="{{dealer.canPickup}}">可到店自提</text>
+              </view>
+            </view>
+            
+            <view class="dealer-actions">
+              <button class="contact-btn" 
+                      bindtap="contactDealer" 
+                      data-phone="{{dealer.phone}}">
+                <text class="btn-icon">📞</text>
+                <text class="btn-text">联系</text>
+              </button>
+              <button class="navigate-btn" 
+                      bindtap="navigateToDealer" 
+                      data-coordinates="{{dealer.coordinates}}"
+                      data-name="{{dealer.name}}">
+                <text class="btn-icon">📍</text>
+                <text class="btn-text">导航</text>
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 认领申请弹窗 -->
+  <view class="modal-overlay" wx:if="{{showClaimForm}}" bindtap="closeClaimForm">
+    <view class="modal-content claim-form" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">申请品牌认领</text>
+        <text class="modal-close" bindtap="closeClaimForm">×</text>
+      </view>
+      
+      <view class="modal-body" wx:if="{{selectedBrand}}">
+        <view class="form-section">
+          <text class="section-title">申请认领：{{selectedBrand.name}}</text>
+        </view>
+        
+        <view class="form-section">
+          <text class="form-label">认领人信息</text>
+          <input class="form-input" 
+                 placeholder="微信昵称" 
+                 value="{{claimForm.wechatName}}"
+                 data-field="wechatName"
+                 bindinput="inputClaimForm" />
+          <input class="form-input" 
+                 placeholder="真实姓名" 
+                 value="{{claimForm.realName}}"
+                 data-field="realName"
+                 bindinput="inputClaimForm" />
+          <input class="form-input" 
+                 placeholder="手机号码" 
+                 value="{{claimForm.phone}}"
+                 data-field="phone"
+                 bindinput="inputClaimForm" />
+        </view>
+        
+        <view class="form-section">
+          <text class="form-label">企业信息</text>
+          <input class="form-input" 
+                 placeholder="商户名称" 
+                 value="{{claimForm.merchantName}}"
+                 data-field="merchantName"
+                 bindinput="inputClaimForm" />
+          <input class="form-input" 
+                 placeholder="企业名称（选填）" 
+                 value="{{claimForm.companyName}}"
+                 data-field="companyName"
+                 bindinput="inputClaimForm" />
+          <input class="form-input" 
+                 placeholder="营业执照号（选填）" 
+                 value="{{claimForm.license}}"
+                 data-field="license"
+                 bindinput="inputClaimForm" />
+        </view>
+        
+        <view class="form-tips">
+          <text class="tip-text">• 请确保信息真实有效</text>
+          <text class="tip-text">• 品牌方将在3个工作日内审核</text>
+          <text class="tip-text">• 审核通过后将自动激活经销商权限</text>
+        </view>
+        
+        <view class="form-actions">
+          <button class="cancel-btn" bindtap="closeClaimForm">取消</button>
+          <button class="submit-btn" bindtap="submitClaimForm">提交申请</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

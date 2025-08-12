@@ -1,0 +1,238 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="back-text">返回</text>
+    </view>
+    <view class="header-title">价格详情</view>
+    <view class="header-right">
+      <button class="share-btn" open-type="share">
+        <text class="share-icon">📤</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content" wx:if="{{!loading && priceDetail}}">
+    <!-- 价格概览 -->
+    <view class="price-overview">
+      <view class="overview-header">
+        <view class="tea-info">
+          <text class="tea-name">{{priceDetail.subCategory}}</text>
+          <text class="tea-category">{{priceDetail.category}}</text>
+        </view>
+        <view class="status-badge {{priceDetail.updateStatus}}">
+          <text class="status-dot"></text>
+          <text class="status-text">{{priceDetail.updateTime}}</text>
+        </view>
+      </view>
+
+      <view class="price-main">
+        <view class="price-range">
+          <text class="price-text">{{priceDetail.priceRange}}</text>
+          <text class="price-unit">{{priceDetail.unit}}</text>
+        </view>
+        <view class="price-trend">
+          <text class="trend-icon">{{priceDetail.trendIcon}}</text>
+          <text class="trend-text">{{priceDetail.trendText}}</text>
+        </view>
+      </view>
+
+      <view class="overview-stats">
+        <view class="stat-item">
+          <text class="stat-value">{{priceDetail.merchantCount}}</text>
+          <text class="stat-label">商户数量</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{priceDetail.avgRating}}</text>
+          <text class="stat-label">平均评分</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{priceDetail.totalInquiries}}</text>
+          <text class="stat-label">咨询次数</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签页导航 -->
+    <view class="tab-nav">
+      <view class="tab-item {{activeTab === 'detail' ? 'active' : ''}}" 
+            bindtap="switchTab" 
+            data-tab="detail">
+        <text class="tab-text">详情</text>
+      </view>
+      <view class="tab-item {{activeTab === 'merchants' ? 'active' : ''}}" 
+            bindtap="switchTab" 
+            data-tab="merchants">
+        <text class="tab-text">商户({{merchants.length}})</text>
+      </view>
+      <view class="tab-item {{activeTab === 'trend' ? 'active' : ''}}" 
+            bindtap="switchTab" 
+            data-tab="trend">
+        <text class="tab-text">趋势</text>
+      </view>
+    </view>
+
+    <!-- 详情标签页 -->
+    <view class="tab-content" wx:if="{{activeTab === 'detail'}}">
+      <!-- 产品图片 -->
+      <view class="image-section" wx:if="{{priceDetail.images.length > 0}}">
+        <text class="section-title">产品图片</text>
+        <scroll-view class="image-list" scroll-x="true">
+          <view class="image-item" 
+                wx:for="{{priceDetail.images}}" 
+                wx:key="*this"
+                wx:for-item="image"
+                wx:for-index="index"
+                bindtap="previewImage" 
+                data-index="{{index}}">
+            <image class="product-image" src="{{image}}" mode="aspectFill"></image>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 产品描述 -->
+      <view class="description-section">
+        <text class="section-title">产品描述</text>
+        <text class="description-text">{{priceDetail.description}}</text>
+      </view>
+
+      <!-- 产品信息 -->
+      <view class="info-section">
+        <text class="section-title">产品信息</text>
+        <view class="info-list">
+          <view class="info-item" wx:if="{{priceDetail.process}}">
+            <text class="info-label">工艺</text>
+            <text class="info-value">{{priceDetail.process}}</text>
+          </view>
+          <view class="info-item" wx:if="{{priceDetail.origin}}">
+            <text class="info-label">产地</text>
+            <text class="info-value">{{priceDetail.origin}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">地区</text>
+            <text class="info-value">{{priceDetail.city}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 标签 -->
+      <view class="tags-section" wx:if="{{priceDetail.tags.length > 0}}">
+        <text class="section-title">产品标签</text>
+        <view class="tags-list">
+          <text class="tag-item" 
+                wx:for="{{priceDetail.tags}}" 
+                wx:key="*this"
+                wx:for-item="tag">
+            {{tag}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 商户标签页 -->
+    <view class="tab-content" wx:if="{{activeTab === 'merchants'}}">
+      <!-- 排序选项 -->
+      <view class="sort-options">
+        <view class="sort-item {{sortType === 'distance' ? 'active' : ''}}" 
+              bindtap="changeSort" 
+              data-sort="distance">
+          <text class="sort-text">按距离</text>
+        </view>
+        <view class="sort-item {{sortType === 'rating' ? 'active' : ''}}" 
+              bindtap="changeSort" 
+              data-sort="rating">
+          <text class="sort-text">按评分</text>
+        </view>
+        <view class="sort-item {{sortType === 'price' ? 'active' : ''}}" 
+              bindtap="changeSort" 
+              data-sort="price">
+          <text class="sort-text">按价格</text>
+        </view>
+      </view>
+
+      <!-- 商户列表 -->
+      <view class="merchant-list">
+        <view class="merchant-item" 
+              wx:for="{{merchants}}" 
+              wx:key="id"
+              wx:for-item="merchant">
+          <view class="merchant-header" bindtap="viewMerchantDetail" data-id="{{merchant.id}}">
+            <image class="merchant-avatar" src="{{merchant.avatar}}" mode="aspectFill"></image>
+            <view class="merchant-info">
+              <text class="merchant-name">{{merchant.name}}</text>
+              <view class="merchant-rating">
+                <text class="rating-text">{{merchant.rating}}分</text>
+                <text class="distance-text">{{merchant.distance}}km</text>
+              </view>
+            </view>
+            <view class="merchant-price">
+              <text class="price-text">{{merchant.price}}</text>
+              <text class="price-unit">{{merchant.unit}}</text>
+            </view>
+          </view>
+
+          <view class="merchant-details">
+            <view class="detail-tags">
+              <view class="tag-item" wx:if="{{merchant.hasImages}}">
+                <text class="tag-icon">📷</text>
+                <text class="tag-text">实拍图</text>
+              </view>
+              <view class="tag-item" wx:if="{{merchant.hasOrigin}}">
+                <text class="tag-icon">📍</text>
+                <text class="tag-text">产地信息</text>
+              </view>
+              <view class="tag-item" wx:if="{{merchant.process}}">
+                <text class="tag-icon">⚙️</text>
+                <text class="tag-text">{{merchant.process}}</text>
+              </view>
+            </view>
+            <view class="merchant-actions">
+              <text class="update-time">{{merchant.updateTime}}</text>
+              <button class="contact-btn" 
+                      bindtap="contactMerchant" 
+                      data-id="{{merchant.id}}">
+                联系商户
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 趋势标签页 -->
+    <view class="tab-content" wx:if="{{activeTab === 'trend'}}">
+      <view class="trend-section">
+        <text class="section-title">价格趋势</text>
+        <view class="trend-chart">
+          <!-- 这里应该显示价格趋势图表 -->
+          <view class="chart-placeholder">
+            <text class="chart-text">价格趋势图表</text>
+            <text class="chart-desc">显示近3个月价格变化</text>
+          </view>
+        </view>
+        <view class="trend-data">
+          <view class="trend-item" 
+                wx:for="{{priceTrend}}" 
+                wx:key="date"
+                wx:for-item="item">
+            <text class="trend-date">{{item.date}}</text>
+            <text class="trend-price">{{item.price}}元</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="bottom-tip">
+    <text class="tip-text">本报价由商户提供，仅供参考</text>
+  </view>
+</view> 

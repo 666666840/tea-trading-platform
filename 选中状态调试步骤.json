@@ -1,0 +1,35 @@
+{
+  "title": "选中状态调试步骤",
+  "steps": [
+    {
+      "step": 1,
+      "action": "检查控制台输出",
+      "description": "点击标签时查看console.log输出",
+      "expected": "应该看到点击事件和数组变化信息"
+    },
+    {
+      "step": 2,
+      "action": "检查数组操作",
+      "description": "确认使用展开运算符创建新数组",
+      "expected": "const teaTypes = [...this.data.formData.teaTypes]"
+    },
+    {
+      "step": 3,
+      "action": "检查setData调用",
+      "description": "确认setData路径和数据正确",
+      "expected": "this.setData({'formData.teaTypes': teaTypes})"
+    },
+    {
+      "step": 4,
+      "action": "检查WXML绑定",
+      "description": "确认条件表达式正确",
+      "expected": "class='tea-type-tag {{formData.teaTypes.indexOf(item) > -1 ? 'selected' : ''}}'"
+    },
+    {
+      "step": 5,
+      "action": "检查CSS样式",
+      "description": "确认.selected样式正确加载",
+      "expected": "选中标签应该有蓝色背景和白色文字"
+    }
+  ]
+}

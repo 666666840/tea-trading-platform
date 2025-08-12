@@ -1,0 +1,367 @@
+/* 行情地图页面样式 */
+.container {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 页面头部 */
+.page-header {
+  background: #fff;
+  padding: 20rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.page-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.page-subtitle {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 分类筛选 */
+.filter-section {
+  background: #fff;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.filter-header {
+  margin-bottom: 15rpx;
+}
+
+.filter-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.category-item {
+  padding: 10rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.category-item.active {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.category-item:active {
+  transform: scale(0.95);
+}
+
+.category-name {
+  font-size: 24rpx;
+}
+
+/* 地图容器 */
+.map-container {
+  position: relative;
+  height: 600rpx;
+  margin-bottom: 20rpx;
+}
+
+.market-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* 地图控件 */
+.map-controls {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.control-btn {
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.control-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* 地图图例 */
+.map-legend {
+  position: absolute;
+  bottom: 20rpx;
+  left: 20rpx;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15rpx;
+  border-radius: 8rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.legend-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 4rpx;
+  margin-right: 10rpx;
+}
+
+.legend-color.high {
+  background: #f44336;
+}
+
+.legend-color.medium {
+  background: #ff9800;
+}
+
+.legend-color.low {
+  background: #4CAF50;
+}
+
+.legend-text {
+  font-size: 22rpx;
+  color: #333;
+}
+
+/* 地区信息面板 */
+.region-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top-left-radius: 20rpx;
+  border-top-right-radius: 20rpx;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.region-panel.show {
+  transform: translateY(0);
+}
+
+.panel-header {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.panel-close {
+  font-size: 40rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.panel-content {
+  padding: 20rpx;
+}
+
+.panel-info {
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+}
+
+/* 统计信息 */
+.stats-section {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.stats-header {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.stats-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 20rpx;
+  gap: 20rpx;
+}
+
+.stats-item {
+  text-align: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.stats-number {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 热门地区 */
+.hot-regions {
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.regions-header {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.regions-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.regions-list {
+  padding: 20rpx;
+}
+
+.region-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.region-item:last-child {
+  border-bottom: none;
+}
+
+.region-item:active {
+  background: #f8f9fa;
+}
+
+.region-info {
+  flex: 1;
+}
+
+.region-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5rpx;
+  display: block;
+}
+
+.region-category {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.region-price {
+  text-align: right;
+  margin-right: 20rpx;
+}
+
+.price-range {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.price-unit {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.region-trend {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.region-trend.up {
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.region-trend.down {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.trend-text {
+  font-size: 22rpx;
+}
+
+/* 底部提示 */
+.bottom-tip {
+  background: #fff3e0;
+  padding: 20rpx;
+  text-align: center;
+  margin-top: 20rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #ff9800;
+} 

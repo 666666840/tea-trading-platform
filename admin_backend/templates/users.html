@@ -1,0 +1,714 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理 - 茶叶平台管理后台{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- 统计信息卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.total_users }}</h4>
+                            <small>总用户数</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.active_users }}</h4>
+                            <small>启用用户</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.inactive_users }}</h4>
+                            <small>禁用用户</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-ban fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.super_admin_count }}</h4>
+                            <small>超级管理员</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-crown fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.admin_count }}</h4>
+                            <small>管理员</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-user-shield fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-secondary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.data_admin_count }}</h4>
+                            <small>数据管理员</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-database fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> 用户管理
+                    </h5>
+                    <button class="btn btn-primary" onclick="showAddUserModal()">
+                        <i class="fas fa-plus"></i> 添加用户
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- 搜索和过滤工具栏 -->
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="searchInput" placeholder="搜索用户名、邮箱、姓名...">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" id="roleFilter">
+                                <option value="">所有角色</option>
+                                <option value="super_admin">超级管理员</option>
+                                <option value="admin">管理员</option>
+                                <option value="data_admin">数据管理员</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" id="statusFilter">
+                                <option value="">所有状态</option>
+                                <option value="active">启用</option>
+                                <option value="inactive">禁用</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary" onclick="searchUsers()">
+                                <i class="fas fa-search"></i> 搜索
+                            </button>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-success" onclick="batchAction('activate')" id="batchActivate" disabled>
+                                    <i class="fas fa-check"></i> 批量启用
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="batchAction('deactivate')" id="batchDeactivate" disabled>
+                                    <i class="fas fa-ban"></i> 批量禁用
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="batchAction('delete')" id="batchDelete" disabled>
+                                    <i class="fas fa-trash"></i> 批量删除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分页信息 -->
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                共 <span id="totalUsers">0</span> 个用户，
+                                第 <span id="currentPage">1</span> 页，
+                                每页 <span id="perPage">20</span> 条
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changePage(-1)" id="prevPage" disabled>
+                                    <i class="fas fa-chevron-left"></i> 上一页
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="changePage(1)" id="nextPage" disabled>
+                                    下一页 <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>邮箱</th>
+                                    <th>真实姓名</th>
+                                    <th>角色</th>
+                                    <th>部门</th>
+                                    <th>职位</th>
+                                    <th>状态</th>
+                                    <th>最后登录</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- 用户数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加/编辑用户模态框 -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalTitle">添加用户</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="username">用户名 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="username" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">邮箱 <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password">密码 <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="password" required>
+                                <small class="form-text text-muted">密码长度至少6位</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="role">角色 <span class="text-danger">*</span></label>
+                                <select class="form-control" id="role" required>
+                                    <option value="">请选择角色</option>
+                                    <option value="super_admin">超级管理员</option>
+                                    <option value="admin">管理员</option>
+                                    <option value="data_admin">数据管理员</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="realName">真实姓名</label>
+                                <input type="text" class="form-control" id="realName">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phone">手机号</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="department">部门</label>
+                                <input type="text" class="form-control" id="department">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="position">职位</label>
+                                <input type="text" class="form-control" id="position">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">个人简介</label>
+                        <textarea class="form-control" id="bio" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="isActive" checked>
+                            <label class="custom-control-label" for="isActive">启用账户</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 重置密码模态框 -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">重置密码</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="resetPasswordForm">
+                    <input type="hidden" id="resetUserId">
+                    <div class="form-group">
+                        <label for="newPassword">新密码 <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                        <small class="form-text text-muted">密码长度至少6位</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认密码 <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="confirmResetPassword()">重置密码</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentPage = 1;
+
+// 页面加载完成后初始化
+$(document).ready(function() {
+    loadUsers();
+    
+    // 绑定搜索框回车事件
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which === 13) {
+            searchUsers();
+        }
+    });
+    
+    // 绑定过滤框变化事件
+    $('#roleFilter, #statusFilter').on('change', function() {
+        searchUsers();
+    });
+});
+
+// 显示添加用户模态框
+function showAddUserModal() {
+    $('#userModalTitle').text('添加用户');
+    $('#userForm')[0].reset();
+    $('#userId').val('');
+    $('#password').prop('required', true);
+    $('#userModal').modal('show');
+}
+
+// 编辑用户
+function editUser(userId) {
+    fetch(`/api/users/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const user = data.user;
+                $('#userModalTitle').text('编辑用户');
+                $('#userId').val(user.id);
+                $('#username').val(user.username);
+                $('#email').val(user.email);
+                $('#role').val(user.role);
+                $('#realName').val(user.real_name || '');
+                $('#phone').val(user.phone || '');
+                $('#department').val(user.department || '');
+                $('#position').val(user.position || '');
+                $('#bio').val(user.bio || '');
+                $('#isActive').prop('checked', user.is_active);
+                $('#password').prop('required', false);
+                $('#userModal').modal('show');
+            } else {
+                alert(data.error || '获取用户信息失败');
+            }
+        })
+        .catch(error => {
+            console.error('获取用户信息失败:', error);
+            alert('获取用户信息失败');
+        });
+}
+
+// 保存用户
+function saveUser() {
+    const userId = $('#userId').val();
+    const formData = {
+        username: $('#username').val(),
+        email: $('#email').val(),
+        password: $('#password').val(),
+        role: $('#role').val(),
+        real_name: $('#realName').val(),
+        phone: $('#phone').val(),
+        department: $('#department').val(),
+        position: $('#position').val(),
+        bio: $('#bio').val(),
+        is_active: $('#isActive').is(':checked')
+    };
+
+    // 表单验证
+    if (!formData.username || !formData.email || !formData.role) {
+        alert('请填写必填字段');
+        return;
+    }
+
+    if (!$('#userId').val() && !formData.password) {
+        alert('请设置密码');
+        return;
+    }
+
+    const url = userId ? `/api/users/${userId}` : '/api/users';
+    const method = userId ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#userModal').modal('hide');
+            loadUsers(currentPage);
+            alert(userId ? '用户更新成功' : '用户创建成功');
+        } else {
+            alert(data.error || '操作失败');
+        }
+    })
+    .catch(error => {
+        console.error('保存用户失败:', error);
+        alert('保存用户失败');
+    });
+}
+
+// 重置密码
+function resetPassword(userId) {
+    $('#resetUserId').val(userId);
+    $('#resetPasswordForm')[0].reset();
+    $('#resetPasswordModal').modal('show');
+}
+
+// 确认重置密码
+function confirmResetPassword() {
+    const userId = $('#resetUserId').val();
+    const newPassword = $('#newPassword').val();
+    const confirmPassword = $('#confirmPassword').val();
+    
+    if (!newPassword || !confirmPassword) {
+        alert('请填写密码字段');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        alert('两次输入的密码不一致');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        alert('密码长度至少6位');
+        return;
+    }
+    
+    fetch(`/api/users/${userId}/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            password: newPassword
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#resetPasswordModal').modal('hide');
+            alert('密码重置成功');
+        } else {
+            alert(data.error || '密码重置失败');
+        }
+    })
+    .catch(error => {
+        console.error('密码重置失败:', error);
+        alert('密码重置失败');
+    });
+}
+
+// 删除用户
+function deleteUser(userId, username) {
+    if (confirm(`确定要删除用户 "${username}" 吗？此操作不可恢复。`)) {
+        fetch('/api/users', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: userId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadUsers(currentPage);
+                alert('用户删除成功');
+            } else {
+                alert(data.error || '删除用户失败');
+            }
+        })
+        .catch(error => {
+            console.error('删除用户失败:', error);
+            alert('删除用户失败');
+        });
+    }
+}
+
+// 批量操作
+function batchAction(action) {
+    const selectedCheckboxes = $('.user-checkbox:checked');
+    const userIds = selectedCheckboxes.map(function() {
+        return $(this).val();
+    }).get();
+
+    if (userIds.length === 0) {
+        alert('请至少选择一个用户进行操作！');
+        return;
+    }
+
+    let confirmMessage = '';
+    if (action === 'activate') {
+        confirmMessage = `确定要批量启用选中的 ${userIds.length} 个用户吗？`;
+    } else if (action === 'deactivate') {
+        confirmMessage = `确定要批量禁用选中的 ${userIds.length} 个用户吗？`;
+    } else if (action === 'delete') {
+        confirmMessage = `确定要批量删除选中的 ${userIds.length} 个用户吗？此操作不可恢复。`;
+    }
+
+    if (confirm(confirmMessage)) {
+        fetch('/api/users', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                user_ids: userIds,
+                action: action
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || '批量操作成功！');
+                loadUsers(currentPage);
+            } else {
+                alert(data.error || '批量操作失败');
+            }
+        })
+        .catch(error => {
+            console.error('批量操作失败:', error);
+            alert('批量操作失败');
+        });
+    }
+}
+
+// 加载用户列表
+function loadUsers(page = 1) {
+    currentPage = page;
+    const searchTerm = $('#searchInput').val();
+    const roleFilter = $('#roleFilter').val();
+    const statusFilter = $('#statusFilter').val();
+    const perPage = 20;
+
+    const params = new URLSearchParams({
+        page: page,
+        per_page: perPage
+    });
+
+    if (searchTerm) params.append('search', searchTerm);
+    if (roleFilter) params.append('role', roleFilter);
+    if (statusFilter) params.append('status', statusFilter);
+
+    fetch(`/api/users?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateUsersTable(data.users);
+                updatePagination(data.pagination.total, data.pagination.page, data.pagination.per_page);
+                updateBatchButtons();
+            } else {
+                alert(data.error || '加载用户列表失败');
+            }
+        })
+        .catch(error => {
+            console.error('加载用户列表失败:', error);
+            alert('加载用户列表失败');
+        });
+}
+
+// 搜索用户
+function searchUsers() {
+    loadUsers(1);
+}
+
+// 更新用户表格
+function updateUsersTable(users) {
+    const tbody = $('#usersTableBody');
+    tbody.empty();
+    
+    if (users && users.length > 0) {
+        users.forEach(user => {
+            const lastLogin = user.last_login ? new Date(user.last_login).toLocaleString('zh-CN') : '从未登录';
+            const createdAt = new Date(user.created_at).toLocaleString('zh-CN');
+            const roleText = user.role === 'super_admin' ? '超级管理员' : user.role === 'admin' ? '管理员' : '数据管理员';
+            const roleClass = user.role === 'super_admin' ? 'danger' : user.role === 'admin' ? 'primary' : 'info';
+            
+            const row = `
+                <tr>
+                    <td>
+                        <input type="checkbox" class="user-checkbox" value="${user.id}" onchange="updateBatchButtons()">
+                    </td>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.real_name || '-'}</td>
+                    <td>
+                        <span class="badge badge-${roleClass}">
+                            ${roleText}
+                        </span>
+                    </td>
+                    <td>${user.department || '-'}</td>
+                    <td>${user.position || '-'}</td>
+                    <td>
+                        <span class="badge badge-${user.is_active ? 'success' : 'danger'}">
+                            ${user.is_active ? '启用' : '禁用'}
+                        </span>
+                    </td>
+                    <td>${lastLogin}</td>
+                    <td>${createdAt}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})" title="编辑">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="resetPassword(${user.id})" title="重置密码">
+                                <i class="fas fa-key"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id}, '${user.username}')" title="删除">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    } else {
+        tbody.append('<tr><td colspan="12" class="text-center text-muted">暂无用户数据</td></tr>');
+    }
+}
+
+// 更新分页信息
+function updatePagination(total, currentPage, perPage) {
+    $('#totalUsers').text(total);
+    $('#currentPage').text(currentPage);
+    $('#perPage').text(perPage);
+
+    const totalPages = Math.ceil(total / perPage);
+    $('#prevPage').prop('disabled', currentPage <= 1);
+    $('#nextPage').prop('disabled', currentPage >= totalPages || totalPages === 0);
+}
+
+// 切换页面
+function changePage(delta) {
+    const newPage = currentPage + delta;
+    if (newPage >= 1) {
+        loadUsers(newPage);
+    }
+}
+
+// 切换全选/取消全选
+function toggleSelectAll() {
+    const selectAll = $('#selectAll').is(':checked');
+    $('.user-checkbox').prop('checked', selectAll);
+    updateBatchButtons();
+}
+
+// 更新批量操作按钮状态
+function updateBatchButtons() {
+    const selectedCount = $('.user-checkbox:checked').length;
+    const hasSelection = selectedCount > 0;
+    
+    $('#batchActivate').prop('disabled', !hasSelection);
+    $('#batchDeactivate').prop('disabled', !hasSelection);
+    $('#batchDelete').prop('disabled', !hasSelection);
+    
+    // 更新全选框状态
+    const totalCheckboxes = $('.user-checkbox').length;
+    const checkedCheckboxes = $('.user-checkbox:checked').length;
+    
+    if (checkedCheckboxes === 0) {
+        $('#selectAll').prop('indeterminate', false).prop('checked', false);
+    } else if (checkedCheckboxes === totalCheckboxes) {
+        $('#selectAll').prop('indeterminate', false).prop('checked', true);
+    } else {
+        $('#selectAll').prop('indeterminate', true);
+    }
+}
+</script>
+{% endblock %} 

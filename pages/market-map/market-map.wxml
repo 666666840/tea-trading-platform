@@ -1,0 +1,212 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left">
+      <text class="header-title">行情地图</text>
+      <text class="header-subtitle">全国茶叶价格分布</text>
+    </view>
+    <view class="header-right">
+      <button class="refresh-btn" bindtap="refreshData">
+        <text class="btn-icon">🔄</text>
+      </button>
+      <button class="location-btn" bindtap="moveToUserLocation">
+        <text class="btn-icon">📍</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="statistics-section">
+    <view class="stat-item">
+      <text class="stat-value">{{statistics.totalCities}}</text>
+      <text class="stat-label">覆盖城市</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{statistics.totalMerchants}}</text>
+      <text class="stat-label">商户数量</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{statistics.avgPrice}}</text>
+      <text class="stat-label">平均价格</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{statistics.priceRange}}</text>
+      <text class="stat-label">价格区间</text>
+    </view>
+  </view>
+
+  <!-- 筛选区域 -->
+  <view class="filter-section">
+    <view class="filter-row">
+      <text class="filter-label">茶类筛选</text>
+      <scroll-view class="category-tabs" scroll-x="true">
+        <view class="category-tab {{filterCategory === item ? 'active' : ''}}" 
+              wx:for="{{categoryList}}" 
+              wx:key="*this"
+              wx:for-item="item"
+              bindtap="selectCategory" 
+              data-category="{{item}}">
+          {{item}}
+        </view>
+      </scroll-view>
+    </view>
+    
+    <view class="filter-row" wx:if="{{filterCategory && subCategoryList.length > 0}}">
+      <text class="filter-label">具体品类</text>
+      <scroll-view class="subcategory-tabs" scroll-x="true">
+        <view class="subcategory-tab {{filterSubCategory === item ? 'active' : ''}}" 
+              wx:for="{{subCategoryList}}" 
+              wx:key="*this"
+              wx:for-item="item"
+              bindtap="selectSubCategory" 
+              data-subcategory="{{item}}">
+          {{item}}
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 显示模式切换 -->
+  <view class="mode-switch">
+    <view class="mode-item {{displayMode === 'map' ? 'active' : ''}}" 
+          bindtap="switchDisplayMode" 
+          data-mode="map">
+      <text class="mode-icon">🗺️</text>
+      <text class="mode-text">地图</text>
+    </view>
+    <view class="mode-item {{displayMode === 'list' ? 'active' : ''}}" 
+          bindtap="switchDisplayMode" 
+          data-mode="list">
+      <text class="mode-icon">📋</text>
+      <text class="mode-text">列表</text>
+    </view>
+    <view class="mode-item {{displayMode === 'trend' ? 'active' : ''}}" 
+          bindtap="switchDisplayMode" 
+          data-mode="trend">
+      <text class="mode-icon">📈</text>
+      <text class="mode-text">趋势</text>
+    </view>
+  </view>
+
+  <!-- 地图模式 -->
+  <view class="map-container" wx:if="{{displayMode === 'map'}}">
+    <map class="market-map"
+         latitude="{{mapConfig.latitude}}"
+         longitude="{{mapConfig.longitude}}"
+         scale="{{mapConfig.scale}}"
+         markers="{{mapConfig.markers}}"
+         polyline="{{mapConfig.polyline}}"
+         bindmarkertap="onMarkerTap"
+         bindregionchange="onRegionChange"
+         show-location="true">
+    </map>
+    
+    <!-- 地图图例 -->
+    <view class="map-legend">
+      <view class="legend-item">
+        <view class="legend-icon updated"></view>
+        <text class="legend-text">今日更新</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-icon recent"></view>
+        <text class="legend-text">最近更新</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-icon outdated"></view>
+        <text class="legend-text">过期数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表模式 -->
+  <view class="list-container" wx:if="{{displayMode === 'list'}}">
+    <view class="list-header">
+      <text class="list-title">价格列表</text>
+      <text class="list-count">({{mapData.length}}条)</text>
+    </view>
+    
+    <view class="price-list">
+      <view class="price-item" 
+            wx:for="{{mapData}}" 
+            wx:key="id"
+            wx:for-item="item"
+            bindtap="navigateToDetail" 
+            data-id="{{item.id}}">
+        <view class="item-header">
+          <view class="item-title">
+            <text class="city-name">{{item.city}}</text>
+            <text class="tea-name">{{item.subCategory}}</text>
+          </view>
+          <view class="status-badge {{item.status}}">
+            <text class="status-dot"></text>
+            <text class="status-text">{{item.updateTime}}</text>
+          </view>
+        </view>
+        
+        <view class="item-content">
+          <view class="price-info">
+            <text class="price-range">{{item.priceRange}}</text>
+            <text class="price-unit">{{item.unit}}</text>
+          </view>
+          <view class="merchant-info">
+            <text class="merchant-count">{{item.merchantCount}}家商户</text>
+            <text class="avg-price">均价{{item.avgPrice}}{{item.unit}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 趋势模式 -->
+  <view class="trend-container" wx:if="{{displayMode === 'trend'}}">
+    <view class="trend-header">
+      <text class="trend-title">价格趋势</text>
+      <text class="trend-subtitle">近3个月价格变化</text>
+    </view>
+    
+    <view class="trend-charts">
+      <view class="trend-chart" 
+            wx:for="{{priceTrends}}" 
+            wx:key="*this"
+            wx:for-item="trend"
+            wx:for-index="teaName">
+        <view class="chart-header">
+          <text class="chart-title">{{teaName}}</text>
+        </view>
+        <view class="chart-content">
+          <view class="trend-line">
+            <view class="trend-point" 
+                  wx:for="{{trend}}" 
+                  wx:key="date"
+                  wx:for-item="point"
+                  wx:for-index="index"
+                  style="left: {{index * 25}}%; bottom: {{(point.price - 600) / 200 * 100}}%">
+              <text class="point-price">{{point.price}}</text>
+            </view>
+          </view>
+          <view class="trend-labels">
+            <text class="trend-label" 
+                  wx:for="{{trend}}" 
+                  wx:key="date"
+                  wx:for-item="point"
+                  wx:for-index="index"
+                  style="left: {{index * 25}}%">
+              {{point.date}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="bottom-tip">
+    <text class="tip-text">本报价由商户提供，仅供参考</text>
+  </view>
+</view> 

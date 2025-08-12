@@ -1,0 +1,91 @@
+{
+  "exportTime": "2025-08-11T18:15:49.728251",
+  "summary": {
+    "gardenCount": 2,
+    "merchantCount": 3,
+    "productCount": 0
+  },
+  "gardenData": [
+    {
+      "id": "garden_20250811181549709",
+      "name": "武夷山岩茶茶园",
+      "category": "福建省武夷山市星村镇",
+      "price": "4-5月",
+      "merchant_id": "大红袍,肉桂,水仙,铁罗汉",
+      "description": "王师傅",
+      "specification": "13805901234",
+      "origin": "武夷山核心产区茶园，海拔800米，土壤肥沃，气候适宜，出产的岩茶品质优良，香气浓郁。",
+      "grade": "garden_wuyi_1.jpg,garden_wuyi_2.jpg",
+      "stock": 0.0,
+      "images": 0,
+      "status": "2025-08-11 10:15:49",
+      "create_time": "2025-08-11 10:15:49"
+    },
+    {
+      "id": "garden_20250811181549711",
+      "name": "安溪铁观音茶园",
+      "category": "福建省安溪县感德镇",
+      "price": "3-5月",
+      "merchant_id": "铁观音,本山,毛蟹,黄金桂",
+      "description": "陈师傅",
+      "specification": "13905905678",
+      "origin": "安溪铁观音原产地，传统制茶工艺，茶园面积500亩，年产量30吨。",
+      "grade": "garden_anxi_1.jpg,garden_anxi_2.jpg",
+      "stock": 0.0,
+      "images": 0,
+      "status": "2025-08-11 10:15:49",
+      "create_time": "2025-08-11 10:15:49"
+    }
+  ],
+  "merchantData": [
+    {
+      "id": "merchant_20250811181549718",
+      "name": "福建安溪铁观音茶业有限公司",
+      "category": "茶园/茶厂",
+      "price": "张经理",
+      "merchant_id": "13800138001",
+      "description": "zhang@anxi-tea.com",
+      "specification": "福建省",
+      "origin": "泉州市",
+      "grade": "安溪县感德镇槐植村",
+      "stock": "专业生产安溪铁观音，拥有自有茶园500亩，年产量50吨，产品远销海内外。",
+      "images": "闽B2-20230001",
+      "status": "茶叶种植、加工、销售",
+      "create_time": 2010,
+      "update_time": "approved"
+    },
+    {
+      "id": "merchant_20250811181549719",
+      "name": "杭州西湖龙井茶业合作社",
+      "category": "茶园/茶厂",
+      "price": "李社长",
+      "merchant_id": "13900139002",
+      "description": "li@xihu-longjing.com",
+      "specification": "浙江省",
+      "origin": "杭州市",
+      "grade": "西湖区龙井村",
+      "stock": "西湖龙井核心产区，合作社成员50户，年产量30吨，传承百年制茶工艺。",
+      "images": "浙B2-20230002",
+      "status": "茶叶种植、加工、销售",
+      "create_time": 2008,
+      "update_time": "approved"
+    },
+    {
+      "id": "merchant_20250811181549720",
+      "name": "江苏碧螺春茶业合作社",
+      "category": "茶园/茶厂",
+      "price": "孙社长",
+      "merchant_id": "13300133007",
+      "description": "sun@biluochun.com",
+      "specification": "江苏省",
+      "origin": "苏州市",
+      "grade": "吴中区东山镇",
+      "stock": "碧螺春核心产区，合作社成员30户，年产量20吨，产品品质稳定。",
+      "images": "苏B2-20230007",
+      "status": "茶叶种植、加工、销售",
+      "create_time": 2005,
+      "update_time": "approved"
+    }
+  ],
+  "productData": []
+}

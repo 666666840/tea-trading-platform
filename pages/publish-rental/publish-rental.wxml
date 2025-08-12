@@ -1,0 +1,537 @@
+<!-- 出租转让发布页面 -->
+<view class="publish-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-title">
+      <text class="title-text">发布出租转让</text>
+      <text class="title-desc">智能分类 · 精准匹配</text>
+    </view>
+    <view class="header-actions">
+      <button class="draft-btn" bindtap="onSaveDraft">保存草稿</button>
+      <button class="clear-btn" bindtap="onClearDraft">清空</button>
+    </view>
+  </view>
+
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view 
+      wx:for="{{totalSteps}}" 
+      wx:key="*this"
+      class="step-item {{currentStep >= item ? 'active' : ''}} {{currentStep === item ? 'current' : ''}}"
+      data-step="{{item}}"
+      bindtap="goToStep"
+    >
+      <view class="step-number">{{item}}</view>
+      <text class="step-label">
+        {{item === 1 ? '基本信息' : item === 2 ? '详细信息' : '联系信息'}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 第一步：基本信息 -->
+    <view class="form-step" wx:if="{{currentStep === 1}}">
+      <view class="step-title">基本信息</view>
+      
+      <!-- 标题 -->
+      <view class="form-item">
+        <text class="form-label">标题 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.title ? 'error' : ''}}"
+          placeholder="请输入标题，如：西湖龙井茶城A区档口转让"
+          value="{{formData.title}}"
+          data-field="title"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.title}}">{{errors.title}}</text>
+      </view>
+
+      <!-- 类型选择 -->
+      <view class="form-item">
+        <text class="form-label">类型 <text class="required">*</text></text>
+        <view class="type-grid">
+          <view 
+            wx:for="{{typeOptions}}" 
+            wx:key="value"
+            class="type-item {{formData.type === item.value ? 'active' : ''}}"
+            data-value="{{item.value}}"
+            bindtap="onTypeSelect"
+          >
+            <text class="type-icon">{{item.icon}}</text>
+            <text class="type-label">{{item.label}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{errors.type}}">{{errors.type}}</text>
+      </view>
+
+      <!-- 转让方式 -->
+      <view class="form-item">
+        <text class="form-label">转让方式 <text class="required">*</text></text>
+        <view class="price-type-grid">
+          <view 
+            wx:for="{{priceTypeOptions}}" 
+            wx:key="value"
+            class="price-type-item {{formData.priceType === item.value ? 'active' : ''}}"
+            data-value="{{item.value}}"
+            bindtap="onPriceTypeSelect"
+          >
+            <text class="price-type-label">{{item.label}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{errors.priceType}}">{{errors.priceType}}</text>
+      </view>
+
+      <!-- 价格 -->
+      <view class="form-item">
+        <text class="form-label">价格 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.price ? 'error' : ''}}"
+          placeholder="请输入价格，如：面议、5000元/月"
+          value="{{formData.price}}"
+          data-field="price"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.price}}">{{errors.price}}</text>
+      </view>
+
+      <!-- 位置 -->
+      <view class="form-item">
+        <text class="form-label">位置 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.location ? 'error' : ''}}"
+          placeholder="请输入详细位置"
+          value="{{formData.location}}"
+          data-field="location"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.location}}">{{errors.location}}</text>
+      </view>
+
+      <!-- 面积 -->
+      <view class="form-item">
+        <text class="form-label">面积 <text class="required">*</text></text>
+        <view class="area-input-group">
+          <input 
+            class="form-input area-input {{errors.area ? 'error' : ''}}"
+            placeholder="请输入面积"
+            value="{{formData.area}}"
+            data-field="area"
+            bindinput="onInputChange"
+          />
+          <picker 
+            class="area-unit-picker"
+            range="{{areaUnitOptions}}"
+            range-key="label"
+            value="{{areaUnitIndex}}"
+            bindchange="onAreaUnitSelect"
+          >
+            <view class="picker-text">{{formData.areaUnit || '单位'}}</view>
+          </picker>
+        </view>
+        <text class="error-text" wx:if="{{errors.area}}">{{errors.area}}</text>
+      </view>
+    </view>
+
+    <!-- 第二步：详细信息 -->
+    <view class="form-step" wx:if="{{currentStep === 2}}">
+      <view class="step-title">详细信息</view>
+      
+      <!-- 详细描述 -->
+      <view class="form-item">
+        <text class="form-label">详细描述 <text class="required">*</text></text>
+        <textarea 
+          class="form-textarea {{errors.description ? 'error' : ''}}"
+          placeholder="请详细描述您的出租转让信息..."
+          value="{{formData.description}}"
+          data-field="description"
+          bindinput="onInputChange"
+          maxlength="500"
+        ></textarea>
+        <text class="error-text" wx:if="{{errors.description}}">{{errors.description}}</text>
+      </view>
+
+      <!-- 市场档口特有信息 -->
+      <view class="form-item" wx:if="{{formData.type === 'market'}}">
+        <text class="form-label">档口信息</text>
+        <view class="market-info">
+          <input 
+            class="form-input {{errors.boothNumber ? 'error' : ''}}"
+            placeholder="档口号"
+            value="{{formData.marketInfo.boothNumber}}"
+            data-field="marketInfo.boothNumber"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="楼层"
+            value="{{formData.marketInfo.floor}}"
+            data-field="marketInfo.floor"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="朝向"
+            value="{{formData.marketInfo.direction}}"
+            data-field="marketInfo.direction"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="营业时间"
+            value="{{formData.marketInfo.businessHours}}"
+            data-field="marketInfo.businessHours"
+            bindinput="onInputChange"
+          />
+        </view>
+        <text class="error-text" wx:if="{{errors.boothNumber}}">{{errors.boothNumber}}</text>
+        
+        <!-- 配套设施 -->
+        <view class="facilities-section">
+          <text class="facilities-title">配套设施：</text>
+          <view class="facilities-grid">
+            <view 
+              wx:for="{{facilityOptions.market}}" 
+              wx:key="*this"
+              class="facility-item {{facilityStatus.market[item] ? 'active' : ''}}"
+              data-facility="{{item}}"
+              data-type="market"
+              bindtap="onFacilitySelect"
+            >
+              {{item}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 仓库/厂房特有信息 -->
+      <view class="form-item" wx:if="{{formData.type === 'warehouse'}}">
+        <text class="form-label">仓库信息</text>
+        <view class="warehouse-info">
+          <input 
+            class="form-input {{errors.height ? 'error' : ''}}"
+            placeholder="层高（米）"
+            value="{{formData.warehouseInfo.height}}"
+            data-field="warehouseInfo.height"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="荷载（吨/㎡）"
+            value="{{formData.warehouseInfo.loadCapacity}}"
+            data-field="warehouseInfo.loadCapacity"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="货车通道宽度（米）"
+            value="{{formData.warehouseInfo.truckWidth}}"
+            data-field="warehouseInfo.truckWidth"
+            bindinput="onInputChange"
+          />
+        </view>
+        <text class="error-text" wx:if="{{errors.height}}">{{errors.height}}</text>
+        
+        <!-- 配套设施 -->
+        <view class="facilities-section">
+          <text class="facilities-title">配套设施：</text>
+          <view class="facilities-grid">
+            <view 
+              wx:for="{{facilityOptions.warehouse}}" 
+              wx:key="*this"
+              class="facility-item {{facilityStatus.warehouse[item] ? 'active' : ''}}"
+              data-facility="{{item}}"
+              data-type="warehouse"
+              bindtap="onFacilitySelect"
+            >
+              {{item}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 茶园特有信息 -->
+      <view class="form-item" wx:if="{{formData.type === 'garden'}}">
+        <text class="form-label">茶园信息</text>
+        <view class="garden-info">
+          <view class="land-type-section">
+            <text class="land-type-title">土地性质：</text>
+            <view class="land-type-options">
+              <view 
+                class="land-type-item {{formData.gardenInfo.landType === '租赁' ? 'active' : ''}}"
+                data-value="租赁"
+                bindtap="onLandTypeSelect"
+              >
+                租赁
+              </view>
+              <view 
+                class="land-type-item {{formData.gardenInfo.landType === '所有权' ? 'active' : ''}}"
+                data-value="所有权"
+                bindtap="onLandTypeSelect"
+              >
+                所有权
+              </view>
+            </view>
+          </view>
+          <input 
+            class="form-input"
+            placeholder="剩余年限（年）"
+            value="{{formData.gardenInfo.remainingYears}}"
+            data-field="gardenInfo.remainingYears"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="土壤质量"
+            value="{{formData.gardenInfo.soilQuality}}"
+            data-field="gardenInfo.soilQuality"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="水源情况"
+            value="{{formData.gardenInfo.waterSource}}"
+            data-field="gardenInfo.waterSource"
+            bindinput="onInputChange"
+          />
+        </view>
+        <text class="error-text" wx:if="{{errors.landType}}">{{errors.landType}}</text>
+      </view>
+
+      <!-- 设备特有信息 -->
+      <view class="form-item" wx:if="{{formData.type === 'equipment'}}">
+        <text class="form-label">设备信息</text>
+        <view class="equipment-info">
+          <input 
+            class="form-input"
+            placeholder="使用年限（年）"
+            value="{{formData.equipmentInfo.useYears}}"
+            data-field="equipmentInfo.useYears"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="维护情况"
+            value="{{formData.equipmentInfo.maintenance}}"
+            data-field="equipmentInfo.maintenance"
+            bindinput="onInputChange"
+          />
+        </view>
+        
+        <!-- 设备清单 -->
+        <view class="equipment-list-section">
+          <text class="equipment-list-title">设备清单：</text>
+          <view class="equipment-list">
+            <view 
+              wx:for="{{formData.equipmentInfo.equipmentList}}" 
+              wx:key="*this"
+              class="equipment-item"
+            >
+              <text class="equipment-name">{{item}}</text>
+              <text 
+                class="equipment-delete"
+                data-index="{{index}}"
+                bindtap="removeEquipment"
+              >×</text>
+            </view>
+          </view>
+          <button class="add-equipment-btn" bindtap="addEquipment">+ 添加设备</button>
+        </view>
+        <text class="error-text" wx:if="{{errors.equipmentList}}">{{errors.equipmentList}}</text>
+        
+        <!-- 现场试机 -->
+        <view class="test-section">
+          <text class="test-title">现场试机：</text>
+          <switch 
+            class="test-switch"
+            checked="{{formData.equipmentInfo.canTest}}"
+            bindchange="onTestToggle"
+          />
+        </view>
+      </view>
+
+      <!-- 整厂转让特有信息 -->
+      <view class="form-item" wx:if="{{formData.type === 'factory'}}">
+        <text class="form-label">工厂信息</text>
+        <view class="factory-info">
+          <input 
+            class="form-input"
+            placeholder="员工数量"
+            value="{{formData.factoryInfo.employeeCount}}"
+            data-field="factoryInfo.employeeCount"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="年营业额"
+            value="{{formData.factoryInfo.annualRevenue}}"
+            data-field="factoryInfo.annualRevenue"
+            bindinput="onInputChange"
+          />
+          <textarea 
+            class="form-textarea"
+            placeholder="债权债务说明"
+            value="{{formData.factoryInfo.debtInfo}}"
+            data-field="factoryInfo.debtInfo"
+            bindinput="onInputChange"
+          ></textarea>
+        </view>
+        
+        <!-- 资产包详情 -->
+        <view class="asset-details-section">
+          <text class="asset-details-title">资产包详情：</text>
+          <view class="facilities-grid">
+            <view 
+              wx:for="{{facilityOptions.factory}}" 
+              wx:key="*this"
+              class="facility-item {{facilityStatus.factory[item] ? 'active' : ''}}"
+              data-facility="{{item}}"
+              data-type="factory"
+              bindtap="onFacilitySelect"
+            >
+              {{item}}
+            </view>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{errors.assetDetails}}">{{errors.assetDetails}}</text>
+      </view>
+
+      <!-- 转让条件 -->
+      <view class="form-item">
+        <text class="form-label">转让条件</text>
+        <view class="transfer-conditions">
+          <input 
+            class="form-input"
+            placeholder="转让费"
+            value="{{formData.transferConditions.transferFee}}"
+            data-field="transferConditions.transferFee"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="押金"
+            value="{{formData.transferConditions.deposit}}"
+            data-field="transferConditions.deposit"
+            bindinput="onInputChange"
+          />
+          <input 
+            class="form-input"
+            placeholder="合同期限"
+            value="{{formData.transferConditions.contractTerm}}"
+            data-field="transferConditions.contractTerm"
+            bindinput="onInputChange"
+          />
+        </view>
+      </view>
+
+      <!-- 图片上传 -->
+      <view class="form-item">
+        <text class="form-label">图片上传</text>
+        <view class="image-upload">
+          <view 
+            wx:for="{{formData.images}}" 
+            wx:key="*this"
+            class="image-item"
+          >
+            <image 
+              class="uploaded-image" 
+              src="{{item}}" 
+              mode="aspectFill"
+              data-index="{{index}}"
+              bindtap="previewImage"
+            ></image>
+            <text 
+              class="delete-image"
+              data-index="{{index}}"
+              bindtap="deleteImage"
+            >×</text>
+          </view>
+          <view 
+            class="upload-btn"
+            bindtap="chooseImage"
+            wx:if="{{formData.images.length < 9}}"
+          >
+            <text class="upload-icon">+</text>
+            <text class="upload-text">上传图片</text>
+          </view>
+        </view>
+        <text class="upload-tip">最多上传9张图片</text>
+      </view>
+    </view>
+
+    <!-- 第三步：联系信息 -->
+    <view class="form-step" wx:if="{{currentStep === 3}}">
+      <view class="step-title">联系信息</view>
+      
+      <!-- 联系人姓名 -->
+      <view class="form-item">
+        <text class="form-label">联系人 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.contactName ? 'error' : ''}}"
+          placeholder="请输入联系人姓名"
+          value="{{formData.contactInfo.name}}"
+          data-field="contactInfo.name"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.contactName}}">{{errors.contactName}}</text>
+      </view>
+
+      <!-- 联系电话 -->
+      <view class="form-item">
+        <text class="form-label">联系电话 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.contactPhone ? 'error' : ''}}"
+          placeholder="请输入联系电话"
+          value="{{formData.contactInfo.phone}}"
+          data-field="contactInfo.phone"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.contactPhone}}">{{errors.contactPhone}}</text>
+      </view>
+
+      <!-- 微信号 -->
+      <view class="form-item">
+        <text class="form-label">微信号 <text class="required">*</text></text>
+        <input 
+          class="form-input {{errors.contactWechat ? 'error' : ''}}"
+          placeholder="请输入微信号"
+          value="{{formData.contactInfo.wechat}}"
+          data-field="contactInfo.wechat"
+          bindinput="onInputChange"
+        />
+        <text class="error-text" wx:if="{{errors.contactWechat}}">{{errors.contactWechat}}</text>
+      </view>
+
+      <!-- 联系地址 -->
+      <view class="form-item">
+        <text class="form-label">联系地址</text>
+        <input 
+          class="form-input"
+          placeholder="请输入联系地址"
+          value="{{formData.contactInfo.address}}"
+          data-field="contactInfo.address"
+          bindinput="onInputChange"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <button 
+      class="prev-btn"
+      bindtap="prevStep"
+      wx:if="{{currentStep > 1}}"
+    >
+      上一步
+    </button>
+    
+    <button 
+      class="next-btn"
+      bindtap="nextStep"
+      loading="{{loading}}"
+    >
+      {{currentStep === totalSteps ? '发布' : '下一步'}}
+    </button>
+  </view>
+</view> 

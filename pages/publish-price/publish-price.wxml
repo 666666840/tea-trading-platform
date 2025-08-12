@@ -1,0 +1,267 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">{{pageMode === 'update' ? '更新报价' : '发布报价'}}</text>
+    <text class="page-subtitle">为买家提供最新价格信息</text>
+  </view>
+
+  <!-- 快速更新模式 -->
+  <view class="quick-update-section" wx:if="{{quickUpdateMode}}">
+    <view class="quick-update-header">
+      <text class="quick-update-title">⚡ 快速更新</text>
+      <text class="quick-update-desc">价格未变，仅更新时间</text>
+    </view>
+    <button class="quick-update-btn" bindtap="quickUpdate">
+      <text class="btn-text">价格未变，确认更新</text>
+    </button>
+  </view>
+
+  <!-- 更新提醒 -->
+  <view class="update-reminders" wx:if="{{updateReminders.length > 0}}">
+    <view class="reminder-header">
+      <text class="reminder-title">📢 更新提醒</text>
+    </view>
+    <view class="reminder-list">
+      <view class="reminder-item" 
+            wx:for="{{updateReminders}}" 
+            wx:key="id"
+            wx:for-item="reminder">
+        <view class="reminder-content">
+          <text class="reminder-message">{{reminder.message}}</text>
+          <text class="reminder-days">{{reminder.daysNotUpdated}}天未更新</text>
+        </view>
+        <button class="reminder-action-btn" 
+                bindtap="navigateToUpdate" 
+                data-id="{{reminder.id}}">
+          立即更新
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 激励提示 -->
+  <view class="incentive-section">
+    <view class="incentive-header">
+      <text class="incentive-title">💡 完善信息获得更多曝光</text>
+    </view>
+    <view class="incentive-list">
+      <view class="incentive-item {{incentives.images.completed ? 'completed' : ''}}">
+        <view class="incentive-icon">{{incentives.images.icon}}</view>
+        <view class="incentive-content">
+          <text class="incentive-name">{{incentives.images.title}}</text>
+          <text class="incentive-desc">{{incentives.images.desc}}</text>
+          <text class="incentive-reward">{{incentives.images.reward}}</text>
+        </view>
+        <view class="incentive-status">
+          <text class="status-icon">{{incentives.images.completed ? '✓' : '○'}}</text>
+        </view>
+      </view>
+      <view class="incentive-item {{incentives.origin.completed ? 'completed' : ''}}">
+        <view class="incentive-icon">{{incentives.origin.icon}}</view>
+        <view class="incentive-content">
+          <text class="incentive-name">{{incentives.origin.title}}</text>
+          <text class="incentive-desc">{{incentives.origin.desc}}</text>
+          <text class="incentive-reward">{{incentives.origin.reward}}</text>
+        </view>
+        <view class="incentive-status">
+          <text class="status-icon">{{incentives.origin.completed ? '✓' : '○'}}</text>
+        </view>
+      </view>
+      <view class="incentive-item {{incentives.process.completed ? 'completed' : ''}}">
+        <view class="incentive-icon">{{incentives.process.icon}}</view>
+        <view class="incentive-content">
+          <text class="incentive-name">{{incentives.process.title}}</text>
+          <text class="incentive-desc">{{incentives.process.desc}}</text>
+          <text class="incentive-reward">{{incentives.process.reward}}</text>
+        </view>
+        <view class="incentive-status">
+          <text class="status-icon">{{incentives.process.completed ? '✓' : '○'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-container">
+    <!-- 必填项 -->
+    <view class="form-section">
+      <view class="section-header">
+        <text class="section-title">必填信息</text>
+        <text class="required-mark">*</text>
+      </view>
+
+      <!-- 地级市 -->
+      <view class="form-item">
+        <text class="form-label">地级市</text>
+        <view class="city-selector">
+          <view class="current-city">
+            <text class="city-text">{{formData.city || '请选择城市'}}</text>
+            <text class="city-arrow">▼</text>
+          </view>
+          <scroll-view class="hot-cities" scroll-x="true">
+            <view class="city-item {{formData.city === item ? 'active' : ''}}" 
+                  wx:for="{{hotCities}}" 
+                  wx:key="*this"
+                  wx:for-item="item"
+                  bindtap="selectCity" 
+                  data-city="{{item}}">
+              {{item}}
+            </view>
+          </scroll-view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.city}}">{{formErrors.city}}</text>
+      </view>
+
+      <!-- 茶类选择 -->
+      <view class="form-item">
+        <text class="form-label">茶类</text>
+        <view class="category-grid">
+          <view class="category-item {{selectedCategory === item ? 'active' : ''}}" 
+                wx:for="{{categoryList}}" 
+                wx:key="*this"
+                wx:for-item="item"
+                bindtap="selectCategory" 
+                data-category="{{item}}">
+            <text class="category-name">{{item}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.category}}">{{formErrors.category}}</text>
+      </view>
+
+      <!-- 具体品类 -->
+      <view class="form-item" wx:if="{{selectedCategory}}">
+        <text class="form-label">具体品类</text>
+        <view class="subcategory-grid">
+          <view class="subcategory-item {{selectedSubCategory === item ? 'active' : ''}}" 
+                wx:for="{{teaCategories[selectedCategory]}}" 
+                wx:key="*this"
+                wx:for-item="item"
+                bindtap="selectSubCategory" 
+                data-subcategory="{{item}}">
+            <text class="subcategory-name">{{item}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.subCategory}}">{{formErrors.subCategory}}</text>
+      </view>
+
+      <!-- 价格区间 -->
+      <view class="form-item">
+        <text class="form-label">价格区间</text>
+        <view class="price-input-group">
+          <view class="price-input">
+            <input class="input-field" 
+                   type="digit" 
+                   placeholder="最低价" 
+                   value="{{formData.priceMin}}"
+                   bindinput="onPriceMinInput" />
+            <text class="input-unit">{{formData.unit}}</text>
+          </view>
+          <text class="price-separator">至</text>
+          <view class="price-input">
+            <input class="input-field" 
+                   type="digit" 
+                   placeholder="最高价" 
+                   value="{{formData.priceMax}}"
+                   bindinput="onPriceMaxInput" />
+            <text class="input-unit">{{formData.unit}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.priceMin}}">{{formErrors.priceMin}}</text>
+        <text class="error-text" wx:if="{{formErrors.priceMax}}">{{formErrors.priceMax}}</text>
+      </view>
+
+      <!-- 单位选择 -->
+      <view class="form-item">
+        <text class="form-label">计量单位</text>
+        <picker class="unit-picker" 
+                range="{{units}}" 
+                value="{{units.indexOf(formData.unit)}}"
+                bindchange="onUnitChange">
+          <view class="picker-display">
+            <text class="picker-text">{{formData.unit}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 选填项 -->
+    <view class="form-section">
+      <view class="section-header">
+        <text class="section-title">选填信息</text>
+        <text class="optional-mark">（提升曝光率）</text>
+      </view>
+
+      <!-- 茶叶实拍图 -->
+      <view class="form-item">
+        <text class="form-label">茶叶实拍图</text>
+        <text class="form-tip">最多3张，建议上传清晰的产品图片</text>
+        <view class="image-upload">
+          <view class="image-list">
+            <view class="image-item" 
+                  wx:for="{{formData.images}}" 
+                  wx:key="*this"
+                  wx:for-item="image"
+                  wx:for-index="index">
+              <image class="uploaded-image" 
+                     src="{{image}}" 
+                     mode="aspectFill"
+                     bindtap="previewImage" 
+                     data-index="{{index}}"></image>
+              <view class="delete-btn" 
+                    bindtap="deleteImage" 
+                    data-index="{{index}}">
+                <text class="delete-icon">×</text>
+              </view>
+            </view>
+            <view class="upload-btn" 
+                  wx:if="{{formData.images.length < 3}}"
+                  bindtap="chooseImage">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">上传图片</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 工艺说明 -->
+      <view class="form-item">
+        <text class="form-label">工艺说明</text>
+        <textarea class="textarea-field" 
+                  placeholder="请描述茶叶的制作工艺、特点等（选填）"
+                  value="{{formData.process}}"
+                  bindinput="onProcessInput"
+                  maxlength="200"></textarea>
+        <text class="char-count">{{formData.process.length}}/200</text>
+      </view>
+
+      <!-- 产地 -->
+      <view class="form-item">
+        <text class="form-label">产地</text>
+        <input class="input-field" 
+               placeholder="请输入茶叶产地（选填）"
+               value="{{formData.origin}}"
+               bindinput="onOriginInput" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="reset-btn" bindtap="resetForm">重置</button>
+    <button class="submit-btn {{submitting ? 'submitting' : ''}}" 
+            bindtap="submitPrice"
+            disabled="{{submitting}}">
+      <text wx:if="{{!submitting}}">{{pageMode === 'update' ? '更新报价' : '发布报价'}}</text>
+      <text wx:else>{{pageMode === 'update' ? '更新中...' : '发布中...'}}</text>
+    </button>
+  </view>
+
+  <!-- 提交状态遮罩 -->
+  <view class="loading-mask" wx:if="{{submitting}}">
+    <view class="loading-content">
+      <view class="loading-icon">⏳</view>
+      <text class="loading-text">正在{{pageMode === 'update' ? '更新' : '发布'}}报价...</text>
+    </view>
+  </view>
+</view> 

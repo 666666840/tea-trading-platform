@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "性能仪表盘",
+  "usingComponents": {
+    "ec-canvas": "../../ec-canvas/ec-canvas"
+  }
+} 

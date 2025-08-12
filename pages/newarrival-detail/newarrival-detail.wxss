@@ -1,0 +1,327 @@
+.detail-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 图片轮播 */
+.image-swiper {
+  width: 100%;
+  height: 500rpx;
+}
+
+.swiper-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 商品信息区域 */
+.info-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.product-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+}
+
+/* 品类标签 */
+.category-tag {
+  display: inline-block;
+  background: #e8f5e8;
+  color: #4CAF50;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 价格信息 */
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.price-range {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ff4757;
+}
+
+.stock-info {
+  font-size: 26rpx;
+  color: #666;
+  background: #f8f9fa;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 到货时间 */
+.arrival-time {
+  margin-bottom: 20rpx;
+}
+
+.time-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.time-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 浏览量 */
+.view-count {
+  text-align: right;
+}
+
+.count-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 商品特色 */
+.features-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  border-left: 8rpx solid #4CAF50;
+  padding-left: 20rpx;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.feature-icon {
+  font-size: 28rpx;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.feature-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 商品描述 */
+.description-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.description-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 商户信息 */
+.merchant-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.merchant-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.merchant-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e0e0e0;
+}
+
+.merchant-details {
+  flex: 1;
+}
+
+.merchant-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.rating-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.rating-stars {
+  font-size: 24rpx;
+  color: #ffc107;
+}
+
+.merchant-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 5rpx;
+}
+
+.stats-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 联系方式 */
+.contact-section {
+  border-top: 2rpx solid #f0f0f0;
+  padding-top: 30rpx;
+}
+
+.contact-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.contact-btn {
+  flex: 1;
+  height: 80rpx;
+  border: none;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.wechat-btn {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: white;
+}
+
+.hello-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+}
+
+.btn-icon {
+  font-size: 32rpx;
+}
+
+.btn-text {
+  color: inherit;
+}
+
+/* 相关推荐 */
+.related-section {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.related-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.related-item {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.related-item:active {
+  background: #f8f9fa;
+}
+
+.related-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.related-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.related-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.related-category {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.related-price {
+  font-size: 26rpx;
+  color: #ff4757;
+  font-weight: bold;
+}
+
+/* 发布信息 */
+.publish-info {
+  background: white;
+  padding: 20rpx 30rpx;
+  text-align: center;
+}
+
+.publish-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  color: #666;
+} 

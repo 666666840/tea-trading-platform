@@ -1,0 +1,355 @@
+<!-- 供应详情页面 -->
+<view class="supply-detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <view class="detail-content" wx:if="{{!loading && supplyInfo}}">
+    <!-- 图片轮播 -->
+    <view class="image-section">
+      <swiper 
+        class="image-swiper" 
+        indicator-dots="{{true}}"
+        autoplay="{{false}}"
+        interval="3000"
+        duration="500"
+        bindchange="onImageChange"
+      >
+        <swiper-item wx:for="{{supplyInfo.images}}" wx:key="*this">
+          <image 
+            class="swiper-image" 
+            src="{{item}}" 
+            mode="aspectFill"
+            data-index="{{index}}"
+            bindtap="previewImage"
+          ></image>
+        </swiper-item>
+      </swiper>
+      
+      <!-- 图片指示器 -->
+      <view class="image-indicator">
+        <text class="indicator-text">{{currentImageIndex + 1}}/{{supplyInfo.images.length}}</text>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="basic-info">
+      <view class="info-header">
+        <view class="type-badge supply">{{supplyInfo.typeText}}</view>
+        <view class="badges">
+          <view class="badge new" wx:if="{{supplyInfo.isNew}}">新品</view>
+          <view class="badge clearance" wx:if="{{supplyInfo.isClearance}}">尾货</view>
+          <view class="badge recommend" wx:if="{{supplyInfo.isRecommended}}">推荐</view>
+          <view class="badge urgent" wx:if="{{supplyInfo.isUrgent}}">紧急</view>
+        </view>
+      </view>
+      
+      <text class="title">{{supplyInfo.title}}</text>
+      <text class="description">{{supplyInfo.description}}</text>
+      
+      <!-- 关键信息 -->
+      <view class="key-info">
+        <view class="info-row">
+          <text class="info-label">茶类：</text>
+          <text class="info-value">{{supplyInfo.teaType}} - {{supplyInfo.teaSubType}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">价格：</text>
+          <text class="info-value price">{{supplyInfo.price}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">数量：</text>
+          <text class="info-value">{{supplyInfo.quantity}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">产地：</text>
+          <text class="info-value">{{supplyInfo.location}} {{supplyInfo.market}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">有效期：</text>
+          <text class="info-value">{{supplyInfo.validityPeriod}}</text>
+        </view>
+      </view>
+      
+      <!-- 标签 -->
+      <view class="tags">
+        <text 
+          wx:for="{{supplyInfo.tags}}" 
+          wx:key="*this" 
+          wx:for-item="tag"
+          class="tag-item"
+        >
+          {{tag}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 商户信息 -->
+    <view class="merchant-section">
+      <view class="section-header">
+        <text class="section-title">商户信息</text>
+        <button class="view-detail-btn" bindtap="viewMerchantDetail">查看详情</button>
+      </view>
+      
+      <view class="merchant-card">
+        <view class="merchant-basic">
+          <image class="merchant-avatar" src="{{supplyInfo.merchant.avatar}}" mode="aspectFill"></image>
+          <view class="merchant-info">
+            <view class="merchant-name-row">
+              <text class="merchant-name">{{supplyInfo.merchant.name}}</text>
+              <text class="verified-badge" wx:if="{{supplyInfo.merchant.isVerified}}">已认证</text>
+            </view>
+            <view class="merchant-rating">
+              <text class="rating-score">{{supplyInfo.merchant.rating}}</text>
+              <text class="rating-star">⭐</text>
+              <text class="business-type">{{supplyInfo.merchant.mainBusiness}}</text>
+            </view>
+            <view class="merchant-stats">
+              <text class="stat-item">经营{{supplyInfo.merchant.businessYears}}年</text>
+              <text class="stat-item">供应{{supplyInfo.merchant.totalSupply}}次</text>
+              <text class="stat-item">回复率{{supplyInfo.merchant.responseRate}}%</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 联系按钮 -->
+        <view class="contact-buttons">
+          <button 
+            class="contact-btn phone {{contactUnlocked ? 'unlocked' : 'locked'}}"
+            bindtap="onPhoneTap"
+          >
+            <text class="btn-icon">📞</text>
+            <text class="btn-text">{{contactUnlocked ? '拨打电话' : '解锁电话'}}</text>
+          </button>
+          
+          <button 
+            class="contact-btn wechat {{contactUnlocked ? 'unlocked' : 'locked'}}"
+            bindtap="onWechatTap"
+          >
+            <text class="btn-icon">💬</text>
+            <text class="btn-text">{{contactUnlocked ? '复制微信' : '解锁微信'}}</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 规格参数 -->
+    <view class="specifications-section">
+      <view class="section-header">
+        <text class="section-title">规格参数</text>
+      </view>
+      
+      <view class="specs-grid">
+        <view class="spec-item">
+          <text class="spec-label">年份</text>
+          <text class="spec-value">{{supplyInfo.specifications.year}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">等级</text>
+          <text class="spec-value">{{supplyInfo.specifications.grade}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">产地</text>
+          <text class="spec-value">{{supplyInfo.specifications.origin}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">工艺</text>
+          <text class="spec-value">{{supplyInfo.specifications.process}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">存储</text>
+          <text class="spec-value">{{supplyInfo.specifications.storage}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">水分</text>
+          <text class="spec-value">{{supplyInfo.specifications.moisture}}</text>
+        </view>
+        <view class="spec-item">
+          <text class="spec-label">包装</text>
+          <text class="spec-value">{{supplyInfo.specifications.packaging}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 品质特征 -->
+    <view class="quality-section">
+      <view class="section-header">
+        <text class="section-title">品质特征</text>
+      </view>
+      
+      <view class="quality-list">
+        <view class="quality-item">
+          <text class="quality-label">外观</text>
+          <text class="quality-value">{{supplyInfo.quality.appearance}}</text>
+        </view>
+        <view class="quality-item">
+          <text class="quality-label">香气</text>
+          <text class="quality-value">{{supplyInfo.quality.aroma}}</text>
+        </view>
+        <view class="quality-item">
+          <text class="quality-label">口感</text>
+          <text class="quality-value">{{supplyInfo.quality.taste}}</text>
+        </view>
+        <view class="quality-item">
+          <text class="quality-label">汤色</text>
+          <text class="quality-value">{{supplyInfo.quality.soup}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 配送信息 -->
+    <view class="delivery-section">
+      <view class="section-header">
+        <text class="section-title">配送信息</text>
+      </view>
+      
+      <view class="delivery-info">
+        <view class="delivery-item">
+          <text class="delivery-label">配送方式</text>
+          <text class="delivery-value">{{supplyInfo.delivery.method}}</text>
+        </view>
+        <view class="delivery-item">
+          <text class="delivery-label">配送时间</text>
+          <text class="delivery-value">{{supplyInfo.delivery.time}}</text>
+        </view>
+        <view class="delivery-item">
+          <text class="delivery-label">配送区域</text>
+          <text class="delivery-value">{{supplyInfo.delivery.area}}</text>
+        </view>
+        <view class="delivery-item">
+          <text class="delivery-label">运费</text>
+          <text class="delivery-value">{{supplyInfo.delivery.cost}}</text>
+        </view>
+        <view class="delivery-item">
+          <text class="delivery-label">保险</text>
+          <text class="delivery-value">{{supplyInfo.delivery.insurance}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="payment-section">
+      <view class="section-header">
+        <text class="section-title">支付方式</text>
+      </view>
+      
+      <view class="payment-info">
+        <view class="payment-methods">
+          <text 
+            wx:for="{{supplyInfo.payment.methods}}" 
+            wx:key="*this" 
+            wx:for-item="method"
+            class="payment-method"
+          >
+            {{method}}
+          </text>
+        </view>
+        <view class="payment-terms">
+          <text class="terms-label">付款条件：</text>
+          <text class="terms-value">{{supplyInfo.payment.terms}}</text>
+        </view>
+        <view class="payment-guarantee">
+          <text class="guarantee-label">品质保证：</text>
+          <text class="guarantee-value">{{supplyInfo.payment.guarantee}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 认证证书 -->
+    <view class="certificates-section" wx:if="{{supplyInfo.certificates.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">认证证书</text>
+      </view>
+      
+      <view class="certificates-list">
+        <view 
+          wx:for="{{supplyInfo.certificates}}" 
+          wx:key="name"
+          class="certificate-item"
+        >
+          <view class="certificate-info">
+            <text class="certificate-name">{{item.name}}</text>
+            <text class="certificate-issuer">{{item.issuer}}</text>
+            <text class="certificate-valid">有效期至：{{item.validUntil}}</text>
+          </view>
+          <view class="certificate-status">
+            <text class="status-text">有效</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 相关推荐 -->
+    <view class="related-section" wx:if="{{relatedList.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">相关推荐</text>
+      </view>
+      
+      <view class="related-list">
+        <view 
+          wx:for="{{relatedList}}" 
+          wx:key="id"
+          class="related-item"
+          data-id="{{item.id}}"
+          bindtap="onRelatedTap"
+        >
+          <image class="related-image" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="related-info">
+            <text class="related-title">{{item.title}}</text>
+            <text class="related-price">{{item.price}}</text>
+            <text class="related-location">{{item.location}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats-section">
+      <view class="stats-item">
+        <text class="stats-icon">👁️</text>
+        <text class="stats-text">{{supplyInfo.viewCount}} 浏览</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-icon">❤️</text>
+        <text class="stats-text">{{supplyInfo.favoriteCount}} 收藏</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-icon">💬</text>
+        <text class="stats-text">{{supplyInfo.contactCount}} 联系</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-icon">📅</text>
+        <text class="stats-text">{{supplyInfo.updateTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions" wx:if="{{!loading && supplyInfo}}">
+    <view class="action-left">
+      <button class="action-btn favorite {{isFavorited ? 'active' : ''}}" bindtap="toggleFavorite">
+        <text class="action-icon">{{isFavorited ? '❤️' : '🤍'}}</text>
+        <text class="action-text">收藏</text>
+      </button>
+      
+      <button class="action-btn share" open-type="share">
+        <text class="action-icon">📤</text>
+        <text class="action-text">分享</text>
+      </button>
+      
+      <button class="action-btn report" bindtap="reportSupply">
+        <text class="action-icon">🚨</text>
+        <text class="action-text">举报</text>
+      </button>
+    </view>
+    
+    <view class="action-right">
+      <button class="contact-btn primary" bindtap="contactMerchant">
+        <text class="btn-text">{{contactUnlocked ? '联系商户' : '解锁联系'}}</text>
+      </button>
+    </view>
+  </view>
+</view> 

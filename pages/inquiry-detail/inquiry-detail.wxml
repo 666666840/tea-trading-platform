@@ -1,0 +1,148 @@
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 求购信息详情 -->
+  <view class="inquiry-detail" wx:if="{{!loading && inquiryInfo}}">
+    <!-- 求购信息头部 -->
+    <view class="inquiry-header">
+      <view class="inquiry-title">
+        <text>{{inquiryInfo.title}}</text>
+        <view class="inquiry-status {{inquiryInfo.status}}">{{inquiryInfo.statusText}}</view>
+      </view>
+      <view class="publisher-info">
+        <image class="publisher-avatar" src="{{inquiryInfo.publisher.avatar}}" mode="aspectFill"></image>
+        <view class="publisher-details">
+          <text class="publisher-name">{{inquiryInfo.publisher.nickname}}</text>
+          <view class="publisher-verified" wx:if="{{inquiryInfo.publisher.verified}}">✓ 认证用户</view>
+        </view>
+        <view class="publish-time">{{inquiryInfo.publishTime}}</view>
+      </view>
+    </view>
+
+    <!-- 求购信息统计 -->
+    <view class="inquiry-stats">
+      <view class="stat-item">
+        <text class="stat-value">{{inquiryInfo.stats.viewCount}}</text>
+        <text class="stat-label">浏览</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{inquiryInfo.stats.quoteCount}}</text>
+        <text class="stat-label">报价</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{inquiryInfo.stats.favoriteCount}}</text>
+        <text class="stat-label">收藏</text>
+      </view>
+    </view>
+
+    <!-- 求购信息内容 -->
+    <view class="inquiry-content">
+      <view class="content-section">
+        <view class="section-title">求购品类</view>
+        <text class="section-value">{{inquiryInfo.category}} - {{inquiryInfo.subCategory}}</text>
+      </view>
+
+      <view class="content-section">
+        <view class="section-title">求购数量</view>
+        <text class="section-value">{{inquiryInfo.quantity}} {{inquiryInfo.unit}}</text>
+      </view>
+
+      <view class="content-section">
+        <view class="section-title">要求描述</view>
+        <text class="section-value description">{{inquiryInfo.description}}</text>
+      </view>
+
+      <view class="content-section" wx:if="{{inquiryInfo.budgetMin || inquiryInfo.budgetMax}}">
+        <view class="section-title">预算范围</view>
+        <text class="section-value">{{inquiryInfo.budgetMin || '不限'}} - {{inquiryInfo.budgetMax || '不限'}} 元</text>
+      </view>
+
+      <view class="content-section" wx:if="{{inquiryInfo.province}}">
+        <view class="section-title">收货地区</view>
+        <text class="section-value">{{inquiryInfo.province}} {{inquiryInfo.city}} {{inquiryInfo.district}}</text>
+      </view>
+
+      <view class="content-section">
+        <view class="section-title">期望联系时间</view>
+        <text class="section-value">{{inquiryInfo.contactTime}}</text>
+      </view>
+
+      <view class="content-section">
+        <view class="section-title">有效期限</view>
+        <text class="section-value">{{inquiryInfo.validDays}}天（{{inquiryInfo.expireTime}}到期）</text>
+      </view>
+
+      <!-- 附件展示 -->
+      <view class="content-section" wx:if="{{inquiryInfo.attachments.length > 0}}">
+        <view class="section-title">附件图片</view>
+        <view class="attachment-list">
+          <image class="attachment-image" 
+                 wx:for="{{inquiryInfo.attachments}}" 
+                 wx:key="*this"
+                 src="{{item}}" 
+                 mode="aspectFill"
+                 bindtap="previewAttachment"
+                 data-index="{{index}}"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系信息（商户可见） -->
+    <view class="contact-section" wx:if="{{userRole === 'merchant'}}">
+      <view class="contact-header">
+        <text class="contact-title">买家联系信息</text>
+        <text class="contact-tip">认证商户可见</text>
+      </view>
+      
+      <view class="contact-info" wx:if="{{showContact}}">
+        <view class="contact-item">
+          <text class="contact-label">联系电话：</text>
+          <text class="contact-value" bindtap="makePhoneCall">{{inquiryInfo.publisher.contact.phone}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">微信号：</text>
+          <text class="contact-value" bindtap="copyWechat">{{inquiryInfo.publisher.contact.wechat}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">微信二维码：</text>
+          <image class="contact-qrcode" 
+                 src="{{inquiryInfo.publisher.contact.qrcode}}" 
+                 mode="aspectFit"
+                 bindtap="viewQRCode"></image>
+        </view>
+      </view>
+      
+      <view class="contact-actions">
+        <button class="contact-btn" 
+                bindtap="{{showContact ? 'hideContactInfo' : 'showContactInfo'}}">
+          {{showContact ? '隐藏联系信息' : '查看联系信息'}}
+        </button>
+        <button class="contact-btn primary" bindtap="contactBuyer">
+          联系买家
+        </button>
+      </view>
+    </view>
+
+    <!-- 买家操作（仅买家可见） -->
+    <view class="buyer-actions" wx:if="{{userRole === 'buyer'}}">
+      <button class="action-btn edit-btn" bindtap="editInquiry">编辑信息</button>
+      <button class="action-btn close-btn" bindtap="closeInquiry">关闭求购</button>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-actions">
+      <view class="action-item" bindtap="toggleFavorite">
+        <text class="action-icon">❤️</text>
+        <text class="action-text">收藏</text>
+      </view>
+      <view class="action-item" bindtap="onShareAppMessage">
+        <text class="action-icon">📤</text>
+        <text class="action-text">分享</text>
+      </view>
+    </view>
+  </view>
+</view> 

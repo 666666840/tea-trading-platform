@@ -1,0 +1,114 @@
+<!--pages/env-switcher/env-switcher.wxml-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <view class="title">🔧 环境切换工具</view>
+    <view class="subtitle">基于微信官方环境检测</view>
+  </view>
+
+  <!-- 微信环境信息 -->
+  <view class="wechat-env-card">
+    <view class="card-header">
+      <view class="card-title">📱 微信运行环境</view>
+      <view class="env-badge env-badge-{{wechatEnv.version}}">{{wechatEnv.name}}</view>
+    </view>
+    <view class="env-description">{{wechatEnv.description}}</view>
+    <view class="env-status">
+      <text class="status-item">
+        切换支持: <text class="{{canSwitchEnv ? 'status-enabled' : 'status-disabled'}}">
+          {{canSwitchEnv ? '✅ 支持' : '❌ 不支持'}}
+        </text>
+      </text>
+    </view>
+  </view>
+
+  <!-- 当前模式显示 -->
+  <view class="current-mode-card">
+    <view class="card-title">当前功能模式</view>
+    <view class="current-mode">
+      <view wx:for="{{environments}}" wx:key="key" class="mode-item {{currentMode === item.key ? 'active' : ''}}">
+        <view class="mode-indicator" style="background-color: {{item.color}};"></view>
+        <view class="mode-info">
+          <view class="mode-name">{{item.name}}</view>
+          <view class="mode-desc">{{item.desc}}</view>
+        </view>
+        <view wx:if="{{currentMode === item.key}}" class="current-badge">当前</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 环境切换选项 -->
+  <view class="switch-section" wx:if="{{canSwitchEnv}}">
+    <view class="section-title">选择功能模式</view>
+    <view class="environment-list">
+      <view 
+        wx:for="{{environments}}" 
+        wx:key="key" 
+        class="environment-item {{currentMode === item.key ? 'current' : ''}}"
+        data-mode="{{item.key}}"
+        bindtap="switchEnvironment"
+      >
+        <view class="env-color" style="background-color: {{item.color}};"></view>
+        <view class="env-content">
+          <view class="env-header">
+            <view class="env-name">{{item.name}}</view>
+            <view wx:if="{{currentMode === item.key}}" class="current-indicator">✓</view>
+          </view>
+          <view class="env-desc">{{item.desc}}</view>
+          <view class="env-features">
+            <text wx:for="{{item.features}}" wx:for-item="feature" wx:key="index" class="feature-tag">
+              {{feature}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 无法切换提示 -->
+  <view class="no-switch-tip" wx:if="{{!canSwitchEnv}}">
+    <view class="tip-icon">🚫</view>
+    <view class="tip-title">当前环境不支持切换</view>
+    <view class="tip-content">
+      微信{{wechatEnv.name}}为了确保稳定性，不允许切换功能模式。
+      如需使用调试功能，请通过开发者工具或体验版访问。
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <view class="action-buttons">
+      <button class="action-btn secondary" bindtap="viewEnvironmentDetail">
+        📊 环境详情
+      </button>
+      <button class="action-btn secondary" bindtap="viewHelp">
+        ❓ 使用帮助
+      </button>
+    </view>
+    
+    <view class="action-buttons" wx:if="{{canSwitchEnv}}">
+      <button class="action-btn primary" bindtap="resetToDefault">
+        🔄 重置默认
+      </button>
+      <button class="action-btn primary" bindtap="exportConfig">
+        📋 导出配置
+      </button>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer-info">
+    <view class="info-item">
+      <text class="label">工具版本:</text>
+      <text class="value">2.0.0</text>
+    </view>
+    <view class="info-item">
+      <text class="label">基于:</text>
+      <text class="value">微信官方环境检测API</text>
+    </view>
+    <view class="info-item" wx:if="{{userInfo}}">
+      <text class="label">当前用户:</text>
+      <text class="value">{{userInfo.nickName}}</text>
+    </view>
+  </view>
+</view>

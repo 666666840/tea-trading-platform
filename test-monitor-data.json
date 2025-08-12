@@ -1,0 +1,213 @@
+{
+  "apiMonitor": {
+    "calls": [
+      {
+        "url": "/api/content",
+        "method": "GET",
+        "responseTime": 150,
+        "success": true,
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "statusCode": 200,
+        "userId": "user1"
+      },
+      {
+        "url": "/api/market/provinces",
+        "method": "GET",
+        "responseTime": 200,
+        "success": true,
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "statusCode": 200,
+        "userId": "user2"
+      },
+      {
+        "url": "/api/inquiry",
+        "method": "POST",
+        "responseTime": 2500,
+        "success": true,
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "statusCode": 200,
+        "userId": "user3"
+      },
+      {
+        "url": "/api/supply",
+        "method": "GET",
+        "responseTime": 300,
+        "success": false,
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "statusCode": 500,
+        "userId": "user4"
+      },
+      {
+        "url": "/api/brand",
+        "method": "GET",
+        "responseTime": 180,
+        "success": true,
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "statusCode": 200,
+        "userId": "user5"
+      }
+    ],
+    "errors": [],
+    "performance": {
+      "totalCalls": 5,
+      "totalErrors": 0,
+      "avgResponseTime": 666.0,
+      "slowAPIs": [
+        {
+          "url": "/api/inquiry",
+          "method": "POST",
+          "responseTime": 2500,
+          "timestamp": "2025-07-06T11:53:01.352521",
+          "count": 1
+        }
+      ],
+      "errorAPIs": [
+        {
+          "url": "/api/supply",
+          "method": "GET",
+          "statusCode": 500,
+          "timestamp": "2025-07-06T11:53:01.352521",
+          "count": 1
+        }
+      ]
+    },
+    "realtime": {
+      "currentCalls": 0,
+      "activeConnections": 0,
+      "lastMinuteCalls": 0,
+      "lastHourCalls": 0
+    },
+    "summary": {
+      "totalCalls": 5,
+      "totalErrors": 0,
+      "avgResponseTime": 666,
+      "errorRate": "0.00%",
+      "slowAPICount": 1,
+      "errorAPICount": 1
+    }
+  },
+  "analytics": {
+    "events": [
+      {
+        "type": "api_call",
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "method": "GET",
+        "url": "/api/content",
+        "statusCode": 200,
+        "responseTime": 150,
+        "success": true,
+        "userId": "user1"
+      },
+      {
+        "type": "api_call",
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "method": "GET",
+        "url": "/api/market/provinces",
+        "statusCode": 200,
+        "responseTime": 200,
+        "success": true,
+        "userId": "user2"
+      },
+      {
+        "type": "api_call",
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "method": "POST",
+        "url": "/api/inquiry",
+        "statusCode": 200,
+        "responseTime": 2500,
+        "success": true,
+        "userId": "user3"
+      },
+      {
+        "type": "api_call",
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "method": "GET",
+        "url": "/api/supply",
+        "statusCode": 500,
+        "responseTime": 300,
+        "success": false,
+        "userId": "user4"
+      },
+      {
+        "type": "api_call",
+        "timestamp": "2025-07-06T11:53:01.352521",
+        "method": "GET",
+        "url": "/api/brand",
+        "statusCode": 200,
+        "responseTime": 180,
+        "success": true,
+        "userId": "user5"
+      },
+      {
+        "type": "page_view",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "page": "/pages/index/index",
+        "userId": "user1"
+      },
+      {
+        "type": "page_view",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "page": "/pages/market/market",
+        "userId": "user2"
+      },
+      {
+        "type": "page_view",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "page": "/pages/inquiry/inquiry",
+        "userId": "user1"
+      },
+      {
+        "type": "page_view",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "page": "/pages/supply/supply",
+        "userId": "user3"
+      },
+      {
+        "type": "user_action",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "action": "click_button",
+        "page": "/pages/index/index",
+        "userId": "user1"
+      },
+      {
+        "type": "user_action",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "action": "publish_inquiry",
+        "page": "/pages/inquiry/inquiry",
+        "userId": "user2"
+      },
+      {
+        "type": "user_action",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "action": "view_detail",
+        "page": "/pages/market/market",
+        "userId": "user1"
+      },
+      {
+        "type": "user_action",
+        "timestamp": "2025-07-06T11:53:01.354627",
+        "action": "search",
+        "page": "/pages/supply/supply",
+        "userId": "user3"
+      },
+      {
+        "type": "error",
+        "timestamp": "2025-07-06T11:53:01.355137",
+        "error": "network_timeout",
+        "message": "网络请求超时",
+        "page": "/pages/index/index",
+        "userId": "user1"
+      },
+      {
+        "type": "error",
+        "timestamp": "2025-07-06T11:53:01.355137",
+        "error": "api_error",
+        "message": "API返回错误",
+        "page": "/pages/inquiry/inquiry",
+        "userId": "user2"
+      }
+    ],
+    "pages": {
+      "/pages/index/index": {
+        "views": 1,
+        "uniqueUsers": 

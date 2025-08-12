@@ -1,0 +1,200 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="back-text">返回</text>
+    </view>
+    <view class="header-title">发布新品</view>
+    <view class="header-right">
+      <button class="reset-btn" bindtap="resetForm">重置</button>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
+      <!-- 新品名称 -->
+      <view class="form-item">
+        <text class="label">新品名称 *</text>
+        <input class="input" 
+               placeholder="请输入新品名称" 
+               value="{{formData.name}}"
+               bindinput="onNameInput" />
+        <text class="error-text" wx:if="{{formErrors.name}}">{{formErrors.name}}</text>
+      </view>
+
+      <!-- 茶类选择 -->
+      <view class="form-item">
+        <text class="label">茶类 *</text>
+        <view class="category-grid">
+          <view class="category-item {{selectedCategory === category ? 'active' : ''}}"
+                wx:for="{{categoryList}}" 
+                wx:key="*this"
+                wx:for-item="category"
+                data-category="{{category}}"
+                bindtap="selectCategory">
+            {{category}}
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.category}}">{{formErrors.category}}</text>
+      </view>
+
+      <!-- 具体品类选择 -->
+      <view class="form-item" wx:if="{{selectedCategory}}">
+        <text class="label">具体品类 *</text>
+        <view class="subcategory-grid">
+          <view class="subcategory-item {{selectedSubCategory === subCategory ? 'active' : ''}}"
+                wx:for="{{teaCategories[selectedCategory]}}" 
+                wx:key="*this"
+                wx:for-item="subCategory"
+                data-subcategory="{{subCategory}}"
+                bindtap="selectSubCategory">
+            {{subCategory}}
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.subCategory}}">{{formErrors.subCategory}}</text>
+      </view>
+
+      <!-- 到货时间 -->
+      <view class="form-item">
+        <text class="label">到货时间 *</text>
+        <picker mode="date" 
+                value="{{formData.arrivalTime}}"
+                bindchange="onArrivalTimeInput">
+          <view class="picker-input">
+            <text class="picker-text">{{formData.arrivalTime || '请选择到货时间'}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <text class="error-text" wx:if="{{formErrors.arrivalTime}}">{{formErrors.arrivalTime}}</text>
+      </view>
+
+      <!-- 价格范围 -->
+      <view class="form-item">
+        <text class="label">价格范围 *</text>
+        <input class="input" 
+               placeholder="如：800-1200元/斤" 
+               value="{{formData.priceRange}}"
+               bindinput="onPriceRangeInput" />
+        <text class="error-text" wx:if="{{formErrors.priceRange}}">{{formErrors.priceRange}}</text>
+      </view>
+
+      <!-- 库存数量 -->
+      <view class="form-item">
+        <text class="label">库存数量</text>
+        <input class="input" 
+               placeholder="如：100斤" 
+               value="{{formData.stock}}"
+               bindinput="onStockInput" />
+        <text class="error-text" wx:if="{{formErrors.stock}}">{{formErrors.stock}}</text>
+      </view>
+
+      <!-- 商品描述 -->
+      <view class="form-item">
+        <text class="label">商品描述</text>
+        <textarea class="textarea" 
+                  placeholder="请详细描述新品的特色、品质等信息" 
+                  value="{{formData.description}}"
+                  bindinput="onDescriptionInput" />
+        <text class="error-text" wx:if="{{formErrors.description}}">{{formErrors.description}}</text>
+      </view>
+    </view>
+
+    <!-- 商品图片 -->
+    <view class="form-section">
+      <view class="section-title">商品图片</view>
+      <view class="image-upload">
+        <view class="image-list">
+          <view class="image-item" 
+                wx:for="{{formData.images}}" 
+                wx:key="*this"
+                wx:for-item="image"
+                wx:for-index="index">
+            <image class="uploaded-image" 
+                   src="{{image}}" 
+                   mode="aspectFill"
+                   bindtap="previewImage"
+                   data-index="{{index}}" />
+            <view class="delete-btn" 
+                  bindtap="deleteImage" 
+                  data-index="{{index}}">×</view>
+          </view>
+          <view class="upload-btn" 
+                wx:if="{{formData.images.length < 9}}"
+                bindtap="chooseImage">
+            <text class="upload-icon">+</text>
+            <text class="upload-text">添加图片</text>
+          </view>
+        </view>
+        <text class="upload-tip">最多上传9张图片，建议上传实拍图</text>
+      </view>
+    </view>
+
+    <!-- 详细信息 -->
+    <view class="form-section">
+      <view class="section-title">详细信息</view>
+      
+      <!-- 工艺说明 -->
+      <view class="form-item">
+        <text class="label">工艺说明</text>
+        <input class="input" 
+               placeholder="如：手工炒制、传统工艺等" 
+               value="{{formData.process}}"
+               bindinput="onProcessInput" />
+      </view>
+
+      <!-- 产地信息 -->
+      <view class="form-item">
+        <text class="label">产地信息</text>
+        <input class="input" 
+               placeholder="如：西湖区龙井村" 
+               value="{{formData.origin}}"
+               bindinput="onOriginInput" />
+      </view>
+    </view>
+
+    <!-- 激励提示 -->
+    <view class="incentives-section">
+      <view class="incentives-title">完善信息，获得更多曝光</view>
+      <view class="incentives-list">
+        <view class="incentive-item {{incentives.images.completed ? 'completed' : ''}}">
+          <text class="incentive-icon">{{incentives.images.icon}}</text>
+          <view class="incentive-content">
+            <text class="incentive-title">{{incentives.images.title}}</text>
+            <text class="incentive-desc">{{incentives.images.desc}}</text>
+            <text class="incentive-reward">{{incentives.images.reward}}</text>
+          </view>
+        </view>
+        <view class="incentive-item {{incentives.origin.completed ? 'completed' : ''}}">
+          <text class="incentive-icon">{{incentives.origin.icon}}</text>
+          <view class="incentive-content">
+            <text class="incentive-title">{{incentives.origin.title}}</text>
+            <text class="incentive-desc">{{incentives.origin.desc}}</text>
+            <text class="incentive-reward">{{incentives.origin.reward}}</text>
+          </view>
+        </view>
+        <view class="incentive-item {{incentives.process.completed ? 'completed' : ''}}">
+          <text class="incentive-icon">{{incentives.process.icon}}</text>
+          <view class="incentive-content">
+            <text class="incentive-title">{{incentives.process.title}}</text>
+            <text class="incentive-desc">{{incentives.process.desc}}</text>
+            <text class="incentive-reward">{{incentives.process.reward}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <button class="submit-btn {{submitting ? 'submitting' : ''}}" 
+            bindtap="submitForm"
+            disabled="{{submitting}}">
+      <text class="btn-text">{{submitting ? '发布中...' : '发布新品'}}</text>
+    </button>
+  </view>
+</view> 

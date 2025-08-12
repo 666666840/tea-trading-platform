@@ -1,0 +1,605 @@
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 页面标题 */
+.header {
+  text-align: center;
+  margin-bottom: 30rpx;
+  padding: 20rpx 0;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 搜索区域 */
+.search-section {
+  margin-bottom: 30rpx;
+  position: relative;
+}
+
+.search-box {
+  display: flex;
+  background: white;
+  border-radius: 50rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.search-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 10rpx 30rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  margin-left: 20rpx;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 24rpx;
+  padding: 10rpx;
+}
+
+/* 省份区域 */
+.province-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+}
+
+.province-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.province-item {
+  background: white;
+  padding: 30rpx 20rpx;
+  border-radius: 15rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.province-item:active {
+  transform: scale(0.98);
+  background: #f0f0f0;
+}
+
+.province-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.market-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 选中的省份 */
+.selected-province {
+  margin-bottom: 30rpx;
+}
+
+.province-header {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 20rpx;
+  border-radius: 15rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.back-btn {
+  color: #4CAF50;
+  font-size: 28rpx;
+  margin-right: 20rpx;
+  padding: 10rpx;
+}
+
+.province-info {
+  flex: 1;
+}
+
+.province-info .province-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.province-stats {
+  display: flex;
+  gap: 20rpx;
+  flex-wrap: wrap;
+}
+
+.province-stats text {
+  font-size: 22rpx;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+/* 按区县分组显示样式 */
+.grouped-market-list {
+  margin-bottom: 30rpx;
+}
+
+.city-group {
+  background: white;
+  border-radius: 15rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.city-header {
+  background: #f8f9fa;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.city-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.city-market-count {
+  font-size: 24rpx;
+  color: #666;
+  background: #e9ecef;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.district-group {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.district-group:last-child {
+  border-bottom: none;
+}
+
+.district-header {
+  background: #fafbfc;
+  padding: 15rpx 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.district-name {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.district-market-count {
+  font-size: 22rpx;
+  color: #666;
+  background: #e8f5e8;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.grouped-market-list .market-list {
+  margin-bottom: 0;
+}
+
+.grouped-market-list .market-item {
+  margin-bottom: 0;
+  border-radius: 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  box-shadow: none;
+}
+
+.grouped-market-list .market-item:last-child {
+  border-bottom: none;
+}
+
+.grouped-market-list .market-item:active {
+  background: #f8f9fa;
+}
+
+.grouped-market-list .market-name {
+  font-size: 28rpx;
+  margin-bottom: 8rpx;
+}
+
+.grouped-market-list .market-address {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 搜索结果标题 */
+.search-result-title {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 20rpx;
+  border-radius: 15rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+}
+
+.result-info {
+  flex: 1;
+}
+
+.result-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5rpx;
+}
+
+.result-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 市场列表 */
+.market-list {
+  margin-bottom: 30rpx;
+}
+
+.market-item {
+  background: white;
+  padding: 30rpx 20rpx;
+  border-radius: 15rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.market-item:active {
+  transform: scale(0.98);
+  background: #f0f0f0;
+}
+
+.market-info {
+  flex: 1;
+}
+
+.market-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.market-location {
+  font-size: 26rpx;
+  color: #4CAF50;
+  margin-bottom: 5rpx;
+}
+
+.market-address {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.market-arrow {
+  color: #ccc;
+  font-size: 32rpx;
+  margin-left: 20rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 20rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 快速导航 */
+.quick-nav {
+  margin-top: 40rpx;
+}
+
+.nav-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.nav-item {
+  background: white;
+  padding: 30rpx 20rpx;
+  border-radius: 15rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.nav-item:active {
+  transform: scale(0.98);
+  background: #f0f0f0;
+}
+
+.nav-icon {
+  font-size: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.nav-text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 入驻表单弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  width: 90%;
+  max-width: 600rpx;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+/* 入驻流程 */
+.join-process {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40rpx;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 15rpx;
+}
+
+.process-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.step-number {
+  width: 40rpx;
+  height: 40rpx;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  margin-bottom: 10rpx;
+}
+
+.step-text {
+  font-size: 22rpx;
+  color: #666;
+  text-align: center;
+}
+
+/* 表单样式 */
+.form-section {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.form-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  margin-bottom: 15rpx;
+  box-sizing: border-box;
+}
+
+.form-picker {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  margin-bottom: 15rpx;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  min-height: 120rpx;
+  box-sizing: border-box;
+}
+
+/* 上传区域 */
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.upload-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 10rpx;
+  background: #f9f9f9;
+}
+
+.upload-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+}
+
+.upload-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.upload-status {
+  font-size: 24rpx;
+  color: #4CAF50;
+}
+
+/* 提示信息 */
+.form-tips {
+  background: #f8f9fa;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 30rpx;
+}
+
+.tip-text {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+/* 操作按钮 */
+.form-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.cancel-btn {
+  flex: 1;
+  padding: 25rpx;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+}
+
+.submit-btn {
+  flex: 1;
+  padding: 25rpx;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .province-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

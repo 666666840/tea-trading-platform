@@ -1,0 +1,4 @@
+<!--pages/market/market_simple.wxml-->
+<view class="container">
+  <text>全国市场（简化版）页面加载成功</text>
+</view>

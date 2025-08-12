@@ -1,0 +1,33 @@
+{
+  "database": {
+    "connection_pool_size": 20,
+    "pool_recycle": 3600,
+    "pool_pre_ping": true,
+    "max_overflow": 30
+  },
+  "cache": {
+    "type": "redis",
+    "default_timeout": 600,
+    "key_prefix": "tea_admin_",
+    "serializer": "json"
+  },
+  "session": {
+    "timeout": 3600,
+    "secure": true,
+    "http_only": true,
+    "same_site": "strict"
+  },
+  "upload": {
+    "max_file_size": 10485760,
+    "allowed_extensions": [
+      "jpg",
+      "jpeg",
+      "png",
+      "gif",
+      "pdf",
+      "doc",
+      "docx"
+    ],
+    "compression": true
+  }
+}

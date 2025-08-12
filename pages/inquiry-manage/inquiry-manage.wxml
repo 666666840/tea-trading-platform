@@ -1,0 +1,180 @@
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">求购管理</text>
+    <button class="publish-btn" bindtap="publishNewInquiry">
+      <text class="publish-icon">+</text>
+      <text class="publish-text">发布求购</text>
+    </button>
+  </view>
+
+  <!-- 标签页切换 -->
+  <view class="tab-header">
+    <view class="tab-item {{activeTab === 0 ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-index="0">
+      <text class="tab-text">我的求购</text>
+    </view>
+    <view class="tab-item {{activeTab === 1 ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-index="1">
+      <text class="tab-text">收藏的求购</text>
+    </view>
+  </view>
+
+  <!-- 筛选条件 -->
+  <view class="filter-section">
+    <view class="filter-row">
+      <text class="filter-label">状态：</text>
+      <view class="filter-options">
+        <view class="filter-option {{filterStatus === 'all' ? 'active' : ''}}" 
+              bindtap="filterByStatus" 
+              data-status="all">全部</view>
+        <view class="filter-option {{filterStatus === 'active' ? 'active' : ''}}" 
+              bindtap="filterByStatus" 
+              data-status="active">求购中</view>
+        <view class="filter-option {{filterStatus === 'expired' ? 'active' : ''}}" 
+              bindtap="filterByStatus" 
+              data-status="expired">已过期</view>
+        <view class="filter-option {{filterStatus === 'closed' ? 'active' : ''}}" 
+              bindtap="filterByStatus" 
+              data-status="closed">已关闭</view>
+      </view>
+    </view>
+    <view class="filter-row">
+      <text class="filter-label">分类：</text>
+      <view class="filter-options">
+        <view class="filter-option {{filterCategory === 'all' ? 'active' : ''}}" 
+              bindtap="filterByCategory" 
+              data-category="all">全部</view>
+        <view class="filter-option {{filterCategory === '绿茶' ? 'active' : ''}}" 
+              bindtap="filterByCategory" 
+              data-category="绿茶">绿茶</view>
+        <view class="filter-option {{filterCategory === '红茶' ? 'active' : ''}}" 
+              bindtap="filterByCategory" 
+              data-category="红茶">红茶</view>
+        <view class="filter-option {{filterCategory === '乌龙茶' ? 'active' : ''}}" 
+              bindtap="filterByCategory" 
+              data-category="乌龙茶">乌龙茶</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 我的求购列表 -->
+  <view class="inquiry-list" wx:if="{{!loading && activeTab === 0}}">
+    <view class="list-empty" wx:if="{{inquiryList.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无求购信息</text>
+      <text class="empty-tip">点击上方按钮发布您的第一个求购信息</text>
+    </view>
+    
+    <view class="inquiry-item" 
+          wx:for="{{inquiryList}}" 
+          wx:key="id"
+          bindtap="viewInquiryDetail" 
+          data-id="{{item.id}}">
+      <view class="inquiry-header">
+        <text class="inquiry-title">{{item.title}}</text>
+        <view class="inquiry-status {{item.status}}">{{item.statusText}}</view>
+      </view>
+      
+      <view class="inquiry-content">
+        <text class="inquiry-category">{{item.category}} - {{item.subCategory}}</text>
+        <text class="inquiry-quantity">{{item.quantity}} {{item.unit}}</text>
+        <text class="inquiry-desc">{{item.description}}</text>
+      </view>
+      
+      <view class="inquiry-meta">
+        <view class="meta-left">
+          <text class="meta-time">发布时间：{{item.publishTime}}</text>
+          <text class="meta-expire">到期时间：{{item.expireTime}}</text>
+        </view>
+        <view class="meta-right">
+          <text class="meta-stat">浏览 {{item.stats.viewCount}}</text>
+          <text class="meta-stat">报价 {{item.stats.quoteCount}}</text>
+          <text class="meta-stat">收藏 {{item.stats.favoriteCount}}</text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="inquiry-actions">
+        <button class="action-btn edit-btn" 
+                bindtap="editInquiry" 
+                data-id="{{item.id}}"
+                wx:if="{{item.status === 'active'}}">编辑</button>
+        <button class="action-btn close-btn" 
+                bindtap="closeInquiry" 
+                data-id="{{item.id}}"
+                wx:if="{{item.status === 'active'}}">关闭</button>
+        <button class="action-btn delete-btn" 
+                bindtap="deleteInquiry" 
+                data-id="{{item.id}}"
+                wx:if="{{item.status === 'expired' || item.status === 'closed'}}">删除</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收藏的求购列表 -->
+  <view class="inquiry-list" wx:if="{{!loading && activeTab === 1}}">
+    <view class="list-empty" wx:if="{{favoriteList.length === 0}}">
+      <text class="empty-icon">❤️</text>
+      <text class="empty-text">暂无收藏的求购信息</text>
+      <text class="empty-tip">在求购信息页面点击收藏按钮添加收藏</text>
+    </view>
+    
+    <view class="inquiry-item" 
+          wx:for="{{favoriteList}}" 
+          wx:key="id"
+          bindtap="viewInquiryDetail" 
+          data-id="{{item.id}}">
+      <view class="inquiry-header">
+        <text class="inquiry-title">{{item.title}}</text>
+        <view class="inquiry-status {{item.status}}">{{item.statusText}}</view>
+      </view>
+      
+      <view class="publisher-info">
+        <image class="publisher-avatar" src="{{item.publisher.avatar}}" mode="aspectFill"></image>
+        <text class="publisher-name">{{item.publisher.nickname}}</text>
+      </view>
+      
+      <view class="inquiry-content">
+        <text class="inquiry-category">{{item.category}} - {{item.subCategory}}</text>
+        <text class="inquiry-quantity">{{item.quantity}} {{item.unit}}</text>
+        <text class="inquiry-desc">{{item.description}}</text>
+      </view>
+      
+      <view class="inquiry-meta">
+        <view class="meta-left">
+          <text class="meta-time">发布时间：{{item.publishTime}}</text>
+          <text class="meta-expire">到期时间：{{item.expireTime}}</text>
+        </view>
+        <view class="meta-right">
+          <text class="meta-stat">浏览 {{item.stats.viewCount}}</text>
+          <text class="meta-stat">报价 {{item.stats.quoteCount}}</text>
+          <text class="meta-stat">收藏 {{item.stats.favoriteCount}}</text>
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="inquiry-actions">
+        <button class="action-btn contact-btn" 
+                bindtap="viewInquiryDetail" 
+                data-id="{{item.id}}">联系买家</button>
+        <button class="action-btn unfavorite-btn" 
+                bindtap="unfavoriteInquiry" 
+                data-id="{{item.id}}">取消收藏</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore && !loading}}">
+    <text bindtap="loadMore">加载更多</text>
+  </view>
+</view> 

@@ -1,0 +1,229 @@
+<!-- 监控数据可视化页面 -->
+<view class="monitor-dashboard">
+  <!-- 页面头部 -->
+  <view class="header">
+    <view class="title">监控仪表盘</view>
+    <view class="actions">
+      <button class="btn btn-primary" bindtap="refreshData" loading="{{refreshing}}">
+        <text class="icon">🔄</text>
+        刷新
+      </button>
+      <button class="btn btn-secondary" bindtap="exportData">
+        <text class="icon">📊</text>
+        导出
+      </button>
+      <button class="btn btn-warning" bindtap="resetData">
+        <text class="icon">🗑️</text>
+        重置
+      </button>
+    </view>
+  </view>
+
+  <!-- 筛选器 -->
+  <view class="filters">
+    <picker mode="selector" range="{{['1小时', '24小时', '7天', '30天']}}" bindchange="onFilterChange" data-type="timeRange">
+      <view class="filter-item">
+        <text class="label">时间范围:</text>
+        <text class="value">{{filters.timeRange}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+    
+    <picker mode="selector" range="{{['全部', '慢API', '错误API']}}" bindchange="onFilterChange" data-type="apiType">
+      <view class="filter-item">
+        <text class="label">API类型:</text>
+        <text class="value">{{filters.apiType}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+    
+    <picker mode="selector" range="{{['全部', '热门页面', '错误页面']}}" bindchange="onFilterChange" data-type="pageType">
+      <view class="filter-item">
+        <text class="label">页面类型:</text>
+        <text class="value">{{filters.pageType}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 实时更新开关 -->
+  <view class="realtime-toggle">
+    <text>实时更新</text>
+    <switch checked="{{realtimeUpdate}}" bindchange="toggleRealtimeUpdate" color="#007AFF" />
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading">加载中...</view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="content" wx:else>
+    <!-- API监控概览 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">📊 API监控概览</text>
+        <text class="section-subtitle">实时API调用统计</text>
+      </view>
+      
+      <view class="stats-grid">
+        <view class="stat-card">
+          <view class="stat-value">{{apiMonitorData.summary.totalCalls || 0}}</view>
+          <view class="stat-label">总调用次数</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{apiMonitorData.summary.avgResponseTime || 0}}ms</view>
+          <view class="stat-label">平均响应时间</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{apiMonitorData.summary.errorRate || '0%'}}</view>
+          <view class="stat-label">错误率</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{apiMonitorData.realtime.lastMinuteCalls || 0}}</view>
+          <view class="stat-label">最近1分钟</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 埋点数据概览 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">📈 埋点数据概览</text>
+        <text class="section-subtitle">用户行为和页面访问统计</text>
+      </view>
+      
+      <view class="stats-grid">
+        <view class="stat-card">
+          <view class="stat-value">{{analyticsData.summary.dailyEvents || 0}}</view>
+          <view class="stat-label">今日事件</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{analyticsData.summary.activeSessions || 0}}</view>
+          <view class="stat-label">活跃会话</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{analyticsData.summary.totalPages || 0}}</view>
+          <view class="stat-label">访问页面</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-value">{{analyticsData.summary.totalErrors || 0}}</view>
+          <view class="stat-label">错误数量</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- API性能图表 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">📊 API性能趋势</text>
+        <text class="section-subtitle">响应时间和错误率分析</text>
+      </view>
+      
+      <view class="chart-container">
+        <view class="chart-placeholder">
+          <text class="chart-title">API响应时间分布</text>
+          <view class="chart-data">
+            <view class="chart-item" wx:for="{{charts.apiPerformance.categories}}" wx:key="index">
+              <text class="api-name">{{item}}</text>
+              <text class="response-time">{{charts.apiPerformance.responseTimes[index]}}ms</text>
+              <text class="error-rate">{{charts.apiPerformance.errorRates[index]}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 页面访问统计 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">📱 页面访问统计</text>
+        <text class="section-subtitle">热门页面排行</text>
+      </view>
+      
+      <view class="list-container">
+        <view class="list-item" wx:for="{{analyticsData.popularPages}}" wx:key="page" bindtap="viewPageDetail" data-page="{{item.page}}">
+          <view class="item-main">
+            <text class="item-title">{{item.page}}</text>
+            <text class="item-subtitle">访问量: {{item.views}} | 用户数: {{item.uniqueUsers}}</text>
+          </view>
+          <text class="item-arrow">></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 慢API列表 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">🐌 慢API列表</text>
+        <text class="section-subtitle">响应时间超过2秒的API</text>
+      </view>
+      
+      <view class="list-container">
+        <view class="list-item" wx:for="{{apiMonitorData.slowAPIs}}" wx:key="url" bindtap="viewAPIDetail" data-api="{{item.url}}">
+          <view class="item-main">
+            <text class="item-title">{{item.url}}</text>
+            <text class="item-subtitle">响应时间: {{item.responseTime}}ms | 调用次数: {{item.count}}</text>
+          </view>
+          <text class="item-arrow">></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 错误API列表 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">❌ 错误API列表</text>
+        <text class="section-subtitle">频繁出错的API</text>
+      </view>
+      
+      <view class="list-container">
+        <view class="list-item" wx:for="{{apiMonitorData.errorAPIs}}" wx:key="url" bindtap="viewAPIDetail" data-api="{{item.url}}">
+          <view class="item-main">
+            <text class="item-title">{{item.url}}</text>
+            <text class="item-subtitle">错误次数: {{item.count}} | 状态码: {{item.statusCode}}</text>
+          </view>
+          <text class="item-arrow">></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 最近API调用 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">🕒 最近API调用</text>
+        <text class="section-subtitle">实时调用记录</text>
+      </view>
+      
+      <view class="list-container">
+        <view class="list-item" wx:for="{{apiMonitorData.recentCalls}}" wx:key="id">
+          <view class="item-main">
+            <text class="item-title">{{item.method}} {{item.url}}</text>
+            <text class="item-subtitle">{{item.timestamp}} | {{item.responseTime}}ms | {{item.statusCode}}</text>
+          </view>
+          <text class="status-badge {{item.success ? 'success' : 'error'}}">
+            {{item.success ? '成功' : '失败'}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 用户行为统计 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">👤 用户行为统计</text>
+        <text class="section-subtitle">功能使用频率</text>
+      </view>
+      
+      <view class="list-container">
+        <view class="list-item" wx:for="{{analyticsData.popularFeatures}}" wx:key="feature">
+          <view class="item-main">
+            <text class="item-title">{{item.feature}}</text>
+            <text class="item-subtitle">使用次数: {{item.uses}} | 用户数: {{item.uniqueUsers}}</text>
+          </view>
+          <text class="usage-count">{{item.uses}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

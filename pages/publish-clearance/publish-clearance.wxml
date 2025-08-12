@@ -1,0 +1,165 @@
+<view class="publish-container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">发布特价尾货</text>
+    <text class="page-subtitle">请如实填写商品信息，确保信息真实性</text>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 商品名称 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">商品名称</text>
+        <text class="required">*</text>
+      </view>
+      <input class="form-input {{formErrors.name ? 'error' : ''}}" 
+             placeholder="请输入商品名称" 
+             value="{{formData.name}}"
+             bindinput="onNameInput" />
+      <view class="error-text" wx:if="{{formErrors.name}}">{{formErrors.name}}</view>
+    </view>
+
+    <!-- 价格信息 -->
+    <view class="price-section">
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">原参考价（元/斤）</text>
+          <text class="required">*</text>
+        </view>
+        <input class="form-input {{formErrors.originalPrice ? 'error' : ''}}" 
+               type="digit"
+               placeholder="请输入原价" 
+               value="{{formData.originalPrice}}"
+               bindinput="onOriginalPriceInput" />
+        <view class="error-text" wx:if="{{formErrors.originalPrice}}">{{formErrors.originalPrice}}</view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">清仓价（元/斤）</text>
+          <text class="required">*</text>
+        </view>
+        <input class="form-input {{formErrors.clearancePrice ? 'error' : ''}}" 
+               type="digit"
+               placeholder="请输入清仓价" 
+               value="{{formData.clearancePrice}}"
+               bindinput="onClearancePriceInput" />
+        <view class="error-text" wx:if="{{formErrors.clearancePrice}}">{{formErrors.clearancePrice}}</view>
+      </view>
+    </view>
+
+    <!-- 库存信息 -->
+    <view class="stock-section">
+      <view class="form-item">
+        <view class="form-label">
+          <text class="label-text">库存数量（斤）</text>
+          <text class="required">*</text>
+        </view>
+        <view class="stock-input-group">
+          <input class="stock-input {{formErrors.stockMin ? 'error' : ''}}" 
+                 type="number"
+                 placeholder="最小库存" 
+                 value="{{formData.stockMin}}"
+                 bindinput="onStockMinInput" />
+          <text class="stock-separator">-</text>
+          <input class="stock-input {{formErrors.stockMax ? 'error' : ''}}" 
+                 type="number"
+                 placeholder="最大库存" 
+                 value="{{formData.stockMax}}"
+                 bindinput="onStockMaxInput" />
+        </view>
+        <view class="error-text" wx:if="{{formErrors.stockMin}}">{{formErrors.stockMin}}</view>
+        <view class="error-text" wx:if="{{formErrors.stockMax}}">{{formErrors.stockMax}}</view>
+        <view class="stock-tip">库存数量不能少于100斤，请如实填写</view>
+      </view>
+    </view>
+
+    <!-- 清仓原因 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">清仓原因</text>
+        <text class="required">*</text>
+      </view>
+      <picker class="form-picker {{formErrors.reason ? 'error' : ''}}"
+              range="{{reasonOptions}}" 
+              range-key="label"
+              value="{{reasonIndex}}"
+              bindchange="onReasonChange">
+        <view class="picker-text">
+          {{formData.reason || '请选择清仓原因'}}
+        </view>
+      </picker>
+      <view class="error-text" wx:if="{{formErrors.reason}}">{{formErrors.reason}}</view>
+    </view>
+
+    <!-- 商品描述 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">商品描述</text>
+      </view>
+      <textarea class="form-textarea" 
+                placeholder="请详细描述商品特点、品质等信息（选填）" 
+                value="{{formData.description}}"
+                bindinput="onDescriptionInput" />
+    </view>
+
+    <!-- 商品图片 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">商品图片</text>
+        <text class="required">*</text>
+      </view>
+      <view class="image-section">
+        <view class="image-list">
+          <view class="image-item" 
+                wx:for="{{formData.images}}" 
+                wx:key="index">
+            <image class="uploaded-image" 
+                   src="{{item}}" 
+                   mode="aspectFill"
+                   data-index="{{index}}"
+                   bindtap="previewImage" />
+            <view class="delete-btn" 
+                  data-index="{{index}}"
+                  bindtap="deleteImage">
+              <text class="delete-icon">×</text>
+            </view>
+          </view>
+          
+          <view class="upload-btn" 
+                wx:if="{{formData.images.length < 6}}"
+                bindtap="chooseImage">
+            <text class="upload-icon">+</text>
+            <text class="upload-text">添加图片</text>
+          </view>
+        </view>
+        <view class="image-tip">
+          <text class="tip-text">请上传至少3张清晰实拍图，包含外包装和瑕疵细节</text>
+        </view>
+        <view class="error-text" wx:if="{{formErrors.images}}">{{formErrors.images}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布须知 -->
+  <view class="notice-section">
+    <view class="notice-title">发布须知</view>
+    <view class="notice-list">
+      <view class="notice-item">• 请确保商品信息真实准确，虚假信息将被下架</view>
+      <view class="notice-item">• 商品图片必须为实拍图，不得使用网络图片</view>
+      <view class="notice-item">• 清仓价必须低于原参考价，体现优惠力度</view>
+      <view class="notice-item">• 库存数量必须真实，不得虚报库存</view>
+      <view class="notice-item">• 发布后需要审核，审核通过后才会显示</view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn {{submitting ? 'disabled' : ''}}" 
+            bindtap="submitForm"
+            disabled="{{submitting}}">
+      <text class="submit-text">{{submitting ? '发布中...' : '发布特价尾货'}}</text>
+    </button>
+  </view>
+</view> 

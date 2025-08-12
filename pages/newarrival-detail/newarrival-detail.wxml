@@ -1,0 +1,116 @@
+<view class="detail-container" wx:if="{{arrivalInfo}}">
+  <!-- 商品图片轮播 -->
+  <swiper class="image-swiper" indicator-dots="{{true}}" autoplay="{{false}}">
+    <swiper-item wx:for="{{arrivalInfo.images}}" wx:key="index">
+      <image class="swiper-image" 
+             src="{{item}}" 
+             mode="aspectFill"
+             data-index="{{index}}"
+             bindtap="previewImage" />
+    </swiper-item>
+  </swiper>
+
+  <!-- 商品基本信息 -->
+  <view class="info-section">
+    <view class="product-title">{{arrivalInfo.name}}</view>
+    
+    <!-- 品类标签 -->
+    <view class="category-tag">{{arrivalInfo.category}}</view>
+    
+    <!-- 价格信息 -->
+    <view class="price-section">
+      <text class="price-range">¥{{arrivalInfo.priceRange}}/斤</text>
+      <text class="stock-info">{{arrivalInfo.stock}}</text>
+    </view>
+
+    <!-- 到货时间 -->
+    <view class="arrival-time">
+      <text class="time-label">到货时间：</text>
+      <text class="time-value">{{arrivalInfo.arrivalTime}}</text>
+    </view>
+
+    <!-- 浏览量 -->
+    <view class="view-count">
+      <text class="count-text">{{arrivalInfo.viewCount}}人浏览</text>
+    </view>
+  </view>
+
+  <!-- 商品特色 -->
+  <view class="features-section">
+    <view class="section-title">商品特色</view>
+    <view class="features-list">
+      <view class="feature-item" wx:for="{{arrivalInfo.features}}" wx:key="index">
+        <text class="feature-icon">✓</text>
+        <text class="feature-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品描述 -->
+  <view class="description-section">
+    <view class="section-title">商品描述</view>
+    <view class="description-content">{{arrivalInfo.description}}</view>
+  </view>
+
+  <!-- 商户信息 -->
+  <view class="merchant-section">
+    <view class="section-title">商户信息</view>
+    <view class="merchant-info">
+      <image class="merchant-avatar" src="{{merchantInfo.avatar}}" mode="aspectFill" />
+      <view class="merchant-details">
+        <view class="merchant-name">{{merchantInfo.name}}</view>
+        <view class="merchant-rating">
+          <text class="rating-text">信用评分：{{merchantInfo.rating}}</text>
+          <text class="rating-stars">★★★★★</text>
+        </view>
+        <view class="merchant-stats">
+          <text class="stats-text">已发布{{merchantInfo.arrivalCount}}次到货信息</text>
+          <text class="stats-text">入驻时间：{{merchantInfo.joinTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="contact-section">
+      <view class="contact-buttons">
+        <button class="contact-btn wechat-btn" bindtap="contactMerchant">
+          <text class="btn-icon">💬</text>
+          <text class="btn-text">联系商户</text>
+        </button>
+        <button class="contact-btn hello-btn" bindtap="sayHello">
+          <text class="btn-icon">👋</text>
+          <text class="btn-text">打招呼</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 相关推荐 -->
+  <view class="related-section">
+    <view class="section-title">相关推荐</view>
+    <view class="related-list">
+      <view class="related-item" 
+            wx:for="{{relatedArrivals}}" 
+            wx:key="id"
+            data-id="{{item.id}}"
+            bindtap="onRelatedTap">
+        <image class="related-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="related-info">
+          <text class="related-name">{{item.name}}</text>
+          <text class="related-category">{{item.category}}</text>
+          <text class="related-price">¥{{item.priceRange}}/斤</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布信息 -->
+  <view class="publish-info">
+    <text class="publish-text">发布时间：{{arrivalInfo.createTime}}</text>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:else>
+  <text class="loading-text">加载中...</text>
+</view> 

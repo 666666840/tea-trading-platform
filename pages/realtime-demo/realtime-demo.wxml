@@ -1,0 +1,194 @@
+<!-- 实时功能演示页面 -->
+<view class="container">
+  <!-- 连接状态 -->
+  <view class="status-section">
+    <view class="status-card">
+      <view class="status-header">
+        <text class="status-title">连接状态</text>
+        <view class="status-indicator {{connectionStatus}}">
+          <text class="status-text">{{connectionStatus === 'connected' ? '已连接' : connectionStatus === 'connecting' ? '连接中' : connectionStatus === 'error' ? '连接错误' : '未连接'}}</text>
+        </view>
+      </view>
+      <view class="status-info">
+        <text class="info-item">认证状态: {{isAuthenticated ? '已认证' : '未认证'}}</text>
+        <text class="info-item">用户ID: {{userId || '未设置'}}</text>
+        <text class="info-item">在线用户: {{connectedUsers}}</text>
+        <text class="info-item">服务器时间: {{serverTime}}</text>
+      </view>
+      <view class="status-actions">
+        <button class="btn btn-primary" bindtap="onConnect" disabled="{{connectionStatus === 'connected'}}">连接</button>
+        <button class="btn btn-secondary" bindtap="onDisconnect" disabled="{{connectionStatus !== 'connected'}}">断开</button>
+        <button class="btn btn-info" bindtap="onGetStatus">获取状态</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能操作 -->
+  <view class="actions-section">
+    <view class="section-title">功能操作</view>
+    <view class="actions-grid">
+      <button class="action-btn" bindtap="onSetPriceAlert">
+        <text class="action-icon">💰</text>
+        <text class="action-text">价格提醒</text>
+      </button>
+      <button class="action-btn" bindtap="onSetStockAlert">
+        <text class="action-icon">📦</text>
+        <text class="action-text">库存提醒</text>
+      </button>
+      <button class="action-btn" bindtap="onSubscribeMarket">
+        <text class="action-icon">🏪</text>
+        <text class="action-text">订阅市场</text>
+      </button>
+      <button class="action-btn" bindtap="onSubscribePrice">
+        <text class="action-icon">📊</text>
+        <text class="action-text">订阅价格</text>
+      </button>
+      <button class="action-btn" bindtap="onTestNotification">
+        <text class="action-icon">📢</text>
+        <text class="action-text">测试通知</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 实时数据 -->
+  <view class="data-section">
+    <!-- 通知消息 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">📢 通知消息 ({{notifications.length}})</text>
+        <button class="clear-btn" bindtap="onClearNotifications">清空</button>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{notifications}}" wx:key="id" class="data-item notification-item">
+          <view class="item-header">
+            <text class="item-title">{{item.title}}</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">{{item.content}}</text>
+          <text class="item-type">类型: {{item.type}}</text>
+        </view>
+        <view wx:if="{{notifications.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无通知消息</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 市场更新 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">🏪 市场更新 ({{marketUpdates.length}})</text>
+        <button class="clear-btn" bindtap="onClearMarketUpdates">清空</button>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{marketUpdates}}" wx:key="id" class="data-item market-item">
+          <view class="item-header">
+            <text class="item-title">市场ID: {{item.marketId}}</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">更新类型: {{item.updateType}}</text>
+        </view>
+        <view wx:if="{{marketUpdates.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无市场更新</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 价格更新 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">💰 价格更新 ({{priceUpdates.length}})</text>
+        <button class="clear-btn" bindtap="onClearPriceUpdates">清空</button>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{priceUpdates}}" wx:key="id" class="data-item price-item">
+          <view class="item-header">
+            <text class="item-title">{{item.category}}</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">价格数据已更新</text>
+        </view>
+        <view wx:if="{{priceUpdates.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无价格更新</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 新品到货 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">🆕 新品到货 ({{newArrivals.length}})</text>
+        <button class="clear-btn" bindtap="onClearNewArrivals">清空</button>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{newArrivals}}" wx:key="id" class="data-item arrival-item">
+          <view class="item-header">
+            <text class="item-title">{{item.name}}</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">价格: ¥{{item.price}} | 分类: {{item.category}}</text>
+        </view>
+        <view wx:if="{{newArrivals.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无新品到货</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 清仓提醒 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">🔥 清仓提醒 ({{clearanceAlerts.length}})</text>
+        <button class="clear-btn" bindtap="onClearClearanceAlerts">清空</button>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{clearanceAlerts}}" wx:key="id" class="data-item clearance-item">
+          <view class="item-header">
+            <text class="item-title">{{item.name}}</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">特价: ¥{{item.salePrice}} | 库存: {{item.stock}}</text>
+        </view>
+        <view wx:if="{{clearanceAlerts.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无清仓提醒</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 价格提醒 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">💰 价格提醒 ({{priceAlerts.length}})</text>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{priceAlerts}}" wx:key="id" class="data-item alert-item">
+          <view class="item-header">
+            <text class="item-title">价格提醒触发</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">当前价格: ¥{{item.currentPrice}}</text>
+        </view>
+        <view wx:if="{{priceAlerts.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无价格提醒</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 库存提醒 -->
+    <view class="data-card">
+      <view class="card-header">
+        <text class="card-title">📦 库存提醒 ({{stockAlerts.length}})</text>
+      </view>
+      <scroll-view class="data-list" scroll-y="true">
+        <view wx:for="{{stockAlerts}}" wx:key="id" class="data-item alert-item">
+          <view class="item-header">
+            <text class="item-title">库存提醒触发</text>
+            <text class="item-time">{{item.timestamp}}</text>
+          </view>
+          <text class="item-content">当前库存: {{item.currentStock}}</text>
+        </view>
+        <view wx:if="{{stockAlerts.length === 0}}" class="empty-state">
+          <text class="empty-text">暂无库存提醒</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view> 

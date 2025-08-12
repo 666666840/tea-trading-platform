@@ -1,0 +1,195 @@
+<!-- 创建店铺页面 -->
+<view class="create-shop-page">
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-item {{currentStep >= 1 ? 'active' : ''}}">
+      <view class="step-number">1</view>
+      <text class="step-text">基本信息</text>
+    </view>
+    <view class="step-line {{currentStep >= 2 ? 'active' : ''}}"></view>
+    <view class="step-item {{currentStep >= 2 ? 'active' : ''}}">
+      <view class="step-number">2</view>
+      <text class="step-text">地址信息</text>
+    </view>
+    <view class="step-line {{currentStep >= 3 ? 'active' : ''}}"></view>
+    <view class="step-item {{currentStep >= 3 ? 'active' : ''}}">
+      <view class="step-number">3</view>
+      <text class="step-text">手机验证</text>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 第一步：基本信息 -->
+    <view class="form-step" wx:if="{{currentStep === 1}}">
+      <view class="form-title">店铺基本信息</view>
+      
+      <!-- 店铺Logo -->
+      <view class="form-item">
+        <view class="form-label">商户照片 <text class="required">*</text></view>
+        <view class="logo-upload" bindtap="onLogoSelect">
+          <image 
+            wx:if="{{formData.shopLogo}}" 
+            class="logo-preview" 
+            src="{{formData.shopLogo}}" 
+            mode="aspectFill"
+          ></image>
+          <view wx:else class="logo-placeholder">
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">上传店铺Logo</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.shopLogo}}">{{formErrors.shopLogo}}</text>
+      </view>
+
+      <!-- 店铺名称 -->
+      <view class="form-item">
+        <view class="form-label">商户名称 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          placeholder="请输入店铺/公司名称"
+          value="{{formData.shopName}}"
+          bindinput="onShopNameInput"
+        />
+        <text class="error-text" wx:if="{{formErrors.shopName}}">{{formErrors.shopName}}</text>
+      </view>
+
+      <!-- 经营类型 -->
+      <view class="form-item">
+        <view class="form-label">经营类型</view>
+        <picker 
+          class="form-picker"
+          mode="selector"
+          range="{{businessTypes}}"
+          bindchange="onBusinessTypeChange"
+        >
+          <view class="picker-text">
+            {{formData.businessType || '请选择经营类型'}}
+          </view>
+        </picker>
+        <text class="error-text" wx:if="{{formErrors.businessType}}">{{formErrors.businessType}}</text>
+      </view>
+    </view>
+
+    <!-- 第二步：地址信息 -->
+    <view class="form-step" wx:if="{{currentStep === 2}}">
+      <view class="form-title">地址信息</view>
+      
+      <!-- 地区选择 -->
+      <view class="form-item">
+        <view class="form-label">所在地区</view>
+        <picker 
+          class="form-picker"
+          mode="region"
+          bindchange="onRegionChange"
+        >
+          <view class="picker-text">
+            {{formData.address.province && formData.address.city && formData.address.district ? 
+              formData.address.province + formData.address.city + formData.address.district : 
+              '请选择地区'}}
+          </view>
+        </picker>
+        <text class="error-text" wx:if="{{formErrors.address}}">{{formErrors.address}}</text>
+      </view>
+
+      <!-- 详细地址 -->
+      <view class="form-item">
+        <view class="form-label">详细地址</view>
+        <textarea 
+          class="form-textarea" 
+          placeholder="请输入详细地址"
+          value="{{formData.address.detail}}"
+          bindinput="onDetailAddressInput"
+        ></textarea>
+        <text class="error-text" wx:if="{{formErrors.detailAddress}}">{{formErrors.detailAddress}}</text>
+      </view>
+
+      <!-- 常去的批发市场 -->
+      <view class="form-item">
+        <view class="form-label">常去的批发市场</view>
+        <picker 
+          class="form-picker"
+          mode="selector"
+          range="{{markets}}"
+          bindchange="onMarketChange"
+        >
+          <view class="picker-text">
+            {{formData.mainMarket || '请选择批发市场'}}
+          </view>
+        </picker>
+      </view>
+
+      <!-- 主营品类 -->
+      <view class="form-item">
+        <view class="form-label">主营品类</view>
+        <picker 
+          class="form-picker"
+          mode="selector"
+          range="{{['绿茶类', '红茶类', '乌龙茶类', '白茶类', '黑茶类', '黄茶类', '普洱茶类']}}"
+          bindchange="onCategoryChange"
+        >
+          <view class="picker-text">
+            {{formData.mainCategory || '请选择主营品类'}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 第三步：手机验证 -->
+    <view class="form-step" wx:if="{{currentStep === 3}}">
+      <view class="form-title">手机验证</view>
+      
+      <!-- 手机号 -->
+      <view class="form-item">
+        <view class="form-label">手机号 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入手机号"
+          value="{{formData.phone}}"
+          bindinput="onPhoneInput"
+        />
+        <text class="error-text" wx:if="{{formErrors.phone}}">{{formErrors.phone}}</text>
+      </view>
+
+      <!-- 验证码 -->
+      <view class="form-item">
+        <view class="form-label">验证码 <text class="required">*</text></view>
+        <view class="verify-code-section">
+          <input 
+            class="form-input verify-input" 
+            type="number"
+            placeholder="请输入验证码"
+            value="{{formData.verifyCode}}"
+            bindinput="onVerifyCodeInput"
+          />
+          <button 
+            class="send-code-btn {{countdown > 0 ? 'disabled' : ''}}"
+            bindtap="onSendCode"
+            disabled="{{countdown > 0}}"
+          >
+            {{countdown > 0 ? countdown + 's' : '发送验证码'}}
+          </button>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.verifyCode}}">{{formErrors.verifyCode}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button 
+      wx:if="{{currentStep > 1}}"
+      class="prev-btn" 
+      bindtap="onPrevStep"
+    >
+      上一步
+    </button>
+    <button 
+      class="next-btn" 
+      bindtap="onNextStep"
+    >
+      {{currentStep === totalSteps ? '创建店铺' : '下一步'}}
+    </button>
+  </view>
+</view> 

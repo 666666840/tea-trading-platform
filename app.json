@@ -1,0 +1,82 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/market/market",
+    "pages/market/market_simple",
+    "pages/market-detail/market-detail",
+    "pages/market-join-guide/market-join-guide",
+    "pages/test-market/test-market",
+    "pages/simple-test/simple-test",
+    "pages/market-map/market-map",
+    "pages/market-price/market-price",
+    "pages/market-price-detail/market-price-detail",
+    "pages/merchant-detail/merchant-detail",
+    "pages/category/category",
+    "pages/brand/brand",
+    "pages/brand-join/brand-join",
+    "pages/brand-join-result/brand-join-result",
+    "pages/supply/supply",
+    "pages/supply-detail/supply-detail",
+    "pages/demand-detail/demand-detail",
+    "pages/publish-supply/publish-supply",
+    "pages/publish-demand/publish-demand",
+    "pages/inquiry/inquiry",
+    "pages/inquiry-detail/inquiry-detail",
+    "pages/inquiry-manage/inquiry-manage",
+    "pages/clearance/clearance",
+    "pages/clearance-detail/clearance-detail",
+    "pages/publish-clearance/publish-clearance",
+    "pages/publish-price/publish-price",
+    "pages/newarrival/newarrival",
+    "pages/newarrival-detail/newarrival-detail",
+    "pages/publish-newarrival/publish-newarrival",
+    "pages/garden/garden",
+    "pages/garden-detail/garden-detail",
+    "pages/publish-garden/publish-garden",
+    "pages/rental/rental",
+    "pages/rental-detail/rental-detail",
+    "pages/publish-rental/publish-rental",
+    "pages/smart/smart",
+    "pages/notification/notification",
+    "pages/profile/profile",
+    "pages/data-admin/data-admin",
+    "pages/merchant-register/merchant-register",
+    "pages/merchant-status/merchant-status",
+    "pages/env-switcher/env-switcher",
+    "pages/env-demo/env-demo",
+    "pages/debug-env/debug-env",
+    "pages/demo-page/demo-page",
+    "pages/settings/settings",
+    "pages/content-management/content-management",
+    "pages/content-detail/content-detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "茶叶一点通",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/notification/notification",
+        "text": "通知"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

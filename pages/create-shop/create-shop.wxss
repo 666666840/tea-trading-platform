@@ -1,0 +1,347 @@
+/* 创建店铺页面样式 */
+.create-shop-page {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+/* 步骤指示器 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 30rpx;
+  background: white;
+  margin-bottom: 20rpx;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-number {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.step-text {
+  font-size: 24rpx;
+  color: #999;
+  transition: color 0.3s ease;
+}
+
+.step-item.active .step-text {
+  color: #667eea;
+  font-weight: bold;
+}
+
+.step-line {
+  width: 80rpx;
+  height: 4rpx;
+  background: #e0e0e0;
+  margin: 0 20rpx;
+  transition: background 0.3s ease;
+}
+
+.step-line.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 表单内容 */
+.form-content {
+  background: white;
+  margin: 0 30rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.form-step {
+  padding: 40rpx 30rpx;
+}
+
+.form-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.required {
+  color: #f44336;
+}
+
+/* 表单输入 */
+.form-input {
+  width: 100%;
+  height: 88rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-textarea:focus {
+  border-color: #667eea;
+}
+
+/* 选择器 */
+.form-picker {
+  width: 100%;
+  height: 88rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.picker-text:empty::before {
+  content: '请选择';
+  color: #999;
+}
+
+/* Logo上传 */
+.logo-upload {
+  width: 200rpx;
+  height: 200rpx;
+  border: 2rpx dashed #e0e0e0;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.logo-upload:active {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.logo-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+}
+
+.logo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-icon {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
+  color: #999;
+}
+
+.upload-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 验证码 */
+.verify-code-section {
+  display: flex;
+  gap: 20rpx;
+}
+
+.verify-input {
+  flex: 1;
+}
+
+.send-code-btn {
+  width: 200rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.send-code-btn:active {
+  transform: scale(0.98);
+}
+
+.send-code-btn.disabled {
+  background: #e0e0e0;
+  color: #999;
+}
+
+/* 错误提示 */
+.error-text {
+  font-size: 24rpx;
+  color: #f44336;
+  margin-top: 10rpx;
+  display: block;
+}
+
+/* 底部按钮 */
+.bottom-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 30rpx;
+  background: white;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.prev-btn {
+  flex: 1;
+  height: 88rpx;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.prev-btn:active {
+  background: #e0e0e0;
+  transform: scale(0.98);
+}
+
+.next-btn {
+  flex: 1;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 20rpx rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.next-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(102, 126, 234, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .form-content {
+    margin: 0 20rpx;
+  }
+  
+  .form-step {
+    padding: 30rpx 20rpx;
+  }
+  
+  .bottom-buttons {
+    padding: 15rpx 20rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .create-shop-page {
+    background: #1a1a1a;
+  }
+  
+  .form-content {
+    background: #2a2a2a;
+  }
+  
+  .form-title {
+    color: #fff;
+  }
+  
+  .form-label {
+    color: #ccc;
+  }
+  
+  .form-input,
+  .form-textarea,
+  .form-picker {
+    background: #3a3a3a;
+    border-color: #4a4a4a;
+    color: #ccc;
+  }
+  
+  .picker-text {
+    color: #ccc;
+  }
+  
+  .logo-upload {
+    background: #3a3a3a;
+    border-color: #4a4a4a;
+  }
+  
+  .bottom-buttons {
+    background: #2a2a2a;
+    border-color: #4a4a4a;
+  }
+} 

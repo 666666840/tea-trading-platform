@@ -1,0 +1,142 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: admin-backend
+  template:
+    metadata:
+      labels:
+        app: admin-backend
+    spec:
+      containers:
+      - name: admin-backend
+        image: your-registry/admin-backend:latest
+        ports:
+        - containerPort: 5001
+        env:
+        - name: FLASK_ENV
+          value: production
+        - name: DB_HOST
+          value: mysql
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: tea_user
+        - name: DB_PASSWORD
+          value: tea_pass
+        - name: DB_NAME
+          value: tea_db
+        - name: REDIS_URL
+          value: redis://redis:6379/0
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-backend
+spec:
+  selector:
+    app: admin-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          value: tea_db
+        - name: MYSQL_USER
+          value: tea_user
+        - name: MYSQL_PASSWORD
+          value: tea_pass
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-pv
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-pv
+        emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.2
+        ports:
+        - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: admin-backend-ingress
+spec:
+  rules:
+  - host: your-domain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-backend
+            port:
+              number: 80 

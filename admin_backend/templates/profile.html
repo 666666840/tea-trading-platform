@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}个人资料 - 茶叶平台管理后台{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- 个人信息卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user"></i> 个人信息
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="{{ user.avatar or '/static/images/default-avatar.png' }}" 
+                             class="rounded-circle" 
+                             width="100" height="100" 
+                             alt="头像">
+                    </div>
+                    <h5>{{ user.real_name or user.username }}</h5>
+                    <p class="text-muted">{{ user.position or '未设置职位' }}</p>
+                    <p class="text-muted">{{ user.department or '未设置部门' }}</p>
+                    
+                    <div class="mt-3">
+                        <span class="badge badge-{{ 'danger' if user.role == 'super_admin' else 'primary' if user.role == 'admin' else 'info' }}">
+                            {{ '超级管理员' if user.role == 'super_admin' else '管理员' if user.role == 'admin' else '数据管理员' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 账户状态 -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle"></i> 账户状态
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">用户名</small>
+                            <p class="mb-1">{{ user.username }}</p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">状态</small>
+                            <p class="mb-1">
+                                <span class="badge badge-{{ 'success' if user.is_active else 'danger' }}">
+                                    {{ '启用' if user.is_active else '禁用' }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">最后登录</small>
+                            <p class="mb-1">{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '从未登录' }}</p>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">注册时间</small>
+                            <p class="mb-1">{{ user.created_at.strftime('%Y-%m-%d') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- 详细资料 -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit"></i> 详细资料
+                    </h5>
+                    <button class="btn btn-primary" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> 编辑资料
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">用户名</label>
+                                <p class="form-control-plaintext">{{ user.username }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">邮箱</label>
+                                <p class="form-control-plaintext">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">真实姓名</label>
+                                <p class="form-control-plaintext">{{ user.real_name or '未设置' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">手机号</label>
+                                <p class="form-control-plaintext">{{ user.phone or '未设置' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">部门</label>
+                                <p class="form-control-plaintext">{{ user.department or '未设置' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">职位</label>
+                                <p class="form-control-plaintext">{{ user.position or '未设置' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">个人简介</label>
+                        <p class="form-control-plaintext">{{ user.bio or '未设置个人简介' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 安全设置 -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> 安全设置
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">修改密码</h6>
+                                    <small class="text-muted">定期更换密码以确保账户安全</small>
+                                </div>
+                                <a href="{{ url_for('change_password') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-key"></i> 修改密码
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">登录历史</h6>
+                                    <small class="text-muted">查看最近的登录记录</small>
+                                </div>
+                                <button class="btn btn-outline-info" onclick="viewLoginHistory()">
+                                    <i class="fas fa-history"></i> 查看历史
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最近活动 -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock"></i> 最近活动
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="recentActivities">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-spinner fa-spin"></i> 加载中...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑资料模态框 -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑个人资料</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editEmail">邮箱 *</label>
+                                <input type="email" class="form-control" id="editEmail" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editRealName">真实姓名</label>
+                                <input type="text" class="form-control" id="editRealName" value="{{ user.real_name or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPhone">手机号</label>
+                                <input type="tel" class="form-control" id="editPhone" value="{{ user.phone or '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editDepartment">部门</label>
+                                <input type="text" class="form-control" id="editDepartment" value="{{ user.department or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editPosition">职位</label>
+                                <input type="text" class="form-control" id="editPosition" value="{{ user.position or '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="editAvatar">头像URL</label>
+                                <input type="url" class="form-control" id="editAvatar" value="{{ user.avatar or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBio">个人简介</label>
+                        <textarea class="form-control" id="editBio" rows="3">{{ user.bio or '' }}</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 登录历史模态框 -->
+<div class="modal fade" id="loginHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">登录历史</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>IP地址</th>
+                                <th>用户代理</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loginHistoryTable">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">
+                                    <i class="fas fa-spinner fa-spin"></i> 加载中...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 微信扫码认证弹窗 -->
+<div class="modal fade" id="wechatAuthModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">微信扫码认证</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>请使用微信扫描下方二维码进行身份认证</p>
+        <img id="wechatQr" src="/wechat/login" style="width:220px;height:220px;" alt="微信扫码登录二维码">
+        <div id="wechatAuthStatus" class="mt-3 text-success" style="display:none;">认证成功！可提交修改</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 编辑个人资料
+function editProfile() {
+  showWechatAuth();
+  // 禁用表单提交按钮，扫码后解锁
+  setTimeout(()=>{
+    document.querySelectorAll('button[type=submit],input[type=submit]').forEach(btn=>btn.disabled=true);
+  }, 100);
+    $('#editProfileModal').modal('show');
+}
+
+// 保存个人资料
+function saveProfile() {
+    const formData = {
+        email: $('#editEmail').val(),
+        real_name: $('#editRealName').val(),
+        phone: $('#editPhone').val(),
+        department: $('#editDepartment').val(),
+        position: $('#editPosition').val(),
+        avatar: $('#editAvatar').val(),
+        bio: $('#editBio').val()
+    };
+    
+    fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#editProfileModal').modal('hide');
+            location.reload();
+        } else {
+            alert(data.error || '保存失败');
+        }
+    })
+    .catch(error => {
+        console.error('保存个人资料失败:', error);
+        alert('保存个人资料失败');
+    });
+}
+
+// 查看登录历史
+function viewLoginHistory() {
+    $('#loginHistoryModal').modal('show');
+    
+    // 这里可以添加获取登录历史的API调用
+    // 目前显示模拟数据
+    setTimeout(() => {
+        $('#loginHistoryTable').html(`
+            <tr>
+                <td>2024-01-15 14:30:25</td>
+                <td>192.168.1.100</td>
+                <td>Mozilla/5.0 (Windows NT 10.0; Win64; x64)</td>
+                <td><span class="badge badge-success">成功</span></td>
+            </tr>
+            <tr>
+                <td>2024-01-14 09:15:10</td>
+                <td>192.168.1.100</td>
+                <td>Mozilla/5.0 (Windows NT 10.0; Win64; x64)</td>
+                <td><span class="badge badge-success">成功</span></td>
+            </tr>
+            <tr>
+                <td>2024-01-13 16:45:30</td>
+                <td>192.168.1.101</td>
+                <td>Mozilla/5.0 (iPhone; CPU iPhone OS 14_0)</td>
+                <td><span class="badge badge-success">成功</span></td>
+            </tr>
+        `);
+    }, 500);
+}
+
+// 加载最近活动
+function loadRecentActivities() {
+    // 这里可以添加获取最近活动的API调用
+    // 目前显示模拟数据
+    setTimeout(() => {
+        $('#recentActivities').html(`
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-primary"></div>
+                    <div class="timeline-content">
+                        <h6 class="mb-1">更新个人资料</h6>
+                        <small class="text-muted">2024-01-15 14:30:25</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-success"></div>
+                    <div class="timeline-content">
+                        <h6 class="mb-1">登录系统</h6>
+                        <small class="text-muted">2024-01-15 14:30:25</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-info"></div>
+                    <div class="timeline-content">
+                        <h6 class="mb-1">查看系统日志</h6>
+                        <small class="text-muted">2024-01-14 09:15:10</small>
+                    </div>
+                </div>
+            </div>
+        `);
+    }, 1000);
+}
+
+// 打开弹窗并轮询扫码状态
+function showWechatAuth() {
+  $('#wechatAuthModal').modal('show');
+  let timer = setInterval(function() {
+    fetch('/wechat/check').then(r=>r.json()).then(data=>{
+      if(data.authenticated){
+        clearInterval(timer);
+        document.getElementById('wechatAuthStatus').style.display = '';
+        setTimeout(()=>{$('#wechatAuthModal').modal('hide');}, 1000);
+        // 解锁表单提交按钮
+        document.querySelectorAll('button[type=submit],input[type=submit]').forEach(btn=>btn.disabled=false);
+      }
+    })
+  }, 1500);
+}
+
+// 页面加载完成后初始化
+$(document).ready(function() {
+    loadRecentActivities();
+});
+</script>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -35px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 15px;
+    width: 2px;
+    height: calc(100% + 5px);
+    background-color: #e9ecef;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,194 @@
+<!--商户申请状态页面-->
+<view class="container" wx:if="{{!loading}}">
+  <!-- 状态头部 -->
+  <view class="status-header">
+    <view class="status-icon" style="color: {{statusConfig[merchant.status].color}}">
+      {{statusConfig[merchant.status].icon}}
+    </view>
+    <view class="status-title" style="color: {{statusConfig[merchant.status].color}}">
+      {{statusConfig[merchant.status].title}}
+    </view>
+    <view class="status-description">
+      {{statusConfig[merchant.status].description}}
+    </view>
+  </view>
+
+  <!-- 申请信息卡片 -->
+  <view class="info-card">
+    <view class="card-header">
+      <view class="card-title">申请信息</view>
+      <view class="apply-id" bindtap="copyMerchantId">
+        编号：{{merchantId}}
+        <text class="copy-icon">📋</text>
+      </view>
+    </view>
+
+    <view class="info-section">
+      <view class="info-item">
+        <view class="info-label">商户名称</view>
+        <view class="info-value">{{merchant.name}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">经营类别</view>
+        <view class="info-value">{{merchant.category}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">联系人</view>
+        <view class="info-value">{{merchant.contact}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">联系电话</view>
+        <view class="info-value">{{merchant.phone}}</view>
+      </view>
+      <view class="info-item">
+        <view class="info-label">所在地区</view>
+        <view class="info-value">{{merchant.province}} {{merchant.city}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 时间轴 -->
+  <view class="timeline-card">
+    <view class="card-title">申请进度</view>
+    
+    <view class="timeline">
+      <view class="timeline-item active">
+        <view class="timeline-dot"></view>
+        <view class="timeline-content">
+          <view class="timeline-title">提交申请</view>
+          <view class="timeline-time">{{merchant.createTime}}</view>
+          <view class="timeline-desc">您的申请已成功提交</view>
+        </view>
+      </view>
+
+      <view class="timeline-item {{merchant.status !== 'pending' ? 'active' : ''}}">
+        <view class="timeline-dot"></view>
+        <view class="timeline-content">
+          <view class="timeline-title">审核处理</view>
+          <view class="timeline-time" wx:if="{{merchant.status !== 'pending'}}">
+            {{merchant.approveTime}}
+          </view>
+          <view class="timeline-desc">
+            <text wx:if="{{merchant.status === 'pending'}}">审核中，预计3个工作日完成</text>
+            <text wx:if="{{merchant.status === 'approved'}}">审核通过，欢迎入驻！</text>
+            <text wx:if="{{merchant.status === 'rejected'}}">审核未通过</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="timeline-item {{merchant.status === 'approved' ? 'active' : ''}}" 
+            wx:if="{{merchant.status === 'approved'}}">
+        <view class="timeline-dot"></view>
+        <view class="timeline-content">
+          <view class="timeline-title">开通服务</view>
+          <view class="timeline-time">{{merchant.approveTime}}</view>
+          <view class="timeline-desc">商户服务已开通，可以正常经营</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 审核意见 -->
+  <view class="feedback-card" wx:if="{{merchant.approveReason && merchant.status !== 'pending'}}">
+    <view class="card-title">
+      <text wx:if="{{merchant.status === 'approved'}}">通过说明</text>
+      <text wx:if="{{merchant.status === 'rejected'}}">审核意见</text>
+    </view>
+    <view class="feedback-content {{merchant.status === 'rejected' ? 'rejected' : 'approved'}}">
+      {{merchant.approveReason}}
+    </view>
+  </view>
+
+  <!-- 上传图片预览 -->
+  <view class="images-card" wx:if="{{merchant.images}}">
+    <view class="card-title">上传图片</view>
+    
+    <view class="image-section" wx:if="{{merchant.images.logo}}">
+      <view class="image-label">商户Logo</view>
+      <view class="image-preview">
+        <image class="preview-image logo" 
+               src="{{merchant.images.logo}}" 
+               mode="aspectFill"
+               data-type="logo"
+               bindtap="previewImages"/>
+      </view>
+    </view>
+
+    <view class="image-section" wx:if="{{merchant.images.storefront && merchant.images.storefront.length > 0}}">
+      <view class="image-label">店面照片</view>
+      <view class="image-preview">
+        <image class="preview-image small" 
+               wx:for="{{merchant.images.storefront}}" 
+               wx:key="index"
+               src="{{item}}" 
+               mode="aspectFill"
+               data-type="storefront"
+               bindtap="previewImages"/>
+      </view>
+    </view>
+
+    <view class="image-section" wx:if="{{merchant.images.license}}">
+      <view class="image-label">营业执照</view>
+      <view class="image-preview">
+        <image class="preview-image license" 
+               src="{{merchant.images.license}}" 
+               mode="aspectFill"
+               data-type="license"
+               bindtap="previewImages"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-outline" bindtap="viewDetails">
+      查看详情
+    </button>
+    
+    <button class="btn btn-outline" bindtap="contactService">
+      联系客服
+    </button>
+    
+    <button class="btn btn-primary" 
+            wx:if="{{merchant.status === 'rejected'}}"
+            bindtap="reapply">
+      重新申请
+    </button>
+    
+    <button class="btn btn-success" 
+            wx:if="{{merchant.status === 'approved'}}"
+            bindtap="goToMerchant">
+      查看我的店铺
+    </button>
+  </view>
+
+  <!-- 温馨提示 -->
+  <view class="tips-card">
+    <view class="tips-title">温馨提示</view>
+    <view class="tips-content">
+      <view class="tip-item" wx:if="{{merchant.status === 'pending'}}">
+        • 审核通常在3个工作日内完成
+      </view>
+      <view class="tip-item" wx:if="{{merchant.status === 'pending'}}">
+        • 请保持手机畅通，我们可能会电话联系
+      </view>
+      <view class="tip-item">
+        • 如有疑问请联系客服：400-888-8888
+      </view>
+      <view class="tip-item" wx:if="{{merchant.status === 'approved'}}">
+        • 通过审核后即可开始在平台经营
+      </view>
+      <view class="tip-item" wx:if="{{merchant.status === 'rejected'}}">
+        • 可根据审核意见修改后重新申请
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-content">
+    <view class="loading-icon">⏳</view>
+    <view class="loading-text">加载中...</view>
+  </view>
+</view> 

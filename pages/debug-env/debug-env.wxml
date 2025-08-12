@@ -1,0 +1,134 @@
+<!--环境调试页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <view class="title">🔍 环境调试工具</view>
+    <view class="subtitle">检查当前环境和权限状态</view>
+  </view>
+
+  <!-- 微信环境信息 -->
+  <view class="debug-card">
+    <view class="card-title">📱 微信环境检测</view>
+    <view class="info-grid">
+      <view class="info-item">
+        <text class="label">环境版本:</text>
+        <text class="value {{debugInfo.wechatEnv.version === 'release' ? 'error' : 'success'}}">
+          {{debugInfo.wechatEnv.version || '检测中...'}}
+        </text>
+      </view>
+      <view class="info-item">
+        <text class="label">AppID:</text>
+        <text class="value">{{debugInfo.wechatEnv.accountInfo.miniProgram.appId || '未获取'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="label">环境切换:</text>
+        <text class="value {{debugInfo.canSwitchEnvironment ? 'success' : 'error'}}">
+          {{debugInfo.canSwitchEnvironment ? '✅ 支持' : '❌ 不支持'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- App方法检查 -->
+  <view class="debug-card">
+    <view class="card-title">⚙️ App方法检查</view>
+    <view class="method-list">
+      <view wx:for="{{debugInfo.appMethods}}" wx:key="index" class="method-item">
+        <text class="method-name">{{index}}</text>
+        <text class="method-status {{item === '✅存在' ? 'success' : 'error'}}">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 应用环境配置 -->
+  <view class="debug-card">
+    <view class="card-title">🛠️ 应用环境配置</view>
+    <view wx:if="{{envInfo.wechatEnv}}" class="config-info">
+      <view class="info-item">
+        <text class="label">开发模式:</text>
+        <text class="value {{envInfo.appMode.isDevelopment ? 'success' : 'normal'}}">
+          {{envInfo.appMode.isDevelopment ? '开启' : '关闭'}}
+        </text>
+      </view>
+      <view class="info-item">
+        <text class="label">调试模式:</text>
+        <text class="value {{envInfo.appMode.debugMode ? 'success' : 'normal'}}">
+          {{envInfo.appMode.debugMode ? '开启' : '关闭'}}
+        </text>
+      </view>
+      <view class="info-item">
+        <text class="label">数据管理:</text>
+        <text class="value {{envInfo.appMode.allowDataManagement ? 'success' : 'normal'}}">
+          {{envInfo.appMode.allowDataManagement ? '允许' : '禁止'}}
+        </text>
+      </view>
+      <view class="info-item">
+        <text class="label">应用版本:</text>
+        <text class="value">{{debugInfo.appVersion}}</text>
+      </view>
+    </view>
+    <view wx:else class="error-info">
+      <text>❌ 无法获取应用环境配置</text>
+      <text class="error-detail">{{envInfo.error || '配置未初始化'}}</text>
+    </view>
+  </view>
+
+  <!-- 用户信息 -->
+  <view class="debug-card">
+    <view class="card-title">👤 用户信息</view>
+    <view wx:if="{{userInfo.nickName}}" class="user-info">
+      <view class="info-item">
+        <text class="label">用户昵称:</text>
+        <text class="value">{{userInfo.nickName}}</text>
+      </view>
+      <view class="info-item">
+        <text class="label">头像:</text>
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      </view>
+    </view>
+    <view wx:else class="no-user">
+      <text>ℹ️ 用户未登录或信息获取失败</text>
+    </view>
+  </view>
+
+  <!-- 错误信息 -->
+  <view wx:if="{{debugInfo.error}}" class="debug-card error-card">
+    <view class="card-title">❌ 错误信息</view>
+    <view class="error-content">
+      <text class="error-message">{{debugInfo.error}}</text>
+      <text class="error-stack">{{debugInfo.stack}}</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="action-btn primary" bindtap="testEnvSwitch">
+      🔧 测试环境切换页面
+    </button>
+    <button class="action-btn secondary" bindtap="checkProfileMenu">
+      👤 查看个人中心
+    </button>
+    <button class="action-btn secondary" bindtap="copyDebugInfo">
+      📋 复制调试信息
+    </button>
+    <button class="action-btn warning" bindtap="refreshApp">
+      🔄 重启应用
+    </button>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="help-section">
+    <view class="help-title">💡 问题排查指南</view>
+    <view class="help-content">
+      <text class="help-item">1. 如果微信环境显示 "release"，说明您在正式版，无法使用环境切换</text>
+      <text class="help-item">2. 如果App方法显示缺失，说明app.js未正确加载新代码</text>
+      <text class="help-item">3. 如果环境切换显示不支持，需要使用开发版或体验版</text>
+      <text class="help-item">4. 点击"测试环境切换页面"可以直接跳转到功能页面</text>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer">
+    <text class="timestamp">调试时间: {{debugInfo.timestamp}}</text>
+  </view>
+</view> 

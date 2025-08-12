@@ -1,0 +1,373 @@
+/* 商户详情页面样式 */
+.container {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 20rpx;
+  background: #fff;
+}
+
+.loading-icon {
+  font-size: 80rpx;
+  margin-bottom: 30rpx;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 商户详情 */
+.merchant-detail {
+  background: #fff;
+}
+
+/* 商户头部 */
+.merchant-header {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.merchant-basic {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.merchant-logo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.merchant-info {
+  flex: 1;
+}
+
+.merchant-name {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.merchant-name text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.verification-badge {
+  background: #4CAF50;
+  color: #fff;
+  font-size: 24rpx;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.rating-stars {
+  font-size: 24rpx;
+  margin-right: 10rpx;
+}
+
+.rating-score {
+  font-size: 26rpx;
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.merchant-status {
+  display: flex;
+  align-items: center;
+}
+
+.activity-status {
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.activity-status.high {
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.activity-status.medium {
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.activity-status.low {
+  background: #f0f0f0;
+  color: #999;
+}
+
+.contact-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.contact-btn {
+  background: #4CAF50;
+  color: #fff;
+  padding: 20rpx 40rpx;
+  border-radius: 25rpx;
+  font-size: 28rpx;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.contact-btn:active {
+  background: #45a049;
+}
+
+/* 商户统计信息 */
+.merchant-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 30rpx 20rpx;
+  background: #f8f9fa;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #4CAF50;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 通用区块样式 */
+.section {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+/* 主营产品 */
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.product-tag {
+  background: #e8f5e8;
+  color: #4CAF50;
+  font-size: 26rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+/* 商户介绍 */
+.merchant-description {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 联系信息 */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+}
+
+.contact-label {
+  font-size: 26rpx;
+  color: #666;
+  min-width: 140rpx;
+}
+
+.contact-value {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+}
+
+.contact-value:active {
+  color: #4CAF50;
+}
+
+/* 产品展示 */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.product-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: background-color 0.3s ease;
+}
+
+.product-item:active {
+  background: #e9ecef;
+}
+
+.product-image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.product-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.product-type {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.product-price {
+  font-size: 26rpx;
+  color: #ff6b35;
+  font-weight: 600;
+}
+
+/* 资质证书 */
+.certificate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.certificate-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.certificate-icon {
+  font-size: 28rpx;
+  margin-right: 15rpx;
+}
+
+.certificate-name {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 服务项目 */
+.service-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.service-icon {
+  background: #4CAF50;
+  color: #fff;
+  font-size: 20rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15rpx;
+}
+
+.service-name {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 微信二维码 */
+.qrcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx;
+}
+
+.qrcode-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 12rpx;
+  margin-bottom: 15rpx;
+  border: 2rpx solid #f0f0f0;
+}
+
+.qrcode-tip {
+  font-size: 24rpx;
+  color: #999;
+} 

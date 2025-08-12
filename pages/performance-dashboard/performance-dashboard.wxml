@@ -1,0 +1,202 @@
+<view class="dashboard">
+  <!-- 顶部操作栏 -->
+  <view class="action-bar">
+    <button class="action-btn" bindtap="onRefresh" disabled="{{loading}}">
+      <text class="icon">🔄</text>
+      <text>刷新</text>
+    </button>
+    <button class="action-btn" bindtap="toggleFilters">
+      <text class="icon">🔍</text>
+      <text>筛选</text>
+    </button>
+    <button class="action-btn" bindtap="exportData">
+      <text class="icon">📊</text>
+      <text>导出</text>
+    </button>
+    <button class="action-btn" bindtap="onOptimize">
+      <text class="icon">⚡</text>
+      <text>优化</text>
+    </button>
+  </view>
+
+  <!-- 筛选器 -->
+  <view class="filters" wx:if="{{showFilters}}">
+    <picker bindchange="onFilterChange" data-type="timeRange" value="{{filters.timeRange}}" range="{{['24小时', '7天', '30天']}}">
+      <view class="filter-item">
+        <text>时间范围: {{filters.timeRange}}</text>
+      </view>
+    </picker>
+    <picker bindchange="onFilterChange" data-type="alertType" value="{{filters.alertType}}" range="{{['全部', '错误', '警告', '信息']}}">
+      <view class="filter-item">
+        <text>告警类型: {{filters.alertType}}</text>
+      </view>
+    </picker>
+    <picker bindchange="onFilterChange" data-type="severity" value="{{filters.severity}}" range="{{['全部', '高', '中', '低']}}">
+      <view class="filter-item">
+        <text>严重程度: {{filters.severity}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 核心指标卡片 -->
+  <view class="metrics">
+    <view class="metric-card">
+      <text class="metric-label">内存占用率</text>
+      <text class="metric-value">{{metrics.memoryUsage || 0}}%</text>
+      <text class="metric-status {{metrics.memoryUsage > 80 ? 'warning' : 'normal'}}">
+        {{metrics.memoryUsage > 80 ? '⚠️' : '✅'}}
+      </text>
+    </view>
+    <view class="metric-card">
+      <text class="metric-label">API平均响应</text>
+      <text class="metric-value">{{metrics.apiAvgResponseTime || 0}}ms</text>
+      <text class="metric-status {{metrics.apiAvgResponseTime > 2000 ? 'warning' : 'normal'}}">
+        {{metrics.apiAvgResponseTime > 2000 ? '⚠️' : '✅'}}
+      </text>
+    </view>
+    <view class="metric-card">
+      <text class="metric-label">错误率</text>
+      <text class="metric-value">{{metrics.errorRate || 0}}%</text>
+      <text class="metric-status {{metrics.errorRate > 5 ? 'warning' : 'normal'}}">
+        {{metrics.errorRate > 5 ? '⚠️' : '✅'}}
+      </text>
+    </view>
+    <view class="metric-card">
+      <text class="metric-label">运行时长</text>
+      <text class="metric-value">{{metrics.uptime || 0}}分钟</text>
+      <text class="metric-status normal">✅</text>
+    </view>
+  </view>
+
+  <!-- 自定义指标卡片 -->
+  <view class="custom-metrics">
+    <view class="section-title">📈 自定义指标</view>
+    <view class="custom-metrics-grid">
+      <view class="custom-metric-card">
+        <text class="custom-metric-label">活跃用户</text>
+        <text class="custom-metric-value">{{customMetrics.activeUsers}}</text>
+      </view>
+      <view class="custom-metric-card">
+        <text class="custom-metric-label">告警数量</text>
+        <text class="custom-metric-value">{{customMetrics.alertCount}}</text>
+      </view>
+      <view class="custom-metric-card">
+        <text class="custom-metric-label">慢API数量</text>
+        <text class="custom-metric-value">{{customMetrics.slowAPIs.length}}</text>
+      </view>
+      <view class="custom-metric-card">
+        <text class="custom-metric-label">热门页面</text>
+        <text class="custom-metric-value">{{customMetrics.topPages.length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 趋势图表 -->
+  <view class="charts-section">
+    <view class="section-title">📊 性能趋势</view>
+    
+    <!-- 内存使用率趋势 -->
+    <view class="chart-container">
+      <view class="chart-title">内存使用率趋势 (24小时)</view>
+      <view class="chart-wrapper">
+        <ec-canvas 
+          id="memory-chart" 
+          canvas-id="memory-chart" 
+          ec="{{ ec }}" 
+          data-chart="memory"
+          bindinit="onChartInit"
+          class="chart-canvas">
+        </ec-canvas>
+      </view>
+    </view>
+
+    <!-- API响应时间趋势 -->
+    <view class="chart-container">
+      <view class="chart-title">API响应时间趋势 (24小时)</view>
+      <view class="chart-wrapper">
+        <ec-canvas 
+          id="api-chart" 
+          canvas-id="api-chart" 
+          ec="{{ ec }}" 
+          data-chart="api"
+          bindinit="onChartInit"
+          class="chart-canvas">
+        </ec-canvas>
+      </view>
+    </view>
+
+    <!-- 错误率趋势 -->
+    <view class="chart-container">
+      <view class="chart-title">错误率趋势 (24小时)</view>
+      <view class="chart-wrapper">
+        <ec-canvas 
+          id="error-chart" 
+          canvas-id="error-chart" 
+          ec="{{ ec }}" 
+          data-chart="error"
+          bindinit="onChartInit"
+          class="chart-canvas">
+        </ec-canvas>
+      </view>
+    </view>
+  </view>
+
+  <!-- 慢API列表 -->
+  <view class="slow-apis" wx:if="{{customMetrics.slowAPIs.length > 0}}">
+    <view class="section-title">🐌 慢API Top5</view>
+    <view class="api-list">
+      <view class="api-item" wx:for="{{customMetrics.slowAPIs}}" wx:key="name">
+        <view class="api-info">
+          <text class="api-name">{{item.name}}</text>
+          <text class="api-time">{{item.time}}ms</text>
+        </view>
+        <text class="api-time">{{item.timestamp}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门页面 -->
+  <view class="top-pages" wx:if="{{customMetrics.topPages.length > 0}}">
+    <view class="section-title">🔥 热门页面</view>
+    <view class="page-list">
+      <view class="page-item" wx:for="{{customMetrics.topPages}}" wx:key="name">
+        <view class="page-info">
+          <text class="page-name">{{item.name}}</text>
+          <text class="page-visits">{{item.visits}}次访问</text>
+        </view>
+        <text class="page-load-time">{{item.loadTime}}ms</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 异常告警 -->
+  <view class="section" wx:if="{{alerts.length > 0}}">
+    <view class="section-title">🚨 异常告警 ({{alerts.length}})</view>
+    <view class="alert-list">
+      <view class="alert-item {{item.level}}" wx:for="{{alerts}}" wx:key="id" bindtap="showAlertDetail" data-alert="{{item}}">
+        <view class="alert-header">
+          <text class="alert-level">{{item.level}}</text>
+          <text class="alert-time">{{item.timestamp}}</text>
+        </view>
+        <text class="alert-message">{{item.message}}</text>
+        <text class="alert-type">{{item.type}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 优化建议 -->
+  <view class="section" wx:if="{{suggestions.length > 0}}">
+    <view class="section-title">💡 优化建议 ({{suggestions.length}})</view>
+    <view class="suggestion-list">
+      <view class="suggestion-item" wx:for="{{suggestions}}" wx:key="index">
+        <text class="suggestion-icon">💡</text>
+        <text class="suggestion-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>数据加载中...</text>
+  </view>
+</view> 

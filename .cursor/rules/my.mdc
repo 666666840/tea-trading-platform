@@ -1,0 +1,12 @@
+---
+description: |
+  // ... existing code ...
+## 2. 文件与目录结构
+- 新增页面/模块必须按 `pages/模块名/` 结构放置，命名清晰。
+- 公共组件、工具函数统一放在 `utils/`、`components/` 目录。
+- 所有图片、图标等静态资源请统一放在 `images/` 目录下，命名需有实际含义，避免无意义数字或拼音。
+- 后端接口文档、API 说明统一放在 `docs/` 或 `README.md`。
+// ... existing code ...
+globs:
+alwaysApply: false
+---

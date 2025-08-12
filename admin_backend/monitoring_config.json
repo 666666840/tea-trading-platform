@@ -1,0 +1,27 @@
+{
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file_rotation": "daily",
+    "max_file_size": "10MB",
+    "backup_count": 30
+  },
+  "metrics": {
+    "enabled": true,
+    "collection_interval": 60,
+    "storage": "database",
+    "alerts": true
+  },
+  "health_checks": {
+    "database": true,
+    "redis": true,
+    "external_apis": true,
+    "disk_space": true
+  },
+  "performance_monitoring": {
+    "response_time": true,
+    "memory_usage": true,
+    "cpu_usage": true,
+    "error_rate": true
+  }
+}

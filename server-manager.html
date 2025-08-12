@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>茶叶API服务器管理</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Microsoft YaHei'; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        .primary { background: #007bff; color: white; }
+        .danger { background: #dc3545; color: white; }
+        .success-btn { background: #28a745; color: white; }
+        #log { background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍃 茶叶API服务器管理中心</h1>
+        
+        <div class="status info">
+            <strong>服务器信息：</strong><br>
+            IP: 82.157.231.110<br>
+            服务端口: 3000<br>
+            服务路径: /www/wwwroot/tea-api/
+        </div>
+
+        <div>
+            <button class="primary" onclick="checkStatus()">🔍 检查服务状态</button>
+            <button class="success-btn" onclick="startService()">▶️ 启动服务</button>
+            <button class="danger" onclick="stopService()">⏹️ 停止服务</button>
+            <button class="primary" onclick="testAPI()">🧪 测试API</button>
+        </div>
+
+        <div id="status-display"></div>
+        <div id="log"></div>
+
+        <div class="status info">
+            <strong>API接口地址：</strong><br>
+            • 健康检查: <a href="http://82.157.231.110:3000/health" target="_blank">http://82.157.231.110:3000/health</a><br>
+            • 推荐内容: <a href="http://82.157.231.110:3000/api/content?type=recommend" target="_blank">http://82.157.231.110:3000/api/content?type=recommend</a><br>
+            • 茶叶新闻: <a href="http://82.157.231.110:3000/api/content?type=news" target="_blank">http://82.157.231.110:3000/api/content?type=news</a><br>
+            • 茶艺教程: <a href="http://82.157.231.110:3000/api/content?type=art" target="_blank">http://82.157.231.110:3000/api/content?type=art</a><br>
+            • 热点话题: <a href="http://82.157.231.110:3000/api/content?type=hot" target="_blank">http://82.157.231.110:3000/api/content?type=hot</a>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status-display');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        async function checkStatus() {
+            log('正在检查服务状态...');
+            try {
+                const response = await fetch('http://82.157.231.110:3000/health', {
+                    method: 'GET',
+                    timeout: 5000
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus('✅ 服务运行正常！', 'success');
+                    log('服务状态: 正常运行');
+                } else {
+                    showStatus('❌ 服务响应异常', 'error');
+                    log('服务状态: 响应异常');
+                }
+            } catch (error) {
+                showStatus('❌ 服务未运行或无法访问', 'error');
+                log('服务状态: 无法连接');
+            }
+        }
+
+        function startService() {
+            showStatus('🔄 正在启动服务... 请通过腾讯云控制台执行启动命令', 'info');
+            log('请在腾讯云控制台执行: cd /www/wwwroot/tea-api && nohup python app.py > server.log 2>&1 &');
+        }
+
+        function stopService() {
+            showStatus('🔄 正在停止服务... 请通过腾讯云控制台执行停止命令', 'info');
+            log('请在腾讯云控制台执行: pkill -f "python app.py"');
+        }
+
+        async function testAPI() {
+            log('开始测试所有API接口...');
+            const endpoints = [
+                { name: '健康检查', url: 'http://82.157.231.110:3000/health' },
+                { name: '推荐内容', url: 'http://82.157.231.110:3000/api/content?type=recommend' },
+                { name: '茶叶新闻', url: 'http://82.157.231.110:3000/api/content?type=news' },
+                { name: '茶艺教程', url: 'http://82.157.231.110:3000/api/content?type=art' },
+                { name: '热点话题', url: 'http://82.157.231.110:3000/api/content?type=hot' }
+            ];
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint.url, { timeout: 5000 });
+                    if (response.ok) {
+                        log(`✅ ${endpoint.name}: 正常`);
+                    } else {
+                        log(`❌ ${endpoint.name}: 响应错误 (${response.status})`);
+                    }
+                } catch (error) {
+                    log(`❌ ${endpoint.name}: 连接失败`);
+                }
+            }
+        }
+
+        // 页面加载时自动检查状态
+        window.onload = function() {
+            log('页面加载完成，开始检查服务状态...');
+            checkStatus();
+        };
+    </script>
+</body>
+</html> 

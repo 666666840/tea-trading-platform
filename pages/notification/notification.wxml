@@ -1,0 +1,137 @@
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="notification-container" wx:else>
+    <!-- 头部统计和操作 -->
+    <view class="notification-header">
+      <view class="header-stats">
+        <text class="stats-text">共{{stats.total}}条消息</text>
+        <text class="unread-count" wx:if="{{stats.unread > 0}}">{{stats.unread}}条未读</text>
+      </view>
+      <view class="header-actions">
+        <text class="action-text" bindtap="markAllRead" wx:if="{{stats.unread > 0}}">全部已读</text>
+        <text class="action-text" bindtap="showNotificationSettings">设置</text>
+        <text class="action-text" bindtap="clearAll">清空</text>
+      </view>
+    </view>
+
+    <!-- 筛选栏 -->
+    <view class="filter-bar">
+      <view class="filter-item {{filterType === 'all' ? 'active' : ''}}" 
+            bindtap="onFilterChange" 
+            data-type="all">
+        <text class="filter-text">全部</text>
+        <text class="filter-count">{{stats.total}}</text>
+      </view>
+      <view class="filter-item {{filterType === 'unread' ? 'active' : ''}}" 
+            bindtap="onFilterChange" 
+            data-type="unread">
+        <text class="filter-text">未读</text>
+        <text class="filter-count">{{stats.unread}}</text>
+      </view>
+      <view class="filter-item {{filterType === 'read' ? 'active' : ''}}" 
+            bindtap="onFilterChange" 
+            data-type="read">
+        <text class="filter-text">已读</text>
+        <text class="filter-count">{{stats.read}}</text>
+      </view>
+    </view>
+
+    <!-- 通知列表 -->
+    <view class="notification-list">
+      <view class="notification-item {{item.read ? 'read' : ''}}" 
+            wx:for="{{notificationList}}" 
+            wx:key="id"
+            bindtap="readNotification"
+            data-id="{{item.id}}">
+        <view class="notification-icon">
+          <view class="icon-bg {{item.type}}">{{item.icon}}</view>
+          <view class="unread-dot" wx:if="{{!item.read}}"></view>
+        </view>
+        <view class="notification-content">
+          <view class="notification-title">{{item.title}}</view>
+          <view class="notification-desc">{{item.content}}</view>
+          <view class="notification-time">{{item.timeText}}</view>
+        </view>
+        <view class="notification-actions">
+          <view class="delete-btn" bindtap="deleteNotification" data-id="{{item.id}}">
+            <text class="delete-icon">🗑️</text>
+          </view>
+          <view class="notification-arrow">></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{notificationList.length === 0 && !loading}}">
+      <view class="empty-icon">📭</view>
+      <text class="empty-text">
+        {{filterType === 'all' ? '暂无消息通知' : 
+          filterType === 'unread' ? '没有未读消息' : '没有已读消息'}}
+      </text>
+      <view class="empty-actions" wx:if="{{filterType === 'all'}}">
+        <button class="simulate-btn" bindtap="simulateNotifications">模拟通知</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通知设置面板 -->
+  <view class="settings-mask" wx:if="{{showSettings}}" bindtap="hideNotificationSettings"></view>
+  <view class="settings-panel" wx:if="{{showSettings}}">
+    <view class="settings-header">
+      <text class="settings-title">通知设置</text>
+      <view class="close-btn" bindtap="hideNotificationSettings">✕</view>
+    </view>
+    
+    <view class="settings-content">
+      <view class="setting-group">
+        <text class="group-title">基本设置</text>
+        <view class="setting-item">
+          <text class="setting-label">启用通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="enabled" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">震动提醒</text>
+          <switch checked bindchange="onSettingChange" data-setting="vibrate" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">声音提醒</text>
+          <switch checked bindchange="onSettingChange" data-setting="sound" />
+        </view>
+      </view>
+      
+      <view class="setting-group">
+        <text class="group-title">通知类型</text>
+        <view class="setting-item">
+          <text class="setting-label">🔔 系统通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.system" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">💰 价格提醒</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.price" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">📦 新货通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.goods" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">🎉 活动通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.activity" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">🚚 订单通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.order" />
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">💬 消息通知</text>
+          <switch checked bindchange="onSettingChange" data-setting="types.message" />
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

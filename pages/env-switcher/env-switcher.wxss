@@ -1,0 +1,364 @@
+/* pages/env-switcher/env-switcher.wxss */
+
+.container {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 页面标题 */
+.header {
+  text-align: center;
+  padding: 40rpx 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 44rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 微信环境信息卡片 */
+.wechat-env-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.env-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  color: white;
+}
+
+.env-badge-develop {
+  background-color: #ff6b6b;
+}
+
+.env-badge-trial {
+  background-color: #feca57;
+}
+
+.env-badge-release {
+  background-color: #48dbfb;
+}
+
+.env-description {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.env-status {
+  border-top: 1rpx solid #eee;
+  padding-top: 20rpx;
+}
+
+.status-item {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.status-enabled {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-disabled {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* 当前模式卡片 */
+.current-mode-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.current-mode {
+  margin-top: 20rpx;
+}
+
+.mode-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  position: relative;
+}
+
+.mode-item.active {
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin: 10rpx 0;
+}
+
+.mode-indicator {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  opacity: 0.3;
+}
+
+.mode-item.active .mode-indicator {
+  opacity: 1;
+  width: 20rpx;
+  height: 20rpx;
+}
+
+.mode-info {
+  flex: 1;
+}
+
+.mode-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.mode-item.active .mode-name {
+  color: #007acc;
+}
+
+.mode-desc {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.current-badge {
+  background-color: #007acc;
+  color: white;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+}
+
+/* 环境切换选项 */
+.switch-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+}
+
+.environment-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.environment-item {
+  display: flex;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.environment-item:last-child {
+  border-bottom: none;
+}
+
+.environment-item:active {
+  background-color: #f8f9fa;
+}
+
+.environment-item.current {
+  background-color: #e8f4fd;
+  border-left: 6rpx solid #007acc;
+}
+
+.env-color {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  margin-top: 5rpx;
+}
+
+.env-content {
+  flex: 1;
+}
+
+.env-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.env-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.current-indicator {
+  color: #007acc;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.env-desc {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  line-height: 1.4;
+}
+
+.env-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.feature-tag {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 8rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+}
+
+.environment-item.current .feature-tag {
+  background-color: #cce7ff;
+  color: #0056b3;
+}
+
+/* 无法切换提示 */
+.no-switch-tip {
+  background: white;
+  border-radius: 20rpx;
+  padding: 50rpx 30rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.tip-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.tip-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.tip-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 操作按钮 */
+.action-section {
+  margin-bottom: 30rpx;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.primary {
+  background-color: #007acc;
+  color: white;
+}
+
+.action-btn.primary:active {
+  background-color: #0056b3;
+}
+
+.action-btn.secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.action-btn.secondary:active {
+  background-color: #545b62;
+}
+
+/* 底部信息 */
+.footer-info {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.1);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}

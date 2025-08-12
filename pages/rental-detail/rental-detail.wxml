@@ -1,0 +1,278 @@
+<!-- 出租转让详情页面 -->
+<view class="rental-detail-page">
+  <!-- 图片轮播 -->
+  <view class="image-section">
+    <swiper 
+      class="image-swiper" 
+      indicator-dots="{{rentalDetail.images.length > 1}}"
+      autoplay="{{false}}"
+      bindchange="onImageChange"
+    >
+      <swiper-item wx:for="{{rentalDetail.images}}" wx:key="*this">
+        <image 
+          class="detail-image" 
+          src="{{item}}" 
+          mode="aspectFill"
+          data-index="{{index}}"
+          bindtap="previewImage"
+        ></image>
+      </swiper-item>
+    </swiper>
+    
+    <!-- 图片指示器 -->
+    <view class="image-indicator" wx:if="{{rentalDetail.images.length > 1}}">
+      <text class="indicator-text">{{currentImageIndex + 1}}/{{rentalDetail.images.length}}</text>
+    </view>
+    
+    <!-- 推荐标识 -->
+    <view class="recommend-badge" wx:if="{{rentalDetail.isRecommended}}">
+      <text class="badge-text">推荐</text>
+    </view>
+    
+    <!-- 紧急标识 -->
+    <view class="urgent-badge" wx:if="{{rentalDetail.isUrgent}}">
+      <text class="badge-text">紧急</text>
+    </view>
+    
+    <!-- 价格类型标识 -->
+    <view class="price-type-badge {{rentalDetail.priceType}}">
+      <text class="badge-text">{{rentalDetail.priceType === 'transfer' ? '转让' : '出租'}}</text>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="basic-info">
+    <view class="info-header">
+      <text class="info-title">{{rentalDetail.title}}</text>
+      <view class="info-tags">
+        <text class="tag-item">{{rentalDetail.typeName}}</text>
+        <text class="tag-item">{{rentalDetail.area}}{{rentalDetail.areaUnit}}</text>
+      </view>
+    </view>
+    
+    <view class="price-section">
+      <text class="price-label">价格：</text>
+      <text class="price-value">{{rentalDetail.price}}</text>
+    </view>
+    
+    <view class="location-section">
+      <text class="location-icon">📍</text>
+      <text class="location-text">{{rentalDetail.location}}</text>
+    </view>
+    
+    <view class="feature-tags">
+      <text 
+        wx:for="{{rentalDetail.tags}}" 
+        wx:key="*this"
+        class="feature-tag"
+      >
+        {{item}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 发布者信息 -->
+  <view class="publisher-section">
+    <view class="section-title">发布者信息</view>
+    <view class="publisher-card">
+      <view class="publisher-basic">
+        <image class="publisher-avatar" src="{{rentalDetail.merchant.avatar}}" mode="aspectFill"></image>
+        <view class="publisher-details">
+          <text class="publisher-name">{{rentalDetail.merchant.name}}</text>
+          <view class="publisher-rating">
+            <text class="rating-score">{{rentalDetail.merchant.rating}}</text>
+            <text class="rating-star">⭐</text>
+            <text class="verified-badge" wx:if="{{rentalDetail.merchant.isVerified}}">已认证</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="contact-actions">
+        <button 
+          class="contact-btn primary"
+          bindtap="contactPublisher"
+        >
+          {{contactUnlocked ? '联系发布者' : '解锁联系方式'}}
+        </button>
+        
+        <button 
+          class="contact-btn secondary"
+          bindtap="callPhone"
+          wx:if="{{contactUnlocked}}"
+        >
+          拨打电话
+        </button>
+        
+        <button 
+          class="contact-btn secondary"
+          bindtap="copyWechat"
+          wx:if="{{contactUnlocked}}"
+        >
+          复制微信
+        </button>
+      </view>
+      
+      <!-- 联系信息（解锁后显示） -->
+      <view class="contact-info" wx:if="{{contactUnlocked}}">
+        <view class="contact-item">
+          <text class="contact-label">电话：</text>
+          <text class="contact-value">{{rentalDetail.merchant.phone}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">微信：</text>
+          <text class="contact-value">{{rentalDetail.merchant.wechat}}</text>
+        </view>
+        <view class="contact-item">
+          <text class="contact-label">地址：</text>
+          <text class="contact-value">{{rentalDetail.merchant.address}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详细信息 -->
+  <view class="detail-section">
+    <view class="section-title">详细信息</view>
+    
+    <!-- 市场档口特有信息 -->
+    <view class="detail-card" wx:if="{{rentalDetail.type === 'market'}}">
+      <view class="card-title">档口信息</view>
+      <view class="detail-grid">
+        <view class="detail-item">
+          <text class="detail-label">档口号：</text>
+          <text class="detail-value">{{rentalDetail.boothNumber}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">楼层：</text>
+          <text class="detail-value">{{rentalDetail.marketInfo.floor}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">朝向：</text>
+          <text class="detail-value">{{rentalDetail.marketInfo.direction}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">营业时间：</text>
+          <text class="detail-value">{{rentalDetail.marketInfo.businessHours}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">停车：</text>
+          <text class="detail-value">{{rentalDetail.marketInfo.parking}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">安保：</text>
+          <text class="detail-value">{{rentalDetail.marketInfo.security}}</text>
+        </view>
+      </view>
+      
+      <view class="facilities-section">
+        <text class="facilities-title">配套设施：</text>
+        <view class="facilities-list">
+          <text 
+            wx:for="{{rentalDetail.marketInfo.facilities}}" 
+            wx:key="*this"
+            class="facility-tag"
+          >
+            {{item}}
+          </text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 转让条件 -->
+    <view class="detail-card">
+      <view class="card-title">转让条件</view>
+      <view class="detail-grid">
+        <view class="detail-item">
+          <text class="detail-label">转让费：</text>
+          <text class="detail-value">{{rentalDetail.transferConditions.transferFee}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">押金：</text>
+          <text class="detail-value">{{rentalDetail.transferConditions.deposit}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">合同期限：</text>
+          <text class="detail-value">{{rentalDetail.transferConditions.contractTerm}}</text>
+        </view>
+      </view>
+      
+      <view class="requirements-section">
+        <text class="requirements-title">要求条件：</text>
+        <view class="requirements-list">
+          <text 
+            wx:for="{{rentalDetail.transferConditions.requirements}}" 
+            wx:key="*this"
+            class="requirement-item"
+          >
+            • {{item}}
+          </text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 详细描述 -->
+    <view class="detail-card">
+      <view class="card-title">详细描述</view>
+      <text class="description-text">{{rentalDetail.description}}</text>
+    </view>
+  </view>
+
+  <!-- 相关推荐 -->
+  <view class="related-section" wx:if="{{relatedRentals.length > 0}}">
+    <view class="section-title">相关推荐</view>
+    <view class="related-list">
+      <view 
+        wx:for="{{relatedRentals}}" 
+        wx:key="id"
+        class="related-item"
+        data-id="{{item.id}}"
+        bindtap="onRelatedTap"
+      >
+        <image class="related-image" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="related-info">
+          <text class="related-title">{{item.title}}</text>
+          <text class="related-location">{{item.location}}</text>
+          <text class="related-price">{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions">
+    <view class="action-left">
+      <button class="action-btn" bindtap="backToList">
+        <text class="action-icon">←</text>
+        <text class="action-text">返回</text>
+      </button>
+      
+      <button class="action-btn" bindtap="toggleFavorite">
+        <text class="action-icon">❤️</text>
+        <text class="action-text">收藏</text>
+      </button>
+      
+      <button class="action-btn" bindtap="report">
+        <text class="action-icon">⚠️</text>
+        <text class="action-text">举报</text>
+      </button>
+    </view>
+    
+    <view class="action-right">
+      <button class="publish-btn" bindtap="publishSimilar">
+        <text class="publish-text">发布类似</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 统计信息 -->
+  <view class="stats-section">
+    <view class="stats-item">
+      <text class="stats-icon">👁️</text>
+      <text class="stats-text">{{rentalDetail.viewCount}}次浏览</text>
+    </view>
+    <view class="stats-item">
+      <text class="stats-icon">📅</text>
+      <text class="stats-text">{{rentalDetail.createTime}}</text>
+    </view>
+  </view>
+</view> 

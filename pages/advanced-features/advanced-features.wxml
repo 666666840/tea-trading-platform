@@ -1,0 +1,358 @@
+<!-- 高优先级功能演示页面 -->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">🚀 高优先级功能演示</text>
+    <text class="page-subtitle">Advanced Features Demo</text>
+  </view>
+
+  <!-- 功能标签栏 -->
+  <view class="tabs-container">
+    <scroll-view class="tabs-scroll" scroll-x="true">
+      <view class="tabs">
+        <view 
+          wx:for="{{tabs}}" 
+          wx:key="id"
+          class="tab {{activeTab === item.id ? 'active' : ''}}"
+          data-tab="{{item.id}}"
+          bindtap="onTabChange"
+        >
+          <text class="tab-icon">{{item.icon}}</text>
+          <text class="tab-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 功能演示内容 -->
+  <view class="demo-content">
+    <!-- 智能搜索演示 -->
+    <view wx:if="{{activeTab === 'search'}}" class="demo-section">
+      <view class="section-header">
+        <text class="section-title">🔍 智能搜索系统</text>
+        <text class="section-desc">语义搜索、拼音搜索、智能推荐</text>
+      </view>
+
+      <!-- 搜索输入 -->
+      <view class="search-demo">
+        <view class="search-input-container">
+          <input 
+            class="search-input" 
+            placeholder="输入搜索关键词..."
+            value="{{searchDemoData.keyword}}"
+            bindinput="onSearchInput"
+          />
+          <button 
+            class="search-btn {{searchDemoData.isSearching ? 'loading' : ''}}"
+            bindtap="performAdvancedSearch"
+          >
+            {{searchDemoData.isSearching ? '搜索中...' : '搜索'}}
+          </button>
+        </view>
+
+        <!-- 搜索建议 -->
+        <view wx:if="{{searchDemoData.searchSuggestions.length > 0}}" class="search-suggestions">
+          <text class="suggestions-title">搜索建议:</text>
+          <view class="suggestions-list">
+            <text 
+              wx:for="{{searchDemoData.searchSuggestions}}" 
+              wx:key="*this"
+              class="suggestion-item"
+            >
+              {{item}}
+            </text>
+          </view>
+        </view>
+
+        <!-- 搜索结果 -->
+        <view wx:if="{{searchDemoData.searchResults.length > 0}}" class="search-results">
+          <text class="results-title">搜索结果 ({{searchDemoData.searchResults.length}})</text>
+          <view class="results-list">
+            <view 
+              wx:for="{{searchDemoData.searchResults}}" 
+              wx:key="id"
+              class="result-item"
+              data-type="search_result"
+              data-id="{{item.id}}"
+              bindtap="viewDetails"
+            >
+              <text class="result-title">{{item.title}}</text>
+              <text class="result-desc">{{item.description}}</text>
+              <text class="result-score">相关度: {{item.score}}%</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 搜索统计 -->
+        <view wx:if="{{searchDemoData.searchAnalytics}}" class="search-analytics">
+          <text class="analytics-title">搜索统计</text>
+          <view class="analytics-grid">
+            <view class="analytics-item">
+              <text class="analytics-label">总搜索次数</text>
+              <text class="analytics-value">{{searchDemoData.searchAnalytics.totalSearches}}</text>
+            </view>
+            <view class="analytics-item">
+              <text class="analytics-label">热门关键词</text>
+              <text class="analytics-value">{{searchDemoData.searchAnalytics.topKeywords[0] || '暂无'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="demo-actions">
+          <button class="action-btn secondary" bindtap="clearSearchHistory">清除历史</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 支付系统演示 -->
+    <view wx:if="{{activeTab === 'payment'}}" class="demo-section">
+      <view class="section-header">
+        <text class="section-title">💳 支付系统</text>
+        <text class="section-desc">订单管理、多种支付方式、钱包功能</text>
+      </view>
+
+      <!-- 用户钱包 -->
+      <view wx:if="{{paymentDemoData.userWallet}}" class="wallet-info">
+        <view class="wallet-header">
+          <text class="wallet-title">💰 我的钱包</text>
+        </view>
+        <view class="wallet-balance">
+          <text class="balance-label">余额</text>
+          <text class="balance-amount">¥{{paymentDemoData.userWallet.balance}}</text>
+        </view>
+      </view>
+
+      <!-- 演示订单 -->
+      <view class="order-demo">
+        <view wx:if="{{!paymentDemoData.demoOrder}}" class="create-order">
+          <button class="action-btn primary" bindtap="createDemoOrder">创建演示订单</button>
+        </view>
+        
+        <view wx:if="{{paymentDemoData.demoOrder}}" class="order-info">
+          <text class="order-title">📋 订单信息</text>
+          <view class="order-details">
+            <text class="order-id">订单号: {{paymentDemoData.demoOrder.id}}</text>
+            <text class="order-product">商品: {{paymentDemoData.demoOrder.productName}}</text>
+            <text class="order-amount">金额: ¥{{paymentDemoData.demoOrder.paymentInfo.totalAmount}}</text>
+            <text class="order-status">状态: {{paymentDemoData.demoOrder.status}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 支付方式 -->
+      <view wx:if="{{paymentDemoData.demoOrder}}" class="payment-methods">
+        <text class="methods-title">选择支付方式</text>
+        <view class="methods-grid">
+          <view 
+            wx:for="{{paymentDemoData.paymentMethods}}" 
+            wx:key="id"
+            class="payment-method"
+            data-method="{{item.id}}"
+            bindtap="demoPay"
+          >
+            <text class="method-icon">{{item.icon}}</text>
+            <text class="method-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 支付统计 -->
+      <view wx:if="{{paymentDemoData.paymentStats}}" class="payment-stats">
+        <text class="stats-title">支付统计</text>
+        <view class="stats-grid">
+          <view class="stats-item">
+            <text class="stats-label">总订单数</text>
+            <text class="stats-value">{{paymentDemoData.paymentStats.totalOrders}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">成功支付</text>
+            <text class="stats-value">{{paymentDemoData.paymentStats.successfulPayments}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">支付成功率</text>
+            <text class="stats-value">{{paymentDemoData.paymentStats.successRate}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实时通信演示 -->
+    <view wx:if="{{activeTab === 'realtime'}}" class="demo-section">
+      <view class="section-header">
+        <text class="section-title">💬 实时通信系统</text>
+        <text class="section-desc">即时消息、在线状态、连接管理</text>
+      </view>
+
+      <!-- 连接状态 -->
+      <view class="connection-status">
+        <view class="status-header">
+          <text class="status-title">连接状态</text>
+          <text class="status-indicator {{realtimeDemoData.connectionState.connected ? 'connected' : 'disconnected'}}">
+            {{realtimeDemoData.connectionState.connected ? '已连接' : '未连接'}}
+          </text>
+        </view>
+        <button class="action-btn secondary" bindtap="testRealtimeConnection">测试连接</button>
+      </view>
+
+      <!-- 消息演示 -->
+      <view class="message-demo">
+        <view class="message-header">
+          <text class="message-title">消息演示</text>
+          <button class="action-btn primary" bindtap="sendDemoMessage">发送消息</button>
+        </view>
+        
+        <view wx:if="{{realtimeDemoData.messages.length > 0}}" class="message-list">
+          <view 
+            wx:for="{{realtimeDemoData.messages}}" 
+            wx:key="id"
+            class="message-item"
+          >
+            <text class="message-content">{{item.content}}</text>
+            <text class="message-time">{{item.timestamp}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 实时统计 -->
+      <view wx:if="{{realtimeDemoData.realtimeStats}}" class="realtime-stats">
+        <text class="stats-title">实时统计</text>
+        <view class="stats-grid">
+          <view class="stats-item">
+            <text class="stats-label">总消息数</text>
+            <text class="stats-value">{{realtimeDemoData.realtimeStats.totalMessages}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">会话数</text>
+            <text class="stats-value">{{realtimeDemoData.realtimeStats.totalConversations}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">在线用户</text>
+            <text class="stats-value">{{realtimeDemoData.realtimeStats.onlineUsersCount}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 性能监控演示 -->
+    <view wx:if="{{activeTab === 'performance'}}" class="demo-section">
+      <view class="section-header">
+        <text class="section-title">📊 性能监控系统</text>
+        <text class="section-desc">实时监控、性能分析、自动优化</text>
+      </view>
+
+      <!-- 监控状态 -->
+      <view wx:if="{{performanceDemoData.monitoringStatus}}" class="monitoring-status">
+        <text class="status-title">监控状态</text>
+        <view class="status-info">
+          <text class="status-item">
+            状态: {{performanceDemoData.monitoringStatus.enabled ? '运行中' : '已停止'}}
+          </text>
+          <text class="status-item">
+            运行时间: {{performanceDemoData.monitoringStatus.uptime}}ms
+          </text>
+        </view>
+      </view>
+
+      <!-- 性能指标 -->
+      <view wx:if="{{performanceDemoData.performanceReport}}" class="performance-metrics">
+        <text class="metrics-title">性能指标</text>
+        <view class="metrics-grid">
+          <view class="metrics-item">
+            <text class="metrics-label">页面加载时间</text>
+            <text class="metrics-value">{{performanceDemoData.performanceReport.summary.avgLoadTime || 0}}ms</text>
+          </view>
+          <view class="metrics-item">
+            <text class="metrics-label">API响应时间</text>
+            <text class="metrics-value">{{performanceDemoData.performanceReport.summary.avgApiTime || 0}}ms</text>
+          </view>
+          <view class="metrics-item">
+            <text class="metrics-label">内存使用率</text>
+            <text class="metrics-value">{{performanceDemoData.performanceReport.summary.memoryUsage || 0}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 优化建议 -->
+      <view wx:if="{{performanceDemoData.optimizationSuggestions.length > 0}}" class="optimization-suggestions">
+        <text class="suggestions-title">优化建议</text>
+        <view class="suggestions-list">
+          <view 
+            wx:for="{{performanceDemoData.optimizationSuggestions}}" 
+            wx:key="type"
+            class="suggestion-item"
+          >
+            <text class="suggestion-title">{{item.title}}</text>
+            <text class="suggestion-desc">{{item.description}}</text>
+            <text class="suggestion-priority priority-{{item.priority}}">{{item.priority}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="demo-actions">
+        <button class="action-btn primary" bindtap="performOptimization">执行优化</button>
+        <button class="action-btn secondary" bindtap="simulatePerformanceTest">模拟测试</button>
+      </view>
+    </view>
+
+    <!-- 安全网关演示 -->
+    <view wx:if="{{activeTab === 'security'}}" class="demo-section">
+      <view class="section-header">
+        <text class="section-title">🔒 安全网关</text>
+        <text class="section-desc">请求拦截、安全验证、流量控制</text>
+      </view>
+
+      <!-- 安全统计 -->
+      <view wx:if="{{securityDemoData.securityReport}}" class="security-stats">
+        <text class="stats-title">安全统计</text>
+        <view class="stats-grid">
+          <view class="stats-item">
+            <text class="stats-label">总请求数</text>
+            <text class="stats-value">{{securityDemoData.securityReport.monitoring.totalRequests}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">成功请求</text>
+            <text class="stats-value">{{securityDemoData.securityReport.monitoring.successRequests}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">被拦截</text>
+            <text class="stats-value">{{securityDemoData.securityReport.monitoring.blockedRequests}}</text>
+          </view>
+          <view class="stats-item">
+            <text class="stats-label">平均响应时间</text>
+            <text class="stats-value">{{securityDemoData.securityReport.monitoring.avgResponseTime}}ms</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 安全事件 -->
+      <view wx:if="{{securityDemoData.recentAlerts.length > 0}}" class="security-alerts">
+        <text class="alerts-title">最近安全事件</text>
+        <view class="alerts-list">
+          <view 
+            wx:for="{{securityDemoData.recentAlerts}}" 
+            wx:key="id"
+            class="alert-item severity-{{item.severity}}"
+          >
+            <text class="alert-event">{{item.event}}</text>
+            <text class="alert-time">{{item.timestamp}}</text>
+            <text class="alert-severity">{{item.severity}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="demo-actions">
+        <button class="action-btn primary" bindtap="testSecureRequest">测试安全请求</button>
+        <button class="action-btn secondary" bindtap="simulateSecurityEvent">模拟安全事件</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部功能说明 -->
+  <view class="footer-info">
+    <text class="footer-text">🚀 这些是茶叶批发小程序的高优先级功能演示</text>
+    <text class="footer-text">✨ 包含智能搜索、支付系统、实时通信、性能监控和安全网关</text>
+  </view>
+</view> 

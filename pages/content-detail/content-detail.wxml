@@ -1,0 +1,36 @@
+<!--pages/content-detail/content-detail.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view wx:elif="{{error}}" class="error">
+    <text>加载失败</text>
+    <button bindtap="goBack">返回</button>
+  </view>
+
+  <!-- 内容详情 -->
+  <view wx:else class="content">
+    <!-- 标题 -->
+    <view class="title">{{content.title}}</view>
+    
+    <!-- 信息 -->
+    <view class="info">
+      <text>作者：{{content.author || '茶叶一点通'}}</text>
+      <text>时间：{{content.create_time}}</text>
+      <text wx:if="{{content.tag}}">标签：{{content.tag}}</text>
+    </view>
+    
+    <!-- 内容 -->
+    <view class="text-content">
+      <text>{{content.content}}</text>
+    </view>
+    
+    <!-- 底部 -->
+    <view class="footer">
+      <button bindtap="goBack">返回</button>
+    </view>
+  </view>
+</view> 

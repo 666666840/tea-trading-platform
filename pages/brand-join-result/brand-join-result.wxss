@@ -1,0 +1,354 @@
+/* 页面容器 */
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 20rpx;
+}
+
+/* 成功状态 */
+.success-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 60rpx 40rpx;
+  text-align: center;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.success-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #28a745;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.success-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 通用区块样式 */
+.info-section,
+.process-section,
+.contact-section,
+.guide-section {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.detail-btn,
+.guide-btn {
+  background: none;
+  border: 2rpx solid #007bff;
+  border-radius: 20rpx;
+  padding: 8rpx 20rpx;
+  font-size: 24rpx;
+  color: #007bff;
+}
+
+/* 申请信息 */
+.info-list {
+  padding: 30rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 审核流程 */
+.process-list {
+  padding: 30rpx;
+}
+
+.process-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 40rpx;
+}
+
+.process-item:last-child {
+  margin-bottom: 0;
+}
+
+.process-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.process-item.completed .process-icon {
+  background: #28a745;
+}
+
+.process-item.pending .process-icon {
+  background: #ffc107;
+}
+
+.process-item.waiting .process-icon {
+  background: #e9ecef;
+}
+
+.icon-text {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.process-item.waiting .icon-text {
+  color: #666;
+}
+
+.process-content {
+  flex: 1;
+  padding-top: 5rpx;
+}
+
+.process-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.process-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.process-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.process-desc {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.process-line {
+  position: absolute;
+  left: 30rpx;
+  top: 60rpx;
+  width: 2rpx;
+  height: 40rpx;
+  background: #e9ecef;
+}
+
+.process-item.completed .process-line {
+  background: #28a745;
+}
+
+/* 联系客服 */
+.contact-list {
+  padding: 30rpx;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+  width: 60rpx;
+  text-align: center;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 5rpx;
+  display: block;
+}
+
+.contact-value {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.contact-arrow {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.work-time {
+  padding: 0 30rpx 30rpx;
+}
+
+.work-time-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 入驻指南 */
+.guide-content {
+  padding: 30rpx;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.guide-item:last-child {
+  margin-bottom: 0;
+}
+
+.guide-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.guide-text {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  margin: 40rpx 0;
+}
+
+.primary-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #007bff;
+  border: none;
+  border-radius: 8rpx;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.btn-icon {
+  margin-right: 10rpx;
+}
+
+.secondary-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.secondary-btn {
+  flex: 1;
+  height: 80rpx;
+  background: #fff;
+  border: 2rpx solid #e9ecef;
+  border-radius: 8rpx;
+  color: #666;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 温馨提示 */
+.tips-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.tips-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.tips-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tips-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+  padding-left: 20rpx;
+  position: relative;
+}
+
+.tips-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12rpx;
+  width: 6rpx;
+  height: 6rpx;
+  background: #007bff;
+  border-radius: 50%;
+} 

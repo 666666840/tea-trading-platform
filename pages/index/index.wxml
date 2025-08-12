@@ -1,0 +1,127 @@
+<view class="container responsive">
+  <!-- 顶部栏已移除，使用微信导航栏标题 -->
+
+  <!-- 商户入驻大按钮 -->
+  <view class="join-section responsive">
+    <button class="join-btn" bindtap="navigateToFunction" data-name="商户入驻" data-url="/pages/market/market?showJoin=true" aria-label="商户入驻">
+      <view class="join-content">
+        <view class="join-left">
+          <text class="join-icon" aria-hidden="true">🏢</text>
+          <view class="join-text-group">
+            <text class="join-title">商户入驻</text>
+            <text class="join-desc">快速申请入驻茶叶市场</text>
+          </view>
+        </view>
+        <view class="join-right">
+          <text class="join-arrow" aria-hidden="true">→</text>
+        </view>
+      </view>
+    </button>
+  </view>
+
+  <!-- 九宫格功能区 -->
+  <view class="function-grid responsive" role="navigation" aria-label="功能区">
+    <view class="function-item" wx:for="{{functionList}}" wx:key="id" bindtap="navigateToFunction" data-url="{{item.url}}" data-name="{{item.name}}" aria-label="{{item.name}}">
+      <view class="function-icon" aria-hidden="true">{{item.icon}}</view>
+      <text class="function-text">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 四个分栏 - 更新样式以匹配图片 -->
+  <view class="home-tab-bar responsive" role="tablist" aria-label="内容分栏">
+    <view class="home-tab-item {{activeTab === 'recommend' ? 'active' : ''}}" data-tab="recommend" bindtap="switchTab" role="tab" aria-selected="{{activeTab === 'recommend'}}">推荐</view>
+    <view class="home-tab-item {{activeTab === 'news' ? 'active' : ''}}" data-tab="news" bindtap="switchTab" role="tab" aria-selected="{{activeTab === 'news'}}">茶讯</view>
+    <view class="home-tab-item {{activeTab === 'art' ? 'active' : ''}}" data-tab="art" bindtap="switchTab" role="tab" aria-selected="{{activeTab === 'art'}}">茶艺</view>
+    <view class="home-tab-item {{activeTab === 'hot' ? 'active' : ''}}" data-tab="hot" bindtap="switchTab" role="tab" aria-selected="{{activeTab === 'hot'}}">热点</view>
+  </view>
+
+  <!-- 内容区 - 更新样式以匹配图片 -->
+  <view class="tab-content responsive" aria-label="内容区">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading" role="status" aria-live="polite">
+      <view class="loading-spinner" aria-hidden="true"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 推荐内容区 -->
+    <view wx:if="{{activeTab === 'recommend' && !loading}}" class="content-list" aria-label="推荐内容列表">
+      <view wx:for="{{recommendList}}" wx:key="id" class="content-item" data-item="{{item}}" bindtap="viewDetail" role="article" aria-label="{{item.title}}">
+        <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+        <view class="content-title">{{item.title}}</view>
+        <view class="content-summary">{{item.content}}</view>
+        <view class="content-time">{{item.create_time}}</view>
+      </view>
+      <view wx:if="{{recommendList.length === 0}}" class="empty-state" role="alert">
+        <text>暂无推荐内容</text>
+      </view>
+    </view>
+
+    <!-- 茶讯内容区 -->
+    <view wx:if="{{activeTab === 'news' && !loading}}" class="content-list" aria-label="茶讯内容列表">
+      <view wx:for="{{newsList}}" wx:key="id" class="content-item" data-item="{{item}}" bindtap="viewDetail" role="article" aria-label="{{item.title}}">
+        <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+        <view class="content-title">{{item.title}}</view>
+        <view class="content-summary">{{item.content}}</view>
+        <view class="content-time">{{item.create_time}}</view>
+      </view>
+      <view wx:if="{{newsList.length === 0}}" class="empty-state" role="alert">
+        <text>暂无茶讯内容</text>
+      </view>
+    </view>
+
+    <!-- 茶艺内容区 -->
+    <view wx:if="{{activeTab === 'art' && !loading}}" class="content-list" aria-label="茶艺内容列表">
+      <view wx:for="{{artList}}" wx:key="id" class="content-item" data-item="{{item}}" bindtap="viewDetail" role="article" aria-label="{{item.title}}">
+        <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+        <view class="content-title">{{item.title}}</view>
+        <view class="content-summary">{{item.content}}</view>
+        <view class="content-time">{{item.create_time}}</view>
+      </view>
+      <view wx:if="{{artList.length === 0}}" class="empty-state" role="alert">
+        <text>暂无茶艺内容</text>
+      </view>
+    </view>
+
+    <!-- 热点内容区 -->
+    <view wx:if="{{activeTab === 'hot' && !loading}}" class="content-list" aria-label="热点内容列表">
+      <view wx:for="{{hotList}}" wx:key="id" class="content-item" data-item="{{item}}" bindtap="viewDetail" role="article" aria-label="{{item.title}}">
+        <text class="hot-icon" wx:if="{{item.isHot}}">🔥</text>
+        <view class="content-title">{{item.title}}</view>
+        <view class="content-summary">{{item.content}}</view>
+        <view class="content-time">{{item.create_time}}</view>
+      </view>
+      <view wx:if="{{hotList.length === 0}}" class="empty-state" role="alert">
+        <text>暂无热点内容</text>
+      </view>
+    </view>
+
+    <!-- API测试按钮 -->
+  </view>
+
+  <!-- 在首页添加快速访问按钮 -->
+  <view class="quick-access" wx:if="{{isAdmin}}">
+    <button class="quick-btn" bindtap="goToContentManagement">
+      📝 内容管理
+    </button>
+  </view>
+
+  <!-- 在适当位置添加管理后台入口 -->
+  <view class="admin-entry" wx:if="{{isAdmin}}">
+    <button class="admin-btn" bindtap="goToAdmin" aria-label="管理后台">
+      <text class="admin-icon" aria-hidden="true">⚙️</text>
+      <text class="admin-text">管理后台</text>
+    </button>
+  </view>
+
+  <!-- 底部导航栏（如有） -->
+  <!--
+  <view class="bottom-nav responsive">
+    <view class="nav-item active">首页</view>
+    <view class="nav-item">通知</view>
+    <view class="nav-item">我的</view>
+  </view>
+  -->
+</view>
+
+<!-- 加载动画样式（可配合wxss） -->
+<view wx:if="false" class="loading-spinner" style="display:none"></view>

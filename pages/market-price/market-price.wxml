@@ -1,0 +1,227 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left">
+      <text class="header-subtitle">实时价格，市场动态</text>
+    </view>
+    <view class="header-right">
+      <button class="publish-btn" bindtap="publishPrice">
+        <text class="btn-icon">📝</text>
+        <text class="btn-text">发布价格</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 筛选和排序栏 -->
+  <view class="filter-sort-bar">
+    <!-- 筛选按钮 -->
+    <view class="filter-section">
+      <button class="filter-btn" bindtap="toggleFilterPanel">
+        <text class="btn-icon">🔍</text>
+        <text class="btn-text">{{filters.city}} · {{filters.category}}</text>
+        <text class="btn-arrow">{{showFilterPanel ? '▲' : '▼'}}</text>
+      </button>
+    </view>
+    
+    <!-- 排序按钮 -->
+    <view class="sort-section">
+      <button class="sort-btn" bindtap="toggleSortOptions">
+        <text class="btn-icon">📊</text>
+        <text class="btn-text">
+          {{sortType === 'recommend' ? '推荐排序' : 
+            sortType === 'price' ? '按价格' : 
+            sortType === 'rating' ? '按好评' : '按距离'}}
+        </text>
+        <text class="btn-arrow">{{showSortOptions ? '▲' : '▼'}}</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel" wx:if="{{showFilterPanel}}">
+    <!-- 城市选择 -->
+    <view class="filter-group">
+      <text class="group-title">选择城市</text>
+      <view class="option-list">
+        <text class="option-item {{filters.city === city ? 'active' : ''}}" 
+              wx:for="{{cities}}" 
+              wx:key="*this"
+              wx:for-item="city"
+              bindtap="selectCity"
+              data-city="{{city}}">
+          {{city}}
+        </text>
+      </view>
+    </view>
+    
+    <!-- 茶类选择 -->
+    <view class="filter-group">
+      <text class="group-title">选择茶类</text>
+      <view class="option-list">
+        <text class="option-item {{filters.category === category ? 'active' : ''}}" 
+              wx:for="{{teaCategories}}" 
+              wx:key="*this"
+              wx:for-item="subCategories"
+              wx:for-index="category"
+              bindtap="selectCategory"
+              data-category="{{category}}">
+          {{category}}
+        </text>
+      </view>
+    </view>
+    
+    <!-- 具体品类选择 -->
+    <view class="filter-group" wx:if="{{filters.category !== '全部茶类'}}">
+      <text class="group-title">选择品类</text>
+      <view class="option-list">
+        <text class="option-item {{filters.subCategory === subCategory ? 'active' : ''}}" 
+              wx:for="{{teaCategories[filters.category]}}" 
+              wx:key="*this"
+              wx:for-item="subCategory"
+              bindtap="selectSubCategory"
+              data-subcategory="{{subCategory}}">
+          {{subCategory}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 排序选项 -->
+  <view class="sort-panel" wx:if="{{showSortOptions}}">
+    <view class="sort-option {{sortType === 'recommend' ? 'active' : ''}}" 
+          bindtap="selectSort" 
+          data-sort="recommend">
+      <text class="option-text">推荐排序</text>
+      <text class="option-desc">综合评分、咨询量、更新状态</text>
+    </view>
+    <view class="sort-option {{sortType === 'price' ? 'active' : ''}}" 
+          bindtap="selectSort" 
+          data-sort="price"
+          data-direction="{{sortType === 'price' && sortDirection === 'asc' ? 'desc' : 'asc'}}">
+      <text class="option-text">按价格</text>
+      <text class="option-desc">{{sortType === 'price' && sortDirection === 'asc' ? '高→低' : '低→高'}}</text>
+    </view>
+    <view class="sort-option {{sortType === 'rating' ? 'active' : ''}}" 
+          bindtap="selectSort" 
+          data-sort="rating">
+      <text class="option-text">按好评</text>
+      <text class="option-desc">评分由高到低</text>
+    </view>
+    <view class="sort-option {{sortType === 'distance' ? 'active' : ''}}" 
+          bindtap="selectSort" 
+          data-sort="distance">
+      <text class="option-text">按距离</text>
+      <text class="option-desc">{{locationAuthorized ? '距离由近到远' : '同城优先'}}</text>
+    </view>
+  </view>
+
+  <!-- 价格列表 -->
+  <view class="price-list" wx:if="{{filteredData.length > 0}}">
+    <view class="price-item" 
+          wx:for="{{filteredData}}" 
+          wx:key="id"
+          wx:for-item="item">
+      
+      <!-- 价格卡片头部 -->
+      <view class="price-header">
+        <view class="price-title">
+          <text class="tea-name">{{item.subCategory}}</text>
+          <text class="city-name">{{item.city}}</text>
+        </view>
+        <view class="status-badge {{item.updateStatus}}">
+          <text class="status-dot"></text>
+          <text class="status-text">{{item.statusText}}</text>
+        </view>
+      </view>
+      
+      <!-- 价格卡片内容 -->
+      <view class="price-content" bindtap="viewPriceDetail" data-id="{{item.id}}">
+        <view class="price-main">
+          <view class="price-range">
+            <text class="price-text">{{item.priceRange}}</text>
+            <text class="price-unit">{{item.unit}}</text>
+          </view>
+          <view class="price-trend">
+            <text class="trend-icon">
+              {{item.trend === 'rising' ? '📈' : item.trend === 'falling' ? '📉' : '📊'}}
+            </text>
+            <text class="trend-text">{{item.trendText}}</text>
+          </view>
+        </view>
+        
+        <view class="price-info">
+          <view class="info-item">
+            <text class="info-label">商户数量</text>
+            <text class="info-value">{{item.merchantCount}}家</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">更新时间</text>
+            <text class="info-value">{{item.updateTime}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">好评度</text>
+            <text class="info-value">{{item.rating}}分</text>
+          </view>
+          <view class="info-item" wx:if="{{locationAuthorized}}">
+            <text class="info-label">距离</text>
+            <text class="info-value">{{item.distance}}km</text>
+          </view>
+        </view>
+        
+        <view class="price-desc">
+          <text class="desc-text">{{item.description}}</text>
+        </view>
+        
+        <!-- 标签信息 -->
+        <view class="price-tags">
+          <view class="tag-item" wx:if="{{item.hasImages}}">
+            <text class="tag-icon">📷</text>
+            <text class="tag-text">实拍图</text>
+          </view>
+          <view class="tag-item" wx:if="{{item.hasOrigin}}">
+            <text class="tag-icon">📍</text>
+            <text class="tag-text">产地信息</text>
+          </view>
+          <view class="tag-item" wx:if="{{item.process}}">
+            <text class="tag-icon">⚙️</text>
+            <text class="tag-text">{{item.process}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 价格卡片底部 -->
+      <view class="price-footer">
+        <view class="footer-left">
+          <button class="detail-btn" bindtap="viewPriceDetail" data-id="{{item.id}}">
+            <text class="btn-text">查看详情</text>
+            <text class="btn-arrow">→</text>
+          </button>
+        </view>
+        <view class="footer-right">
+          <text class="inquiry-count">{{item.inquiryCount}}次咨询</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredData.length === 0}}">
+    <view class="empty-icon">🔍</view>
+    <text class="empty-title">暂无相关价格信息</text>
+    <text class="empty-desc">请尝试调整筛选条件或稍后再试</text>
+    <button class="reset-btn" bindtap="resetFilters">
+      <text class="btn-text">重置筛选</text>
+    </button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="bottom-tip">
+    <text class="tip-text">本报价由商户提供，仅供参考</text>
+  </view>
+</view> 

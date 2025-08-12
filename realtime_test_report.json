@@ -1,0 +1,130 @@
+{
+  "timestamp": "2025-07-19T13:33:11.141736",
+  "summary": {
+    "total": 20,
+    "success": 14,
+    "failed": 6
+  },
+  "results": [
+    {
+      "test": "服务器状态检查",
+      "success": true,
+      "message": "服务器正常运行",
+      "timestamp": "2025-07-19T13:32:32.286321"
+    },
+    {
+      "test": "实时功能状态",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:34.329702"
+    },
+    {
+      "test": "通知系统",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:36.379504"
+    },
+    {
+      "test": "市场更新广播",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:38.414956"
+    },
+    {
+      "test": "价格更新广播",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:40.440247"
+    },
+    {
+      "test": "新品到货广播",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:42.465033"
+    },
+    {
+      "test": "清仓提醒广播",
+      "success": false,
+      "message": "HTTP错误: 404",
+      "timestamp": "2025-07-19T13:32:44.494339"
+    },
+    {
+      "test": "API端点: /api/markets",
+      "success": true,
+      "message": "数据条数: 5",
+      "timestamp": "2025-07-19T13:32:46.522816"
+    },
+    {
+      "test": "API端点: /api/newarrivals",
+      "success": true,
+      "message": "数据条数: 3",
+      "timestamp": "2025-07-19T13:32:48.565353"
+    },
+    {
+      "test": "API端点: /api/supplies",
+      "success": true,
+      "message": "数据条数: 0",
+      "timestamp": "2025-07-19T13:32:50.639091"
+    },
+    {
+      "test": "API端点: /api/clearance",
+      "success": true,
+      "message": "数据条数: 0",
+      "timestamp": "2025-07-19T13:32:52.687589"
+    },
+    {
+      "test": "API端点: /api/content",
+      "success": true,
+      "message": "数据条数: 1",
+      "timestamp": "2025-07-19T13:32:54.728029"
+    },
+    {
+      "test": "API端点: /api/brands",
+      "success": true,
+      "message": "数据条数: 0",
+      "timestamp": "2025-07-19T13:32:56.761995"
+    },
+    {
+      "test": "API端点: /api/gardens",
+      "success": true,
+      "message": "数据条数: 0",
+      "timestamp": "2025-07-19T13:32:58.816770"
+    },
+    {
+      "test": "市场高级搜索",
+      "success": true,
+      "message": "搜索结果: 0条",
+      "timestamp": "2025-07-19T13:33:00.866492"
+    },
+    {
+      "test": "新品高级搜索",
+      "success": true,
+      "message": "搜索结果: 1条",
+      "timestamp": "2025-07-19T13:33:02.926244"
+    },
+    {
+      "test": "供求高级搜索",
+      "success": true,
+      "message": "搜索结果: 0条",
+      "timestamp": "2025-07-19T13:33:04.984092"
+    },
+    {
+      "test": "清仓高级搜索",
+      "success": true,
+      "message": "搜索结果: 0条",
+      "timestamp": "2025-07-19T13:33:07.045033"
+    },
+    {
+      "test": "内容高级搜索",
+      "success": true,
+      "message": "搜索结果: 1条",
+      "timestamp": "2025-07-19T13:33:09.087826"
+    },
+    {
+      "test": "筛选选项",
+      "success": true,
+      "message": "筛选选项获取成功",
+      "timestamp": "2025-07-19T13:33:11.141736"
+    }
+  ]
+}

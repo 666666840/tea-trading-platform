@@ -1,0 +1,350 @@
+/* pages/newarrival/newarrival.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 页面标题 */
+.arrival-header {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  padding: 40rpx 30rpx;
+  color: white;
+  text-align: center;
+}
+
+.header-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.header-subtitle {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  background: white;
+  padding: 20rpx 30rpx;
+  display: flex;
+  gap: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  overflow-x: auto;
+}
+
+.filter-item {
+  font-size: 28rpx;
+  color: #666;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.filter-item.active {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+/* 排序栏 */
+.sort-bar {
+  background: white;
+  padding: 20rpx 30rpx;
+  display: flex;
+  gap: 30rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.sort-item {
+  font-size: 28rpx;
+  color: #666;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.sort-item.active {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+/* 商品列表 */
+.arrival-list {
+  padding: 20rpx;
+}
+
+.arrival-item {
+  background: white;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.arrival-item:active {
+  transform: scale(0.98);
+}
+
+/* 置顶商品样式 */
+.arrival-item.top {
+  border: 3rpx solid #ffd700;
+  box-shadow: 0 4rpx 20rpx rgba(255, 215, 0, 0.3);
+}
+
+.arrival-item.top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: linear-gradient(90deg, #ffd700, #ffb300);
+}
+
+/* 置顶标识 */
+.top-badge {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  background: linear-gradient(135deg, #ffd700, #ffb300);
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.top-text {
+  color: white;
+}
+
+/* 活跃商户标识 */
+.active-badge {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.active-text {
+  color: white;
+}
+
+.item-content {
+  display: flex;
+  padding: 30rpx;
+}
+
+/* 商品图片 */
+.item-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-right: 20rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.item-image image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;
+}
+
+/* 商品信息 */
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 品类标签 */
+.category-tag {
+  display: inline-block;
+  background: #e8f5e8;
+  color: #4CAF50;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  margin-bottom: 15rpx;
+  align-self: flex-start;
+}
+
+/* 价格信息 */
+.price-section {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.price-range {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #ff4757;
+}
+
+.stock-info {
+  font-size: 26rpx;
+  color: #666;
+  background: #f8f9fa;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+/* 商品描述 */
+.description {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 到货时间 */
+.arrival-time {
+  margin-bottom: 15rpx;
+}
+
+.time-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.time-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 商户信息 */
+.merchant-section {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.merchant-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e0e0e0;
+}
+
+.merchant-info {
+  flex: 1;
+}
+
+.merchant-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.rating-stars {
+  font-size: 22rpx;
+  color: #ffc107;
+}
+
+.rating-score {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.contact-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+/* 浏览量 */
+.view-count {
+  text-align: right;
+}
+
+.count-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-section {
+  text-align: center;
+  padding: 40rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 没有更多数据 */
+.no-more {
+  text-align: center;
+  padding: 40rpx;
+}
+
+.no-more-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 40rpx;
+}
+
+.empty-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+}

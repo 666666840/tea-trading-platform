@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>茶叶平台管理后台 - 商户管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            margin: 2px 0;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-leaf fa-2x mb-2"></i>
+                        <h5>茶叶平台</h5>
+                        <small>管理后台</small>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>仪表板
+                        </a>
+                        <a class="nav-link" href="{{ url_for('markets') }}">
+                            <i class="fas fa-store me-2"></i>市场管理
+                        </a>
+                        <a class="nav-link active" href="{{ url_for('merchants') }}">
+                            <i class="fas fa-users me-2"></i>商户管理
+                        </a>
+                        <a class="nav-link" href="{{ url_for('logs') }}">
+                            <i class="fas fa-list-alt me-2"></i>系统日志
+                        </a>
+                        {% if current_user.role == 'super_admin' %}
+                        <a class="nav-link" href="{{ url_for('users') }}">
+                            <i class="fas fa-user-cog me-2"></i>用户管理
+                        </a>
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i class="fas fa-cog me-2"></i>系统设置
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- 主内容区 -->
+            <div class="col-md-9 col-lg-10 px-0">
+                <div class="main-content">
+                    <!-- 顶部导航栏 -->
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="container-fluid">
+                            <span class="navbar-brand">
+                                <i class="fas fa-users"></i> 商户管理
+                            </span>
+                            
+                            <div class="navbar-nav ms-auto">
+                                <div class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>个人资料</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>退出登录</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <!-- 内容区域 -->
+                    <div class="p-4">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <!-- 操作按钮区 -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4><i class="fas fa-users me-2"></i>商户列表</h4>
+                            <div>
+                                <button class="btn btn-outline-success me-2" id="exportBtn"><i class="fas fa-file-excel me-1"></i>导出Excel</button>
+                                <button class="btn btn-outline-danger" id="batchDeleteBtn"><i class="fas fa-trash me-1"></i>批量删除</button>
+                                <button class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#addMerchantModal">
+                                    <i class="fas fa-plus me-2"></i>添加商户
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 多条件搜索区块 -->
+                        <form class="row g-2 mb-3 align-items-end" method="get" action="">
+                            <div class="col-md-3">
+                                <label class="form-label">商户名称</label>
+                                <input class="form-control" type="text" name="name" placeholder="商户名称" value="{{ name }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">联系人</label>
+                                <input class="form-control" type="text" name="contact_person" placeholder="联系人" value="{{ contact_person }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">认证状态</label>
+                                <select class="form-select" name="is_verified">
+                                    <option value="">全部</option>
+                                    <option value="1" {% if is_verified=='1' %}selected{% endif %}>已认证</option>
+                                    <option value="0" {% if is_verified=='0' %}selected{% endif %}>未认证</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">所属市场</label>
+                                <select class="form-select" name="market_id">
+                                    <option value="">全部</option>
+                                    {% for m in markets %}
+                                    <option value="{{ m.id }}" {% if market_id==m.id|string %}selected{% endif %}>{{ m.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-outline-secondary w-100" type="submit"><i class="fas fa-search"></i> 搜索</button>
+                            </div>
+                            <div class="col-md-1">
+                                <a href="?" class="btn btn-outline-light border w-100">重置</a>
+                            </div>
+                        </form>
+                        
+                        <!-- 商户列表 -->
+                        <form id="merchantTableForm">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th><input type="checkbox" id="selectAll"></th>
+                                                <th>ID</th>
+                                                <th>商户名称</th>
+                                                <th>联系人</th>
+                                                <th>联系电话</th>
+                                                <th>经营范围</th>
+                                                <th>认证状态</th>
+                                                <th>创建时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for merchant in merchants %}
+                                            <tr>
+                                                <td><input type="checkbox" name="merchant_ids" value="{{ merchant.id }}"></td>
+                                                <td>{{ merchant.id }}</td>
+                                                <td>
+                                                    <strong>{{ merchant.name }}</strong>
+                                                    {% if merchant.description %}
+                                                    <br><small class="text-muted">{{ merchant.description[:50] }}...</small>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ merchant.contact_person or '-' }}</td>
+                                                <td>{{ merchant.contact_phone or '-' }}</td>
+                                                <td>{{ merchant.business_scope or '-' }}</td>
+                                                <td>
+                                                    {% if merchant.is_verified %}
+                                                    <span class="badge bg-success">已认证</span>
+                                                    {% else %}
+                                                    <span class="badge bg-warning">未认证</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ merchant.created_at.strftime('%Y-%m-%d') }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" type="button" onclick="editMerchant({{ merchant.id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" type="button" onclick="deleteMerchant({{ merchant.id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="9" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-3"></i>
+                                                    <br>暂无商户数据
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                        
+                        <!-- 分页控件 -->
+                        {% if pagination.pages > 1 %}
+                        <nav aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                    <a class="page-link" href="?{{ page_params }}&page=1">首页</a>
+                                </li>
+                                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ pagination.prev_num }}">上一页</a>
+                                </li>
+                                {% for p in pagination.iter_pages() %}
+                                    {% if p %}
+                                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                                            <a class="page-link" href="?{{ page_params }}&page={{ p }}">{{ p }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    {% endif %}
+                                {% endfor %}
+                                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ pagination.next_num }}">下一页</a>
+                                </li>
+                                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="?{{ page_params }}&page={{ pagination.pages }}">末页</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加商户模态框 -->
+    <div class="modal fade" id="addMerchantModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus me-2"></i>添加商户</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMerchantForm">
+                        <div class="mb-3">
+                            <label for="merchantName" class="form-label">商户名称 *</label>
+                            <input type="text" class="form-control" id="merchantName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactPerson" class="form-label">联系人</label>
+                            <input type="text" class="form-control" id="contactPerson">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactPhone" class="form-label">联系电话</label>
+                            <input type="text" class="form-control" id="contactPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessScope" class="form-label">经营范围</label>
+                            <input type="text" class="form-control" id="businessScope" placeholder="如：绿茶、红茶、普洱茶等">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">商户描述</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitMerchant()">添加商户</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑商户模态框 -->
+    <div class="modal fade" id="editMerchantModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>编辑商户</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editMerchantForm">
+                        <input type="hidden" id="edit_merchant_id" name="id">
+                        <div class="mb-3">
+                            <label class="form-label">商户名称 *</label>
+                            <input type="text" class="form-control" id="edit_merchantName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">所属市场</label>
+                            <select class="form-select" id="edit_market_id" name="market_id">
+                                {% for m in markets %}
+                                <option value="{{ m.id }}">{{ m.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">联系人</label>
+                            <input type="text" class="form-control" id="edit_contact_person" name="contact_person">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">联系电话</label>
+                            <input type="text" class="form-control" id="edit_contact_phone" name="contact_phone">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">经营范围</label>
+                            <input type="text" class="form-control" id="edit_business_scope" name="business_scope">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">商户简介</label>
+                            <textarea class="form-control" id="edit_description" name="description" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">认证状态</label>
+                            <select class="form-select" id="edit_is_verified" name="is_verified">
+                                <option value="1">已认证</option>
+                                <option value="0">未认证</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">保存修改</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function submitMerchant() {
+            const formData = {
+                name: document.getElementById('merchantName').value,
+                contact_person: document.getElementById('contactPerson').value,
+                contact_phone: document.getElementById('contactPhone').value,
+                business_scope: document.getElementById('businessScope').value,
+                description: document.getElementById('description').value
+            };
+            
+            fetch('/api/merchants', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('添加失败：' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('添加失败，请重试');
+            });
+        }
+        
+        async function editMerchant(id) {
+            // 获取商户数据
+            const resp = await fetch(`/api/merchants/${id}`);
+            const data = await resp.json();
+            if (!data || !data.id) {
+                alert('获取商户信息失败');
+                return;
+            }
+            // 填充表单
+            document.getElementById('edit_merchant_id').value = data.id;
+            document.getElementById('edit_merchantName').value = data.name || '';
+            document.getElementById('edit_market_id').value = data.market_id || '';
+            document.getElementById('edit_contact_person').value = data.contact_person || '';
+            document.getElementById('edit_contact_phone').value = data.contact_phone || '';
+            document.getElementById('edit_business_scope').value = data.business_scope || '';
+            document.getElementById('edit_description').value = data.description || '';
+            document.getElementById('edit_is_verified').value = data.is_verified ? '1' : '0';
+            // 显示模态框
+            var modal = new bootstrap.Modal(document.getElementById('editMerchantModal'));
+            modal.show();
+        }
+
+        document.getElementById('editMerchantForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const id = form.id.value;
+            const data = {
+                name: form.name.value,
+                market_id: form.market_id.value,
+                contact_person: form.contact_person.value,
+                contact_phone: form.contact_phone.value,
+                business_scope: form.business_scope.value,
+                description: form.description.value,
+                is_verified: form.is_verified.value === '1'
+            };
+            try {
+                const resp = await fetch(`/api/merchants/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await resp.json();
+                if (result.success) {
+                    alert('修改成功！');
+                    location.reload();
+                } else {
+                    alert('修改失败');
+                }
+            } catch (err) {
+                alert('网络错误或服务器异常');
+            }
+        };
+        // 新增商户AJAX
+        const addMerchantForm = document.getElementById('addMerchantForm');
+        addMerchantForm && (addMerchantForm.onsubmit = async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                name: form.name.value,
+                market_id: form.market_id.value,
+                contact_person: form.contact_person.value,
+                contact_phone: form.contact_phone.value,
+                business_scope: form.business_scope.value,
+                description: form.description.value,
+                is_verified: form.is_verified.value === '1'
+            };
+            try {
+                const resp = await fetch('/api/merchants', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await resp.json();
+                if (result.success) {
+                    alert('添加成功！');
+                    location.reload();
+                } else {
+                    alert('添加失败');
+                }
+            } catch (err) {
+                alert('网络错误或服务器异常');
+            }
+        });
+        
+        function deleteMerchant(id) {
+            if (confirm('确定要删除这个商户吗？')) {
+                alert('删除功能开发中...');
+            }
+        }
+
+        // 全选/反选
+        const selectAll = document.getElementById('selectAll');
+        selectAll && selectAll.addEventListener('change', function() {
+            document.querySelectorAll('input[name="merchant_ids"]').forEach(cb => {
+                cb.checked = selectAll.checked;
+            });
+        });
+        // 批量删除
+        const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+        batchDeleteBtn && batchDeleteBtn.addEventListener('click', async function() {
+            const ids = Array.from(document.querySelectorAll('input[name="merchant_ids"]:checked')).map(cb => cb.value);
+            if (ids.length === 0) return alert('请先选择要删除的商户');
+            if (!confirm('确定要批量删除选中的商户吗？')) return;
+            for (const id of ids) {
+                await fetch(`/api/merchants/${id}`, {method: 'DELETE'});
+            }
+            alert('批量删除完成！');
+            location.reload();
+        });
+        // 导出Excel
+        const exportBtn = document.getElementById('exportBtn');
+        exportBtn && exportBtn.addEventListener('click', function() {
+            const params = new URLSearchParams(window.location.search);
+            window.open('/merchants/export?' + params.toString(), '_blank');
+        });
+    </script>
+</body>
+</html> 

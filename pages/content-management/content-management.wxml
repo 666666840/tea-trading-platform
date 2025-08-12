@@ -1,0 +1,404 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+      <text class="back-text">返回</text>
+    </view>
+    <view class="header-title">内容管理</view>
+    <view class="header-right">
+      <button class="refresh-btn" bindtap="loadContents">
+        <text class="refresh-icon">🔄</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 标签页导航 -->
+  <view class="tab-nav">
+    <view class="tab-item {{activeTab === 'list' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="list">
+      <text class="tab-text">内容列表</text>
+    </view>
+    <view class="tab-item {{activeTab === 'create' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="create">
+      <text class="tab-text">创建/编辑</text>
+    </view>
+    <view class="tab-item {{activeTab === 'stats' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="stats">
+      <text class="tab-text">统计</text>
+    </view>
+    <view class="tab-item {{activeTab === 'settings' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="settings">
+      <text class="tab-text">设置</text>
+    </view>
+  </view>
+
+  <!-- 内容列表标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'list'}}">
+    <!-- 筛选和搜索 -->
+    <view class="filter-section">
+      <view class="filter-row">
+        <picker bindchange="onFilterChange" data-field="type" value="{{filters.type}}" range="{{contentTypes}}" range-key="label">
+          <view class="picker">
+            内容类型
+            <text class="picker-text">{{filters.type === 'all' ? '全部' : contentTypes[filters.typeIndex].label}}</text>
+          </view>
+        </picker>
+        
+        <picker bindchange="onFilterChange" data-field="status" value="{{filters.status}}" range="{{contentStatuses}}" range-key="label">
+          <view class="picker">
+            状态
+            <text class="picker-text">{{filters.status === 'all' ? '全部' : contentStatuses[filters.statusIndex].label}}</text>
+          </view>
+        </picker>
+        
+        <picker bindchange="onFilterChange" data-field="priority" value="{{filters.priority}}" range="{{contentPriorities}}" range-key="label">
+          <view class="picker">
+            优先级
+            <text class="picker-text">{{filters.priority === 'all' ? '全部' : contentPriorities[filters.priorityIndex].label}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="search-row">
+        <input class="search-input" 
+               placeholder="搜索内容标题..." 
+               bindinput="onSearchInput" 
+               bindconfirm="onSearchConfirm"
+               value="{{filters.keyword}}" />
+        <button class="search-btn" bindtap="onSearchConfirm">搜索</button>
+      </view>
+      
+      <!-- 转载功能按钮 -->
+      <view class="repost-actions">
+        <button class="repost-btn add" bindtap="addManualContent">
+          <text class="btn-icon">📝</text>
+          <text class="btn-text">添加转载</text>
+        </button>
+        <button class="repost-btn sources" bindtap="showRecommendedSources">
+          <text class="btn-icon">📋</text>
+          <text class="btn-text">推荐来源</text>
+        </button>
+        <button class="repost-btn local" bindtap="viewLocalContent">
+          <text class="btn-icon">📁</text>
+          <text class="btn-text">本地内容</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 批量操作 -->
+    <view class="batch-actions" wx:if="{{selectedContents.length > 0}}">
+      <text class="batch-info">已选择 {{selectedContents.length}} 项</text>
+      <button class="batch-btn publish" bindtap="batchPublish">批量发布</button>
+      <button class="batch-btn delete" bindtap="batchDelete">批量删除</button>
+    </view>
+
+    <!-- 内容列表 -->
+    <view class="content-list">
+      <view class="content-item" wx:for="{{contents}}" wx:key="id">
+        <view class="content-header">
+          <view class="content-select">
+            <checkbox checked="{{selectedContents.includes(item.id)}}" bindtap="onContentSelect" data-id="{{item.id}}" />
+          </view>
+          <view class="content-title">{{item.title}}</view>
+          <view class="content-badges">
+            <text class="badge type-{{item.type}}">{{item.type}}</text>
+            <text class="badge status-{{item.status}}">{{item.status}}</text>
+            <text class="badge priority-{{item.priority}}">{{item.priority}}</text>
+            <text class="badge featured" wx:if="{{item.is_featured}}">推荐</text>
+            <text class="badge top" wx:if="{{item.is_top}}">置顶</text>
+          </view>
+        </view>
+        
+        <view class="content-info">
+          <text class="content-summary">{{item.summary}}</text>
+          <view class="content-meta">
+            <text class="meta-item">作者: {{item.author}}</text>
+            <text class="meta-item">浏览量: {{item.view_count}}</text>
+            <text class="meta-item">质量分: {{item.quality_score}}</text>
+            <text class="meta-item">创建: {{item.created_at}}</text>
+          </view>
+        </view>
+        
+        <view class="content-actions">
+          <button class="action-btn view" bindtap="viewContent" data-id="{{item.id}}">查看</button>
+          <button class="action-btn edit" bindtap="editContent" data-id="{{item.id}}">编辑</button>
+          <button class="action-btn publish" wx:if="{{item.status !== 'published'}}" bindtap="publishContent" data-id="{{item.id}}">发布</button>
+          <button class="action-btn approve" wx:if="{{item.status === 'pending'}}" bindtap="approveContent" data-id="{{item.id}}">审核</button>
+          <button class="action-btn reject" wx:if="{{item.status === 'pending'}}" bindtap="rejectContent" data-id="{{item.id}}">拒绝</button>
+          <button class="action-btn {{item.is_featured ? 'unfeature' : 'feature'}}" bindtap="toggleFeatured" data-id="{{item.id}}">
+            {{item.is_featured ? '取消推荐' : '推荐'}}
+          </button>
+          <button class="action-btn {{item.is_top ? 'untop' : 'top'}}" bindtap="toggleTop" data-id="{{item.id}}">
+            {{item.is_top ? '取消置顶' : '置顶'}}
+          </button>
+          <button class="action-btn delete" bindtap="deleteContent" data-id="{{item.id}}">删除</button>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{contents.length === 0 && !loading}}">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无内容数据</text>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{loading}}">
+        <text class="loading-text">加载中...</text>
+      </view>
+    </view>
+
+    <!-- 分页 -->
+    <view class="pagination" wx:if="{{pagination.pages > 1}}">
+      <button class="page-btn" disabled="{{pagination.page <= 1}}" bindtap="onPageChange" data-page="{{pagination.page - 1}}">上一页</button>
+      <text class="page-info">{{pagination.page}} / {{pagination.pages}}</text>
+      <button class="page-btn" disabled="{{pagination.page >= pagination.pages}}" bindtap="onPageChange" data-page="{{pagination.page + 1}}">下一页</button>
+    </view>
+  </view>
+
+  <!-- 创建/编辑标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'create'}}">
+    <view class="form-section">
+      <text class="section-title">{{editingContent ? '编辑内容' : '创建内容'}}</text>
+      
+      <view class="form-group">
+        <text class="form-label">标题 *</text>
+        <input class="form-input" 
+               placeholder="请输入内容标题" 
+               value="{{contentForm.title}}"
+               bindinput="onFormInput" 
+               data-field="title" />
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">摘要</text>
+        <textarea class="form-textarea" 
+                  placeholder="请输入内容摘要" 
+                  value="{{contentForm.summary}}"
+                  bindinput="onFormInput" 
+                  data-field="summary" />
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">内容 *</text>
+        <textarea class="form-textarea large" 
+                  placeholder="请输入内容正文" 
+                  value="{{contentForm.content}}"
+                  bindinput="onFormInput" 
+                  data-field="content" />
+      </view>
+      
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">内容类型</text>
+          <picker bindchange="onFormPicker" data-field="type" value="{{contentForm.typeIndex}}" range="{{contentTypes}}" range-key="label">
+            <view class="picker">
+              <text class="picker-text">{{contentTypes[contentForm.typeIndex].label}}</text>
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-group half">
+          <text class="form-label">优先级</text>
+          <picker bindchange="onFormPicker" data-field="priority" value="{{contentForm.priorityIndex}}" range="{{contentPriorities}}" range-key="label">
+            <view class="picker">
+              <text class="picker-text">{{contentPriorities[contentForm.priorityIndex].label}}</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">作者</text>
+          <input class="form-input" 
+                 placeholder="请输入作者" 
+                 value="{{contentForm.author}}"
+                 bindinput="onFormInput" 
+                 data-field="author" />
+        </view>
+        
+        <view class="form-group half">
+          <text class="form-label">分类</text>
+          <input class="form-input" 
+                 placeholder="请输入分类" 
+                 value="{{contentForm.category}}"
+                 bindinput="onFormInput" 
+                 data-field="category" />
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">标签</text>
+        <view class="tags-container">
+          <view class="tag-item" wx:for="{{contentForm.tags}}" wx:key="*this">
+            <text class="tag-text">{{item}}</text>
+            <text class="tag-remove" bindtap="removeTag" data-index="{{index}}">×</text>
+          </view>
+          <input class="tag-input" 
+                 placeholder="添加标签" 
+                 bindconfirm="addTag"
+                 value="{{newTag}}" />
+        </view>
+      </view>
+      
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">图片URL</text>
+          <input class="form-input" 
+                 placeholder="请输入图片URL" 
+                 value="{{contentForm.image_url}}"
+                 bindinput="onFormInput" 
+                 data-field="image_url" />
+        </view>
+        
+        <view class="form-group half">
+          <text class="form-label">视频URL</text>
+          <input class="form-input" 
+                 placeholder="请输入视频URL" 
+                 value="{{contentForm.video_url}}"
+                 bindinput="onFormInput" 
+                 data-field="video_url" />
+        </view>
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">SEO标题</text>
+        <input class="form-input" 
+               placeholder="请输入SEO标题" 
+               value="{{contentForm.seo_title}}"
+               bindinput="onFormInput" 
+               data-field="seo_title" />
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">SEO描述</text>
+        <textarea class="form-textarea" 
+                  placeholder="请输入SEO描述" 
+                  value="{{contentForm.seo_description}}"
+                  bindinput="onFormInput" 
+                  data-field="seo_description" />
+      </view>
+      
+      <view class="form-group">
+        <text class="form-label">SEO关键词</text>
+        <input class="form-input" 
+               placeholder="请输入SEO关键词，用逗号分隔" 
+               value="{{contentForm.seo_keywords}}"
+               bindinput="onFormInput" 
+               data-field="seo_keywords" />
+      </view>
+      
+      <view class="form-row">
+        <view class="form-group half">
+          <text class="form-label">设为推荐</text>
+          <switch checked="{{contentForm.is_featured}}" bindchange="onFormSwitch" data-field="is_featured" />
+        </view>
+        
+        <view class="form-group half">
+          <text class="form-label">设为置顶</text>
+          <switch checked="{{contentForm.is_top}}" bindchange="onFormSwitch" data-field="is_top" />
+        </view>
+      </view>
+      
+      <view class="form-actions">
+        <button class="form-btn reset" bindtap="resetForm">重置</button>
+        <button class="form-btn submit" bindtap="submitForm">{{editingContent ? '更新' : '创建'}}</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'stats'}}">
+    <view class="stats-section">
+      <text class="section-title">内容统计</text>
+      
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.total_count}}</text>
+          <text class="stat-label">总内容数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.published_count}}</text>
+          <text class="stat-label">已发布</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.pending_count}}</text>
+          <text class="stat-label">待审核</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{statistics.rejected_count}}</text>
+          <text class="stat-label">已拒绝</text>
+        </view>
+      </view>
+      
+      <view class="stats-detail">
+        <text class="detail-title">平均质量分数</text>
+        <text class="detail-value">{{statistics.average_quality_score}}</text>
+      </view>
+      
+      <view class="type-stats">
+        <text class="detail-title">内容类型分布</text>
+        <view class="type-item" wx:for="{{typeStatsList}}" wx:key="type">
+          <text class="type-name">{{item.label}}</text>
+          <text class="type-count">{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置标签页 -->
+  <view class="tab-content" wx:if="{{activeTab === 'settings'}}">
+    <view class="settings-section">
+      <text class="section-title">系统设置</text>
+      
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">自动审核</text>
+          <text class="setting-desc">启用自动内容审核功能</text>
+        </view>
+        <switch checked="{{settings.auto_audit}}" bindchange="onSettingChange" data-field="auto_audit" />
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">质量阈值</text>
+          <text class="setting-desc">内容质量最低分数要求</text>
+        </view>
+        <input class="setting-input" 
+               type="number" 
+               value="{{settings.quality_threshold}}"
+               bindinput="onSettingChange" 
+               data-field="quality_threshold" />
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">每日最大发布数</text>
+          <text class="setting-desc">限制每日发布的内容数量</text>
+        </view>
+        <input class="setting-input" 
+               type="number" 
+               value="{{settings.max_content_per_day}}"
+               bindinput="onSettingChange" 
+               data-field="max_content_per_day" />
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">自动发布</text>
+          <text class="setting-desc">启用自动发布功能</text>
+        </view>
+        <switch checked="{{settings.enable_auto_publish}}" bindchange="onSettingChange" data-field="enable_auto_publish" />
+      </view>
+      
+      <view class="setting-actions">
+        <button class="setting-btn" bindtap="saveSettings">保存设置</button>
+      </view>
+    </view>
+  </view>
+</view> 

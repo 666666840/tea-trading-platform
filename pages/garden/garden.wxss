@@ -1,0 +1,531 @@
+/* pages/garden/garden.wxss */
+
+/* 茶园直通页面样式 */
+.garden-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* 页面头部 */
+.page-header {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  padding: 20rpx 30rpx 30rpx;
+  color: white;
+}
+
+.header-title {
+  margin-bottom: 15rpx;
+}
+
+.title-text {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.title-desc {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.season-tip {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  padding: 15rpx 20rpx;
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.tip-icon {
+  font-size: 24rpx;
+  margin-right: 10rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  opacity: 0.95;
+}
+
+/* 筛选区域 */
+.filter-section {
+  background: white;
+  padding: 20rpx 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 20rpx;
+  min-width: 80rpx;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.filter-item {
+  padding: 12rpx 20rpx;
+  border-radius: 25rpx;
+  font-size: 24rpx;
+  background: #f5f5f5;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.filter-item.active {
+  background: #4CAF50;
+  color: white;
+}
+
+/* 产区地图区域 */
+.region-map-section {
+  background: white;
+  margin: 0 20rpx 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+}
+
+.province-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.province-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.province-item:active {
+  background: #e9ecef;
+}
+
+.province-info {
+  flex: 1;
+}
+
+.province-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.region-count {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.hot-regions {
+  display: flex;
+  gap: 10rpx;
+  margin-right: 20rpx;
+}
+
+.region-tag {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.region-tag.hot {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.arrow-icon {
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+/* 茶园列表 */
+.garden-list {
+  padding: 0 20rpx;
+}
+
+.list-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+  padding-left: 10rpx;
+}
+
+.garden-item {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 25rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.garden-item:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 25rpx rgba(0, 0, 0, 0.12);
+}
+
+/* 茶园图片 */
+.garden-images {
+  position: relative;
+  height: 300rpx;
+}
+
+.image-swiper {
+  height: 100%;
+}
+
+.garden-image {
+  width: 100%;
+  height: 100%;
+}
+
+.certification-badge,
+.seasonal-badge,
+.brand-badge {
+  position: absolute;
+  top: 20rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  color: white;
+  font-weight: bold;
+}
+
+.certification-badge {
+  left: 20rpx;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+.seasonal-badge {
+  left: 20rpx;
+  top: 60rpx;
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.brand-badge {
+  right: 20rpx;
+  background: linear-gradient(135deg, #feca57, #ff9ff3);
+}
+
+.badge-text {
+  font-size: 22rpx;
+}
+
+/* 茶园信息 */
+.garden-info {
+  padding: 25rpx 30rpx 20rpx;
+}
+
+.garden-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15rpx;
+}
+
+.garden-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.garden-tags {
+  display: flex;
+  gap: 10rpx;
+}
+
+.tag-item {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  background: #e8f5e8;
+  color: #4CAF50;
+}
+
+.garden-location {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.location-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+}
+
+.location-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.harvest-info {
+  margin-bottom: 15rpx;
+}
+
+.harvest-label {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.harvest-period {
+  font-size: 26rpx;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.garden-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.feature-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  background: #f0f8ff;
+  color: #1890ff;
+  border: 1rpx solid #d6e4ff;
+}
+
+/* 茶农信息 */
+.merchant-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: #f8f9fa;
+  border-top: 1rpx solid #e9ecef;
+}
+
+.merchant-basic {
+  display: flex;
+  align-items: center;
+}
+
+.merchant-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.merchant-details {
+  flex: 1;
+}
+
+.merchant-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.merchant-rating {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.rating-score {
+  font-size: 24rpx;
+  color: #ff9500;
+  font-weight: bold;
+}
+
+.rating-star {
+  font-size: 24rpx;
+}
+
+.verified-badge {
+  font-size: 22rpx;
+  color: #4CAF50;
+  background: #e8f5e8;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+}
+
+.contact-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 15rpx 25rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 15rpx rgba(76, 175, 80, 0.3);
+  transition: all 0.3s ease;
+}
+
+.contact-btn:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 20rpx rgba(76, 175, 80, 0.4);
+}
+
+/* 底部信息 */
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 30rpx 20rpx;
+  background: white;
+}
+
+.view-count {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.count-icon {
+  font-size: 24rpx;
+}
+
+.count-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.create-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.load-more,
+.no-more,
+.empty-state {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+}
+
+.loading-text,
+.no-more-text,
+.empty-text {
+  font-size: 28rpx;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .garden-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .garden-tags {
+    margin-top: 10rpx;
+  }
+  
+  .merchant-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15rpx;
+  }
+  
+  .contact-btn {
+    width: 100%;
+  }
+}
+
+/* 发布按钮样式 */
+.header-right {
+  position: absolute;
+  top: 20rpx;
+  right: 30rpx;
+}
+
+.header-right .publish-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  border-radius: 25rpx;
+  padding: 12rpx 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  backdrop-filter: blur(10rpx);
+  transition: all 0.3s ease;
+}
+
+.header-right .publish-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+}
+
+.btn-icon {
+  font-size: 24rpx;
+}
+
+.btn-text {
+  font-size: 24rpx;
+  color: white;
+  font-weight: 500;
+}
+
+/* 底部浮动发布按钮 */
+.garden-page .publish-btn {
+  position: fixed;
+  bottom: 40rpx;
+  right: 30rpx;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border: none;
+  border-radius: 50rpx;
+  padding: 20rpx 30rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  box-shadow: 0 8rpx 25rpx rgba(76, 175, 80, 0.4);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.garden-page .publish-btn:active {
+  transform: translateY(-2rpx) scale(0.95);
+  box-shadow: 0 10rpx 30rpx rgba(76, 175, 80, 0.5);
+}
+
+.publish-icon {
+  font-size: 28rpx;
+}
+
+.publish-text {
+  font-size: 28rpx;
+  color: white;
+  font-weight: 600;
+}

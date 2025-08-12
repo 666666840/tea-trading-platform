@@ -1,0 +1,282 @@
+/* 实时功能演示页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 状态区域 */
+.status-section {
+  margin-bottom: 30rpx;
+}
+
+.status-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.status-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.status-indicator {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.status-indicator.connected {
+  background-color: #e8f5e8;
+  color: #52c41a;
+}
+
+.status-indicator.connecting {
+  background-color: #fff7e6;
+  color: #fa8c16;
+}
+
+.status-indicator.error {
+  background-color: #fff2f0;
+  color: #ff4d4f;
+}
+
+.status-indicator.disconnected {
+  background-color: #f5f5f5;
+  color: #999;
+}
+
+.status-info {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.status-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  padding: 16rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #1890ff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.btn-info {
+  background-color: #13c2c2;
+  color: white;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+  background-color: #f5f5f5;
+  color: #999;
+}
+
+/* 功能操作区域 */
+.actions-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.action-btn {
+  background: white;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  padding: 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  transition: all 0.3s;
+}
+
+.action-btn:active {
+  background-color: #f0f0f0;
+  transform: scale(0.98);
+}
+
+.action-icon {
+  font-size: 48rpx;
+}
+
+.action-text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+/* 数据区域 */
+.data-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.data-card {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background-color: #fafafa;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  color: #1890ff;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+}
+
+.data-list {
+  max-height: 400rpx;
+  padding: 20rpx;
+}
+
+.data-item {
+  padding: 20rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+  margin-bottom: 16rpx;
+  border-radius: 8rpx;
+  background-color: #fafafa;
+}
+
+.data-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.item-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.item-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.item-content {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.item-type {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 不同类型的数据项样式 */
+.notification-item {
+  border-left: 6rpx solid #1890ff;
+}
+
+.market-item {
+  border-left: 6rpx solid #52c41a;
+}
+
+.price-item {
+  border-left: 6rpx solid #fa8c16;
+}
+
+.arrival-item {
+  border-left: 6rpx solid #722ed1;
+}
+
+.clearance-item {
+  border-left: 6rpx solid #f5222d;
+}
+
+.alert-item {
+  border-left: 6rpx solid #faad14;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 60rpx 20rpx;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .status-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    margin-bottom: 10rpx;
+  }
+} 

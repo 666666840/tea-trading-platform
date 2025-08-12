@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}添加内容 - 茶叶一点通管理后台{% endblock %}
+
+{% block page_title %}添加内容{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('content_management') }}" class="btn btn-outline-secondary">
+    <i class="bi bi-arrow-left"></i> 返回列表
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-plus-circle"></i> 添加转载内容
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="addContentForm">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- 标题 -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    <i class="bi bi-type-bold"></i> 标题 <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="title" name="title" 
+                                       placeholder="请输入内容标题" required maxlength="200">
+                                <div class="form-text">标题长度不超过200个字符</div>
+                            </div>
+
+                            <!-- 内容 -->
+                            <div class="mb-3">
+                                <label for="content" class="form-label">
+                                    <i class="bi bi-file-text"></i> 内容 <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" id="content" name="content" rows="10" 
+                                          placeholder="请输入转载内容详情" required></textarea>
+                                <div class="form-text">支持HTML格式，可以添加链接、图片等</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <!-- 内容类型 -->
+                            <div class="mb-3">
+                                <label for="type" class="form-label">
+                                    <i class="bi bi-tags"></i> 内容类型 <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="type" name="type" required>
+                                    <option value="">请选择内容类型</option>
+                                    <option value="recommend">推荐内容</option>
+                                    <option value="news">茶讯新闻</option>
+                                    <option value="art">茶艺教程</option>
+                                    <option value="hot">热门资讯</option>
+                                </select>
+                            </div>
+
+                            <!-- 作者 -->
+                            <div class="mb-3">
+                                <label for="author" class="form-label">
+                                    <i class="bi bi-person"></i> 作者
+                                </label>
+                                <input type="text" class="form-control" id="author" name="author" 
+                                       placeholder="转载内容" value="转载内容">
+                            </div>
+
+                            <!-- 标签 -->
+                            <div class="mb-3">
+                                <label for="tag" class="form-label">
+                                    <i class="bi bi-tag"></i> 标签
+                                </label>
+                                <input type="text" class="form-control" id="tag" name="tag" 
+                                       placeholder="转载" value="转载">
+                            </div>
+
+                            <!-- 预览卡片 -->
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">
+                                        <i class="bi bi-eye"></i> 预览信息
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <small class="text-muted">标题：</small>
+                                        <div id="preview-title" class="fw-bold">-</div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">类型：</small>
+                                        <div id="preview-type">-</div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">作者：</small>
+                                        <div id="preview-author">-</div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">标签：</small>
+                                        <div id="preview-tag">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('content_management') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle"></i> 取消
+                                </a>
+                                <div>
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="bi bi-check-circle"></i> 保存并发布
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="saveAsDraft()">
+                                        <i class="bi bi-file-earmark"></i> 保存为草稿
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 实时预览功能
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('title');
+    const typeSelect = document.getElementById('type');
+    const authorInput = document.getElementById('author');
+    const tagInput = document.getElementById('tag');
+    
+    // 更新预览
+    function updatePreview() {
+        document.getElementById('preview-title').textContent = titleInput.value || '-';
+        document.getElementById('preview-author').textContent = authorInput.value || '-';
+        document.getElementById('preview-tag').textContent = tagInput.value || '-';
+        
+        const typeText = typeSelect.options[typeSelect.selectedIndex]?.text || '-';
+        document.getElementById('preview-type').textContent = typeText;
+    }
+    
+    // 监听输入变化
+    titleInput.addEventListener('input', updatePreview);
+    typeSelect.addEventListener('change', updatePreview);
+    authorInput.addEventListener('input', updatePreview);
+    tagInput.addEventListener('input', updatePreview);
+    
+    // 初始化预览
+    updatePreview();
+});
+
+// 保存为草稿
+function saveAsDraft() {
+    // 添加一个隐藏字段来标识草稿状态
+    const draftField = document.createElement('input');
+    draftField.type = 'hidden';
+    draftField.name = 'status';
+    draftField.value = 'draft';
+    document.getElementById('addContentForm').appendChild(draftField);
+    
+    // 提交表单
+    document.getElementById('addContentForm').submit();
+}
+
+// 表单验证
+document.getElementById('addContentForm').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const type = document.getElementById('type').value;
+    
+    if (!title) {
+        e.preventDefault();
+        alert('请输入标题');
+        document.getElementById('title').focus();
+        return false;
+    }
+    
+    if (!content) {
+        e.preventDefault();
+        alert('请输入内容');
+        document.getElementById('content').focus();
+        return false;
+    }
+    
+    if (!type) {
+        e.preventDefault();
+        alert('请选择内容类型');
+        document.getElementById('type').focus();
+        return false;
+    }
+    
+    // 显示保存提示
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 保存中...';
+    submitBtn.disabled = true;
+    
+    // 3秒后恢复按钮状态（如果页面没有跳转）
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 3000);
+});
+</script>
+{% endblock %}

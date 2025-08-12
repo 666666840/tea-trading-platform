@@ -1,0 +1,505 @@
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left">
+      <button class="back-btn" bindtap="goBack">
+        <text class="back-icon">←</text>
+      </button>
+      <text class="header-title">品牌入驻</text>
+    </view>
+    <view class="header-right">
+      <text class="step-info">步骤 {{currentStep}}/{{totalSteps}}</text>
+    </view>
+  </view>
+
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-list">
+      <view class="step-item {{index < currentStep ? 'completed' : index === currentStep - 1 ? 'active' : ''}}" 
+            wx:for="{{stepTitles}}" 
+            wx:key="*this"
+            wx:for-item="title"
+            wx:for-index="index">
+        <view class="step-number">{{index + 1}}</view>
+        <text class="step-title">{{title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 步骤1：选择套餐 -->
+  <view class="step-content" wx:if="{{currentStep === 1}}">
+    <view class="step-header">
+      <text class="step-title">选择入驻套餐</text>
+      <text class="step-desc">选择适合您品牌的入驻套餐，享受相应的权益和服务</text>
+    </view>
+
+    <view class="package-list">
+      <view class="package-item {{selectedPackage === package.id ? 'selected' : ''}} {{package.popular ? 'popular' : ''}}" 
+            wx:for="{{joinPackages}}" 
+            wx:key="id"
+            wx:for-item="package"
+            bindtap="selectPackage"
+            data-id="{{package.id}}">
+        
+        <!-- 热门标签 -->
+        <view class="popular-badge" wx:if="{{package.popular}}">
+          <text class="badge-text">推荐</text>
+        </view>
+        
+        <!-- 套餐头部 -->
+        <view class="package-header">
+          <text class="package-name">{{package.name}}</text>
+          <view class="package-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-value">{{package.price}}</text>
+            <text class="price-unit">/年</text>
+          </view>
+          <text class="original-price">原价 ¥{{package.originalPrice}}</text>
+        </view>
+        
+        <!-- 套餐权益 -->
+        <view class="package-features">
+          <view class="feature-item" 
+                wx:for="{{package.features}}" 
+                wx:key="*this"
+                wx:for-item="feature">
+            <text class="feature-icon">✓</text>
+            <text class="feature-text">{{feature}}</text>
+          </view>
+        </view>
+        
+        <!-- 选择状态 -->
+        <view class="select-status">
+          <text class="status-icon">{{selectedPackage === package.id ? '✓' : '○'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 特权政策 -->
+    <view class="privilege-section">
+      <view class="privilege-header">
+        <text class="privilege-title">🎖️ 特权政策</text>
+      </view>
+      <view class="privilege-content">
+        <view class="privilege-item">
+          <text class="privilege-label">省级以上农业龙头企业</text>
+          <text class="privilege-desc">免年费 + "国品认证"勋章</text>
+        </view>
+        <view class="privilege-item">
+          <text class="privilege-label">中华老字号</text>
+          <text class="privilege-desc">免年费 + 首页轮播位展示</text>
+        </view>
+        <view class="privilege-item">
+          <text class="privilege-label">地理标志产品</text>
+          <text class="privilege-desc">享受高级入驻权益</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 步骤2：基本信息 -->
+  <view class="step-content" wx:if="{{currentStep === 2}}">
+    <view class="step-header">
+      <text class="step-title">品牌基本信息</text>
+      <text class="step-desc">请填写品牌的基本信息，这些信息将用于品牌展示</text>
+    </view>
+
+    <view class="form-section">
+      <!-- 品牌Logo -->
+      <view class="form-item">
+        <text class="form-label">品牌Logo</text>
+        <view class="logo-upload" bindtap="uploadBrandLogo">
+          <image wx:if="{{formData.brandLogo}}" 
+                 class="logo-preview" 
+                 src="{{formData.brandLogo}}" 
+                 mode="aspectFit"></image>
+          <view wx:else class="logo-placeholder">
+            <text class="upload-icon">+</text>
+            <text class="upload-text">上传Logo</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 品牌名称 -->
+      <view class="form-item">
+        <text class="form-label">品牌名称 *</text>
+        <input class="form-input" 
+               placeholder="请输入品牌名称"
+               value="{{formData.brandName}}"
+               bindinput="inputFormData"
+               data-field="brandName" />
+        <text class="error-text" wx:if="{{formErrors.brandName}}">{{formErrors.brandName}}</text>
+      </view>
+
+      <!-- 品牌口号 -->
+      <view class="form-item">
+        <text class="form-label">品牌口号 *</text>
+        <input class="form-input" 
+               placeholder="请输入品牌口号"
+               value="{{formData.brandSlogan}}"
+               bindinput="inputFormData"
+               data-field="brandSlogan" />
+        <text class="error-text" wx:if="{{formErrors.brandSlogan}}">{{formErrors.brandSlogan}}</text>
+      </view>
+
+      <!-- 创立年份 -->
+      <view class="form-item">
+        <text class="form-label">创立年份 *</text>
+        <input class="form-input" 
+               type="number"
+               placeholder="请输入创立年份"
+               value="{{formData.foundedYear}}"
+               bindinput="inputFormData"
+               data-field="foundedYear" />
+        <text class="error-text" wx:if="{{formErrors.foundedYear}}">{{formErrors.foundedYear}}</text>
+      </view>
+
+      <!-- 总部地址 -->
+      <view class="form-item">
+        <text class="form-label">总部地址 *</text>
+        <input class="form-input" 
+               placeholder="请输入总部地址"
+               value="{{formData.headquarters}}"
+               bindinput="inputFormData"
+               data-field="headquarters" />
+        <text class="error-text" wx:if="{{formErrors.headquarters}}">{{formErrors.headquarters}}</text>
+      </view>
+
+      <!-- 核心产区 -->
+      <view class="form-item">
+        <text class="form-label">核心产区 *</text>
+        <input class="form-input" 
+               placeholder="请输入核心产区"
+               value="{{formData.coreRegion}}"
+               bindinput="inputFormData"
+               data-field="coreRegion" />
+        <text class="error-text" wx:if="{{formErrors.coreRegion}}">{{formErrors.coreRegion}}</text>
+      </view>
+
+      <!-- 年产量 -->
+      <view class="form-item">
+        <text class="form-label">年产量</text>
+        <input class="form-input" 
+               placeholder="请输入年产量（如：5000吨）"
+               value="{{formData.annualOutput}}"
+               bindinput="inputFormData"
+               data-field="annualOutput" />
+      </view>
+
+      <!-- 覆盖市场 -->
+      <view class="form-item">
+        <text class="form-label">覆盖市场</text>
+        <input class="form-input" 
+               type="number"
+               placeholder="请输入覆盖市场数量"
+               value="{{formData.marketCoverage}}"
+               bindinput="inputFormData"
+               data-field="marketCoverage" />
+      </view>
+
+      <!-- 联系人信息 -->
+      <view class="form-item">
+        <text class="form-label">联系人姓名 *</text>
+        <input class="form-input" 
+               placeholder="请输入联系人姓名"
+               value="{{formData.contactName}}"
+               bindinput="inputFormData"
+               data-field="contactName" />
+        <text class="error-text" wx:if="{{formErrors.contactName}}">{{formErrors.contactName}}</text>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">联系电话 *</text>
+        <input class="form-input" 
+               type="number"
+               placeholder="请输入联系电话"
+               value="{{formData.contactPhone}}"
+               bindinput="inputFormData"
+               data-field="contactPhone" />
+        <text class="error-text" wx:if="{{formErrors.contactPhone}}">{{formErrors.contactPhone}}</text>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">微信号</text>
+        <input class="form-input" 
+               placeholder="请输入微信号"
+               value="{{formData.contactWechat}}"
+               bindinput="inputFormData"
+               data-field="contactWechat" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">邮箱</text>
+        <input class="form-input" 
+               type="text"
+               placeholder="请输入邮箱地址"
+               value="{{formData.contactEmail}}"
+               bindinput="inputFormData"
+               data-field="contactEmail" />
+      </view>
+
+      <!-- 品牌介绍 -->
+      <view class="form-item">
+        <text class="form-label">品牌介绍</text>
+        <textarea class="form-textarea" 
+                  placeholder="请描述品牌历史、特色、理念等（选填）"
+                  value="{{formData.brandDescription}}"
+                  bindinput="inputFormData"
+                  data-field="brandDescription"
+                  maxlength="500"></textarea>
+        <text class="char-count">{{formData.brandDescription.length}}/500</text>
+      </view>
+
+      <!-- 品牌图片 -->
+      <view class="form-item">
+        <text class="form-label">品牌图片</text>
+        <text class="form-tip">最多9张，建议上传品牌相关的高质量图片</text>
+        <view class="image-upload">
+          <view class="image-list">
+            <view class="image-item" 
+                  wx:for="{{formData.brandImages}}" 
+                  wx:key="*this"
+                  wx:for-item="image"
+                  wx:for-index="index">
+              <image class="uploaded-image" 
+                     src="{{image}}" 
+                     mode="aspectFill"
+                     bindtap="previewImage" 
+                     data-url="{{image}}"
+                     data-urls="{{formData.brandImages}}"></image>
+              <view class="delete-btn" 
+                    bindtap="deleteBrandImage" 
+                    data-index="{{index}}">
+                <text class="delete-icon">×</text>
+              </view>
+            </view>
+            <view class="upload-btn" 
+                  wx:if="{{formData.brandImages.length < 9}}"
+                  bindtap="uploadBrandImages">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">上传图片</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 步骤3：企业资质 -->
+  <view class="step-content" wx:if="{{currentStep === 3}}">
+    <view class="step-header">
+      <text class="step-title">企业资质认证</text>
+      <text class="step-desc">请提供企业相关资质证明，用于品牌认证</text>
+    </view>
+
+    <view class="form-section">
+      <!-- 企业名称 -->
+      <view class="form-item">
+        <text class="form-label">企业名称 *</text>
+        <input class="form-input" 
+               placeholder="请输入企业名称"
+               value="{{formData.companyName}}"
+               bindinput="inputFormData"
+               data-field="companyName" />
+        <text class="error-text" wx:if="{{formErrors.companyName}}">{{formErrors.companyName}}</text>
+      </view>
+
+      <!-- 营业执照 -->
+      <view class="form-item">
+        <text class="form-label">营业执照 *</text>
+        <view class="certificate-upload" bindtap="uploadBusinessLicense">
+          <image wx:if="{{formData.businessLicense}}" 
+                 class="certificate-preview" 
+                 src="{{formData.businessLicense}}" 
+                 mode="aspectFit"
+                 bindtap="previewImage"
+                 data-url="{{formData.businessLicense}}"></image>
+          <view wx:else class="certificate-placeholder">
+            <text class="upload-icon">📄</text>
+            <text class="upload-text">上传营业执照</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.businessLicense}}">{{formErrors.businessLicense}}</text>
+      </view>
+
+      <!-- 商标注册证 -->
+      <view class="form-item">
+        <text class="form-label">商标注册证 *</text>
+        <view class="certificate-upload" bindtap="uploadTrademarkCertificate">
+          <image wx:if="{{formData.trademarkCertificate}}" 
+                 class="certificate-preview" 
+                 src="{{formData.trademarkCertificate}}" 
+                 mode="aspectFit"
+                 bindtap="previewImage"
+                 data-url="{{formData.trademarkCertificate}}"></image>
+          <view wx:else class="certificate-placeholder">
+            <text class="upload-icon">🏷️</text>
+            <text class="upload-text">上传商标注册证</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.trademarkCertificate}}">{{formErrors.trademarkCertificate}}</text>
+      </view>
+
+      <!-- 主营品类 -->
+      <view class="form-item">
+        <text class="form-label">主营品类 *</text>
+        <view class="category-grid">
+          <view class="category-item {{formData.mainCategories.indexOf(category) > -1 ? 'selected' : ''}}" 
+                wx:for="{{mainCategories}}" 
+                wx:key="*this"
+                wx:for-item="category"
+                bindtap="selectMainCategory"
+                data-category="{{category}}">
+            <text class="category-name">{{category}}</text>
+          </view>
+        </view>
+        <text class="error-text" wx:if="{{formErrors.mainCategories}}">{{formErrors.mainCategories}}</text>
+      </view>
+
+      <!-- 产品线 -->
+      <view class="form-item">
+        <text class="form-label">产品线</text>
+        <input class="form-input" 
+               placeholder="请输入主要产品线（如：西湖龙井、碧螺春等）"
+               value="{{formData.productLinesText}}"
+               bindinput="inputFormData"
+               data-field="productLines" />
+      </view>
+
+      <!-- 认证类型 -->
+      <view class="form-item">
+        <text class="form-label">认证类型</text>
+        <view class="certification-grid">
+          <view class="certification-item {{formData.certifications.indexOf(certification) > -1 ? 'selected' : ''}}" 
+                wx:for="{{certificationOptions}}" 
+                wx:key="*this"
+                wx:for-item="certification"
+                bindtap="selectCertification"
+                data-certification="{{certification}}">
+            <text class="certification-name">{{certification}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 步骤4：确认提交 -->
+  <view class="step-content" wx:if="{{currentStep === 4}}">
+    <view class="step-header">
+      <text class="step-title">确认提交</text>
+      <text class="step-desc">请确认所有信息无误后提交申请</text>
+    </view>
+
+    <view class="confirm-section">
+      <!-- 套餐信息 -->
+      <view class="confirm-group">
+        <text class="group-title">选择的套餐</text>
+        <view class="package-summary">
+          <text class="package-name">{{selectedPackageInfo.name}}</text>
+          <text class="package-price">¥{{selectedPackageInfo.price}}/年</text>
+        </view>
+      </view>
+
+      <!-- 基本信息 -->
+      <view class="confirm-group">
+        <text class="group-title">基本信息</text>
+        <view class="info-list">
+          <view class="info-item">
+            <text class="info-label">品牌名称</text>
+            <text class="info-value">{{formData.brandName}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">品牌口号</text>
+            <text class="info-value">{{formData.brandSlogan}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">创立年份</text>
+            <text class="info-value">{{formData.foundedYear}}年</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">总部地址</text>
+            <text class="info-value">{{formData.headquarters}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">核心产区</text>
+            <text class="info-value">{{formData.coreRegion}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 联系信息 -->
+      <view class="confirm-group">
+        <text class="group-title">联系信息</text>
+        <view class="info-list">
+          <view class="info-item">
+            <text class="info-label">联系人</text>
+            <text class="info-value">{{formData.contactName}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">联系电话</text>
+            <text class="info-value">{{formData.contactPhone}}</text>
+          </view>
+          <view class="info-item" wx:if="{{formData.contactWechat}}">
+            <text class="info-label">微信号</text>
+            <text class="info-value">{{formData.contactWechat}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 企业信息 -->
+      <view class="confirm-group">
+        <text class="group-title">企业信息</text>
+        <view class="info-list">
+          <view class="info-item">
+            <text class="info-label">企业名称</text>
+            <text class="info-value">{{formData.companyName}}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">主营品类</text>
+            <text class="info-value">{{formData.mainCategoriesText}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提交说明 -->
+      <view class="submit-notice">
+        <text class="notice-title">📋 提交说明</text>
+        <view class="notice-content">
+          <text class="notice-item">• 申请提交后，平台将在48小时内进行人工审核</text>
+          <text class="notice-item">• 审核通过后，客服将联系您完成费用缴纳</text>
+          <text class="notice-item">• 缴费成功后，品牌将正式入驻平台</text>
+          <text class="notice-item">• 如有疑问，请联系客服：400-123-4567</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="prev-btn" 
+            wx:if="{{currentStep > 1}}"
+            bindtap="prevStep">
+      上一步
+    </button>
+    <button class="next-btn" 
+            wx:if="{{currentStep < totalSteps}}"
+            bindtap="nextStep">
+      下一步
+    </button>
+    <button class="submit-btn {{submitting ? 'submitting' : ''}}" 
+            wx:if="{{currentStep === totalSteps}}"
+            bindtap="submitApplication"
+            disabled="{{submitting}}">
+      <text wx:if="{{!submitting}}">提交申请</text>
+      <text wx:else>提交中...</text>
+    </button>
+  </view>
+
+  <!-- 提交状态遮罩 -->
+  <view class="loading-mask" wx:if="{{submitting}}">
+    <view class="loading-content">
+      <view class="loading-icon">⏳</view>
+      <text class="loading-text">正在提交申请...</text>
+    </view>
+  </view>
+</view> 

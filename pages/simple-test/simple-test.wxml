@@ -1,0 +1,120 @@
+<!--pages/simple-test/simple-test.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">存储数据管理</text>
+    <text class="subtitle">管理本地存储的数据</text>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">当前存储的键</text>
+      <button class="refresh-btn" bindtap="refreshList">刷新</button>
+    </view>
+    
+    <view class="keys-list">
+      <view wx:if="{{storageKeys.length === 0}}" class="empty-state">
+        <text>暂无存储数据</text>
+      </view>
+      <view wx:for="{{storageKeys}}" wx:key="index" class="key-item">
+        <text class="key-name">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">超简单清除</text>
+    </view>
+    
+    <view class="action-buttons">
+      <button class="action-btn simple-clear" bindtap="simpleClear">
+        🗑️ 一键清除 paymentSettings
+      </button>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">自动清理</text>
+    </view>
+    
+    <view class="action-buttons">
+      <button class="action-btn auto-cleanup" bindtap="performAutoCleanup">
+        🧹 执行自动清理
+      </button>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">手动清除操作</text>
+    </view>
+    
+    <view class="action-buttons">
+      <button class="action-btn clear-specific" bindtap="clearSpecificKey">
+        清除 paymentSettings
+      </button>
+      
+      <button class="action-btn clear-payment" bindtap="clearPaymentData">
+        清除支付相关数据
+      </button>
+      
+      <button class="action-btn clear-all" bindtap="clearAllData">
+        清除所有数据
+      </button>
+    </view>
+  </view>
+
+  <view wx:if="{{clearResult}}" class="result-section">
+    <text class="result-text">{{clearResult}}</text>
+  </view>
+
+  <view wx:if="{{cleanupStats}}" class="section">
+    <view class="section-header">
+      <text class="section-title">清理统计</text>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-label">总清理次数</text>
+        <text class="stat-value">{{cleanupStats.totalCleanups}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">总清理键数</text>
+        <text class="stat-value">{{cleanupStats.totalCleanedKeys}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">总释放空间</text>
+        <text class="stat-value">{{cleanupStats.totalFreedSpace}} 字节</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">平均释放空间</text>
+        <text class="stat-value">{{cleanupStats.averageFreedSpace}} 字节</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{cleanupHistory.length > 0}}" class="section">
+    <view class="section-header">
+      <text class="section-title">最近清理记录</text>
+    </view>
+    
+    <view class="history-list">
+      <view wx:for="{{cleanupHistory}}" wx:key="timestamp" class="history-item">
+        <view class="history-header">
+          <text class="history-time">{{item.timestamp}}</text>
+          <text class="history-count">{{item.cleanedCount}} 个键</text>
+        </view>
+        <text class="history-detail">释放 {{item.freedSpace}} 字节</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tips">
+    <text class="tip-title">说明：</text>
+    <text class="tip-text">• 自动清理会在应用启动时自动执行</text>
+    <text class="tip-text">• 不同环境有不同的清理策略</text>
+    <text class="tip-text">• paymentSettings 是支付管理器的配置数据</text>
+    <text class="tip-text">• 清除后数据将无法恢复，请谨慎操作</text>
+  </view>
+</view> 

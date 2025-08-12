@@ -1,0 +1,151 @@
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="favorite-container" wx:else>
+    <!-- 头部统计 -->
+    <view class="stats-header">
+      <view class="stats-item">
+        <text class="stats-number">{{stats.total}}</text>
+        <text class="stats-label">总收藏</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-number">{{stats.markets}}</text>
+        <text class="stats-label">市场</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-number">{{stats.supplies}}</text>
+        <text class="stats-label">供求</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-number">{{stats.newarrivals}}</text>
+        <text class="stats-label">新品</text>
+      </view>
+    </view>
+
+    <!-- 操作栏 -->
+    <view class="action-bar">
+      <view class="action-left">
+        <view class="action-btn" bindtap="onSearchToggle">
+          <text class="action-icon">🔍</text>
+          <text class="action-text">搜索</text>
+        </view>
+        <view class="action-btn {{isEditMode ? 'active' : ''}}" bindtap="toggleEditMode">
+          <text class="action-icon">✏️</text>
+          <text class="action-text">{{isEditMode ? '取消' : '编辑'}}</text>
+        </view>
+      </view>
+      
+      <view class="action-right" wx:if="{{isEditMode}}">
+        <view class="action-btn" bindtap="onSelectAll">
+          <text class="action-text">全选</text>
+        </view>
+        <view class="action-btn delete-btn" bindtap="onBatchDelete">
+          <text class="action-text">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索栏 -->
+    <view class="search-bar {{showSearch ? 'show' : ''}}" wx:if="{{showSearch}}">
+      <view class="search-input-wrapper">
+        <input 
+          class="search-input" 
+          placeholder="搜索收藏内容..." 
+          value="{{searchKeyword}}"
+          bindinput="onSearchInput"
+        />
+        <text class="search-clear" bindtap="onSearchClear" wx:if="{{searchKeyword}}">✕</text>
+      </view>
+    </view>
+
+    <!-- 标签栏 -->
+    <view class="tab-bar">
+      <scroll-view class="tab-scroll" scroll-x>
+        <view class="tab-list">
+          <view 
+            class="tab-item {{activeTab === index ? 'active' : ''}}"
+            wx:for="{{tabList}}"
+            wx:key="id"
+            bindtap="onTabChange"
+            data-index="{{index}}"
+          >
+            <text class="tab-icon">{{item.icon}}</text>
+            <text class="tab-text">{{item.name}}</text>
+            <text class="tab-count" wx:if="{{stats[item.id]}}">{{stats[item.id]}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 收藏列表 -->
+    <view class="favorite-list">
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{favoriteData[tabList[activeTab].id].length === 0}}">
+        <view class="empty-icon">{{tabList[activeTab].icon}}</view>
+        <text class="empty-title">暂无{{tabList[activeTab].name}}收藏</text>
+        <text class="empty-desc">在{{tabList[activeTab].name}}页面点击收藏按钮添加收藏</text>
+      </view>
+
+      <!-- 收藏项列表 -->
+      <view class="favorite-items">
+        <view 
+          class="favorite-item {{selectedItems.indexOf(item.id) !== -1 ? 'selected' : ''}}"
+          wx:for="{{favoriteData[tabList[activeTab].id]}}"
+          wx:key="id"
+          bindtap="onItemTap"
+          data-item="{{item}}"
+          data-id="{{item.id}}"
+        >
+          <!-- 选择框 -->
+          <view class="item-checkbox" wx:if="{{isEditMode}}">
+            <text class="checkbox-icon">{{selectedItems.indexOf(item.id) !== -1 ? '✅' : '⭕'}}</text>
+          </view>
+
+          <!-- 内容区域 -->
+          <view class="item-content">
+            <view class="item-header">
+              <text class="item-title">{{item.name}}</text>
+              <view class="item-type">
+                <text class="type-icon">{{item.categoryType ? (tabList.find(tab => tab.id === item.categoryType) || {}).icon : item.type}}</text>
+                <text class="type-text">{{item.categoryType ? (tabList.find(tab => tab.id === item.categoryType) || {}).name : item.type}}</text>
+              </view>
+            </view>
+
+            <view class="item-info">
+              <text class="item-desc">{{item.data.description || item.data.address || '暂无描述'}}</text>
+              <text class="item-time">{{formatTime(item.createTime)}}</text>
+            </view>
+          </view>
+
+          <!-- 操作按钮 -->
+          <view class="item-actions" wx:if="{{!isEditMode}}">
+            <view class="action-btn-small" bindtap="onItemShare" data-item="{{item}}">
+              <text class="btn-icon">📤</text>
+            </view>
+            <view class="action-btn-small delete" bindtap="onItemDelete" data-item="{{item}}">
+              <text class="btn-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-actions" wx:if="{{stats.total > 0}}">
+      <view class="bottom-btn" bindtap="onClearCategory">
+        <text class="btn-text">清空{{tabList[activeTab].name}}</text>
+      </view>
+      <view class="bottom-btn" bindtap="onExportFavorites">
+        <text class="btn-text">导出数据</text>
+      </view>
+    </view>
+  </view>
+</view> 
