@@ -36,7 +36,7 @@ DATA_ADMIN_PASSWORD=your-secure-data-admin-password
 SMTP_HOST=smtp.qq.com
 SMTP_PORT=587
 SMTP_USERNAME=your-real-email@qq.com
-SMTP_PASSWORD=your-real-email-password
+SMTP_PASSWORD=REPLACE_WITH_YOUR_ACTUAL_EMAIL_PASSWORD
 NOTIFICATION_EMAIL=notifications@your-domain.com
 
 # 微信小程序配置
