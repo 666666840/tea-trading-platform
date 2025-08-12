@@ -19,9 +19,7 @@ Page({
       'flower': '花茶'
     },
     
-
-    
-    // 价格列表数据 - 清空示例数据，等待真实数据导入
+    // 价格列表数据 - 从API获取
     priceList: [],
     
     // 分页参数
@@ -31,7 +29,7 @@ Page({
 
   onLoad() {
     console.log('品类行情页面加载完成')
-    console.log('初始数据:', this.data.priceList)
+    this.loadCategoryData('all')
   },
 
   onShow() {
@@ -39,16 +37,48 @@ Page({
     console.log('当前价格列表长度:', this.data.priceList.length)
   },
 
-  // 切换分类
-  switchCategory(e) {
-    const category = e.currentTarget.dataset.category
-    console.log('切换分类到:', category)
+  // 加载分类数据
+  loadCategoryData(category) {
+    this.setData({ loading: true })
     
-    // 根据分类设置不同的数据
-    let newData = []
+    wx.request({
+      url: 'http://localhost:5000/api/category-prices',
+      data: { category: category },
+      success: (res) => {
+        console.log('API响应:', res.data)
+        if (res.data.status === 'success') {
+          this.setData({
+            priceList: res.data.data,
+            activeCategory: category,
+            loading: false
+          })
+          console.log('加载分类数据成功，数据长度:', res.data.data.length)
+        } else {
+          console.error('API返回错误:', res.data)
+          this.setData({ loading: false })
+          wx.showToast({
+            title: '加载失败',
+            icon: 'error'
+          })
+        }
+      },
+      fail: (err) => {
+        console.error('请求失败:', err)
+        this.setData({ loading: false })
+        
+        // 如果API请求失败，使用本地数据作为备用
+        this.loadLocalData(category)
+      }
+    })
+  },
+
+  // 加载本地备用数据
+  loadLocalData(category) {
+    console.log('使用本地备用数据')
+    let localData = []
     
     if (category === 'green') {
-      newData = [
+      localData = [
         {
           id: 1,
           name: '西湖龙井',
@@ -82,17 +112,106 @@ Page({
           isRecommended: false
         }
       ]
-    // 清空示例数据，等待真实数据导入
-    newData = []
+    } else if (category === 'black') {
+      localData = [
+        {
+          id: 3,
+          name: '正山小种',
+          minPrice: 300,
+          maxPrice: 600,
+          avgPrice: 450,
+          unit: '斤',
+          changeType: 'up',
+          changePercent: 3.8,
+          origin: '福建武夷山',
+          updateTime: '30分钟前',
+          sourceCount: 20,
+          isHot: true,
+          isNew: false,
+          isRecommended: true
+        },
+        {
+          id: 4,
+          name: '祁门红茶',
+          minPrice: 400,
+          maxPrice: 700,
+          avgPrice: 550,
+          unit: '斤',
+          changeType: 'up',
+          changePercent: 1.5,
+          origin: '安徽祁门',
+          updateTime: '1小时前',
+          sourceCount: 18,
+          isHot: false,
+          isNew: false,
+          isRecommended: true
+        }
+      ]
+    } else {
+      localData = [
+        {
+          id: 1,
+          name: '西湖龙井',
+          minPrice: 800,
+          maxPrice: 1200,
+          avgPrice: 1000,
+          unit: '斤',
+          changeType: 'up',
+          changePercent: 5.2,
+          origin: '浙江杭州',
+          updateTime: '2小时前',
+          sourceCount: 15,
+          isHot: true,
+          isNew: false,
+          isRecommended: true
+        },
+        {
+          id: 2,
+          name: '碧螺春',
+          minPrice: 600,
+          maxPrice: 900,
+          avgPrice: 750,
+          unit: '斤',
+          changeType: 'down',
+          changePercent: 2.1,
+          origin: '江苏苏州',
+          updateTime: '1小时前',
+          sourceCount: 12,
+          isHot: false,
+          isNew: true,
+          isRecommended: false
+        },
+        {
+          id: 3,
+          name: '正山小种',
+          minPrice: 300,
+          maxPrice: 600,
+          avgPrice: 450,
+          unit: '斤',
+          changeType: 'up',
+          changePercent: 3.8,
+          origin: '福建武夷山',
+          updateTime: '30分钟前',
+          sourceCount: 20,
+          isHot: true,
+          isNew: false,
+          isRecommended: true
+        }
+      ]
+    }
     
     this.setData({
+      priceList: localData,
       activeCategory: category,
-      priceList: newData,
-      page: 1,
-      hasMore: false
+      loading: false
     })
-    
-    console.log('切换分类完成，新数据长度:', newData.length)
+  },
+
+  // 切换分类
+  switchCategory(e) {
+    const category = e.currentTarget.dataset.category
+    console.log('切换分类到:', category)
+    this.loadCategoryData(category)
   },
 
   // 查看价格详情
@@ -118,7 +237,7 @@ Page({
   onPullDownRefresh() {
     console.log('下拉刷新')
     // 重新加载当前分类的数据
-    this.switchCategory({ currentTarget: { dataset: { category: this.data.activeCategory } } })
+    this.loadCategoryData(this.data.activeCategory)
     
     setTimeout(() => {
       wx.stopPullDownRefresh()

@@ -182,7 +182,8 @@ class APIManager {
       '/api/inquiry': { status: 'success', data: this.getLocalInquiry() },
       '/api/brands': { status: 'success', data: this.getLocalBrands() },
       '/api/gardens': { status: 'success', data: this.getLocalGardens() },
-      '/api/market-price': { status: 'success', data: this.getLocalMarketPrice() }
+      '/api/market-price': { status: 'success', data: this.getLocalMarketPrice() },
+    '/api/category-prices': { status: 'success', data: this.getLocalCategoryPrices() }
     }
     
     return fallbackMap[endpoint] || null
@@ -846,6 +847,63 @@ const API = {
       console.warn('获取未读通知数量失败:', error)
       return 0
     }
+  },
+
+  // 品类行情数据
+  getLocalCategoryPrices() {
+    return [
+      {
+        id: 1,
+        name: '西湖龙井',
+        minPrice: 800,
+        maxPrice: 1200,
+        avgPrice: 1000,
+        unit: '斤',
+        changeType: 'up',
+        changePercent: 5.2,
+        origin: '浙江杭州',
+        updateTime: '2小时前',
+        sourceCount: 15,
+        isHot: true,
+        isNew: false,
+        isRecommended: true,
+        category: 'green'
+      },
+      {
+        id: 2,
+        name: '碧螺春',
+        minPrice: 600,
+        maxPrice: 900,
+        avgPrice: 750,
+        unit: '斤',
+        changeType: 'down',
+        changePercent: 2.1,
+        origin: '江苏苏州',
+        updateTime: '1小时前',
+        sourceCount: 12,
+        isHot: false,
+        isNew: true,
+        isRecommended: false,
+        category: 'green'
+      },
+      {
+        id: 3,
+        name: '正山小种',
+        minPrice: 300,
+        maxPrice: 600,
+        avgPrice: 450,
+        unit: '斤',
+        changeType: 'up',
+        changePercent: 3.8,
+        origin: '福建武夷山',
+        updateTime: '30分钟前',
+        sourceCount: 20,
+        isHot: true,
+        isNew: false,
+        isRecommended: true,
+        category: 'black'
+      }
+    ]
   }
 }
 

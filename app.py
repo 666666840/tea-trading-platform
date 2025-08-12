@@ -145,6 +145,146 @@ def get_newarrivals():
         return jsonify({'status': 'success', 'data': filtered_items})
     return jsonify({'status': 'success', 'data': newarrivals_data})
 
+# 品类行情API
+@app.route('/api/category-prices')
+def get_category_prices():
+    category = request.args.get('category', 'all')
+    
+    # 品类行情数据
+    category_prices = {
+        'all': [
+            {
+                'id': 1,
+                'name': '西湖龙井',
+                'minPrice': 800,
+                'maxPrice': 1200,
+                'avgPrice': 1000,
+                'unit': '斤',
+                'changeType': 'up',
+                'changePercent': 5.2,
+                'origin': '浙江杭州',
+                'updateTime': '2小时前',
+                'sourceCount': 15,
+                'isHot': True,
+                'isNew': False,
+                'isRecommended': True,
+                'category': 'green'
+            },
+            {
+                'id': 2,
+                'name': '碧螺春',
+                'minPrice': 600,
+                'maxPrice': 900,
+                'avgPrice': 750,
+                'unit': '斤',
+                'changeType': 'down',
+                'changePercent': 2.1,
+                'origin': '江苏苏州',
+                'updateTime': '1小时前',
+                'sourceCount': 12,
+                'isHot': False,
+                'isNew': True,
+                'isRecommended': False,
+                'category': 'green'
+            },
+            {
+                'id': 3,
+                'name': '正山小种',
+                'minPrice': 300,
+                'maxPrice': 600,
+                'avgPrice': 450,
+                'unit': '斤',
+                'changeType': 'up',
+                'changePercent': 3.8,
+                'origin': '福建武夷山',
+                'updateTime': '30分钟前',
+                'sourceCount': 20,
+                'isHot': True,
+                'isNew': False,
+                'isRecommended': True,
+                'category': 'black'
+            }
+        ],
+        'green': [
+            {
+                'id': 1,
+                'name': '西湖龙井',
+                'minPrice': 800,
+                'maxPrice': 1200,
+                'avgPrice': 1000,
+                'unit': '斤',
+                'changeType': 'up',
+                'changePercent': 5.2,
+                'origin': '浙江杭州',
+                'updateTime': '2小时前',
+                'sourceCount': 15,
+                'isHot': True,
+                'isNew': False,
+                'isRecommended': True,
+                'category': 'green'
+            },
+            {
+                'id': 2,
+                'name': '碧螺春',
+                'minPrice': 600,
+                'maxPrice': 900,
+                'avgPrice': 750,
+                'unit': '斤',
+                'changeType': 'down',
+                'changePercent': 2.1,
+                'origin': '江苏苏州',
+                'updateTime': '1小时前',
+                'sourceCount': 12,
+                'isHot': False,
+                'isNew': True,
+                'isRecommended': False,
+                'category': 'green'
+            }
+        ],
+        'black': [
+            {
+                'id': 3,
+                'name': '正山小种',
+                'minPrice': 300,
+                'maxPrice': 600,
+                'avgPrice': 450,
+                'unit': '斤',
+                'changeType': 'up',
+                'changePercent': 3.8,
+                'origin': '福建武夷山',
+                'updateTime': '30分钟前',
+                'sourceCount': 20,
+                'isHot': True,
+                'isNew': False,
+                'isRecommended': True,
+                'category': 'black'
+            },
+            {
+                'id': 4,
+                'name': '祁门红茶',
+                'minPrice': 400,
+                'maxPrice': 700,
+                'avgPrice': 550,
+                'unit': '斤',
+                'changeType': 'up',
+                'changePercent': 1.5,
+                'origin': '安徽祁门',
+                'updateTime': '1小时前',
+                'sourceCount': 18,
+                'isHot': False,
+                'isNew': False,
+                'isRecommended': True,
+                'category': 'black'
+            }
+        ]
+    }
+    
+    # 根据分类返回数据
+    if category in category_prices:
+        return jsonify({'status': 'success', 'data': category_prices[category]})
+    else:
+        return jsonify({'status': 'success', 'data': category_prices['all']})
+
 @app.route('/api/newarrivals/<int:item_id>')
 def get_newarrival_detail(item_id):
     item = next((item for item in newarrivals_data if item['id'] == item_id), None)
